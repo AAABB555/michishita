@@ -15,7 +15,7 @@
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-      background-color: #f7f9fa;
+      background-color: #f4f7f9;
       color: #333333;
       padding-bottom: 60px;
     }
@@ -26,7 +26,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #eef0f2;
+      border-bottom: 1px solid #e1e8ed;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -37,18 +37,15 @@
       gap: 8px;
       font-size: 20px;
       font-weight: 800;
-      color: #2b2b2b;
+      color: #1e293b;
       letter-spacing: -0.5px;
     }
     .logo-mark {
-      color: #f05a28;
+      color: #0284c7;
       font-size: 20px;
       font-weight: 900;
-      font-family: Arial, Helvetica, sans-serif;
       letter-spacing: -0.5px;
-      background: rgba(240, 90, 40, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .hamburger {
       display: flex;
@@ -59,7 +56,7 @@
     .hamburger span {
       width: 26px;
       height: 3px;
-      background: #f05a28;
+      background: #0284c7;
       border-radius: 2px;
     }
 
@@ -93,8 +90,8 @@
       align-items: flex-start;
       gap: 6px;
     }
-    .badge-red {
-      background: #e53e3e;
+    .badge-blue {
+      background: #0284c7;
       color: #ffffff;
       font-size: 14px;
       font-weight: 800;
@@ -103,7 +100,7 @@
     }
     .badge-white {
       background: rgba(255, 255, 255, 0.95);
-      color: #1a202c;
+      color: #0f172a;
       font-size: 17px;
       font-weight: 900;
       padding: 5px 14px;
@@ -124,7 +121,7 @@
       background: #cbd5e1;
     }
     .dot.active {
-      background: #f05a28;
+      background: #0284c7;
     }
 
     .copy-section {
@@ -136,10 +133,10 @@
       font-weight: 900;
       line-height: 1.35;
       margin-bottom: 10px;
-      color: #222222;
+      color: #1e293b;
     }
     .copy-main .highlight {
-      color: #f05a28;
+      color: #0284c7;
     }
     .copy-sub {
       font-size: 13.5px;
@@ -167,14 +164,14 @@
       transition: transform 0.1s, opacity 0.2s;
     }
     .btn-primary {
-      background: #f05a28;
+      background: #0284c7;
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(240, 90, 40, 0.35);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
     }
     .btn-outline {
       background: #ffffff;
-      color: #f05a28;
-      border: 2px solid #f05a28;
+      color: #0284c7;
+      border: 2px solid #0284c7;
     }
     .btn:active {
       opacity: 0.8;
@@ -187,7 +184,7 @@
     .section-title {
       font-size: 21px;
       font-weight: 900;
-      color: #222222;
+      color: #1e293b;
       margin-bottom: 18px;
       display: inline-block;
       position: relative;
@@ -199,7 +196,7 @@
       bottom: -4px;
       width: 100%;
       height: 4px;
-      background: #f05a28;
+      background: #0284c7;
       border-radius: 2px;
     }
 
@@ -217,13 +214,17 @@
       width: 100%;
       height: 115px;
       background: #f1f5f9;
-      border-radius: 6px;
+      border-radius: 8px;
       overflow: hidden;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid #e2e8f0;
+      transition: transform 0.15s ease;
+    }
+    .photo-frame:active {
+      transform: scale(0.96);
     }
     .photo-frame img {
       width: 100%;
@@ -234,13 +235,61 @@
       font-size: 13.5px;
       font-weight: 600;
       line-height: 1.45;
-      color: #2d3748;
+      color: #334155;
+    }
+
+    #image-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #image-modal img {
+      max-width: 90vw;
+      max-height: 75vh;
+      border-radius: 12px;
+      object-fit: contain;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    #modal-caption {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .btn-img-close {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #ffffff;
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     #reveal-modal {
       display: none;
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       background: rgba(0, 0, 0, 0.75);
       z-index: 999;
       align-items: center;
@@ -263,7 +312,7 @@
     .reveal-title {
       font-size: 24px;
       font-weight: 900;
-      color: #f05a28;
+      color: #0284c7;
       margin-bottom: 12px;
     }
     .reveal-desc {
@@ -273,7 +322,7 @@
       margin-bottom: 24px;
     }
     .btn-modal-close {
-      background: #1e293b;
+      background: #0f172a;
       color: #ffffff;
       padding: 12px 28px;
       border-radius: 24px;
@@ -300,9 +349,9 @@
     </header>
 
     <div class="hero-banner">
-      <img src="banner.jpg" onerror="this.src='m2.jpg'" alt="キャンペーンバナー">
+      <img src="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" alt="キャンペーンバナー">
       <div class="badge-campaign">
-        <span class="badge-red">おためし</span>
+        <span class="badge-blue">おためし</span>
         <span class="badge-white">キャンペーン実施中</span>
       </div>
     </div>
@@ -330,28 +379,28 @@
       <div class="section-title">道下 life</div>
 
       <div class="photo-grid">
-        <div class="photo-card" onclick="showJoke()">
+        <div class="photo-card" onclick="openImage('m3.jpg', '文化祭が楽しい道下')">
           <div class="photo-frame">
             <img src="m3.jpg" alt="文化祭が楽しい道下">
           </div>
           <p class="photo-desc">文化祭が楽しい道下</p>
         </div>
 
-        <div class="photo-card" onclick="showJoke()">
+        <div class="photo-card" onclick="openImage('0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg', '黒板アートの完成が嬉しい道下')">
           <div class="photo-frame">
             <img src="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" alt="黒板アートの完成が嬉しい道下">
           </div>
           <p class="photo-desc">黒板アートの完成が嬉しい道下</p>
         </div>
 
-        <div class="photo-card" onclick="showJoke()">
+        <div class="photo-card" onclick="openImage('48ac578f-7e9b-458a-a0ba-72f830a9d508.jpg', '文化祭が終わってしまい悲しむ道下')">
           <div class="photo-frame">
             <img src="48ac578f-7e9b-458a-a0ba-72f830a9d508.jpg" alt="文化祭が終わってしまい悲しむ道下">
           </div>
           <p class="photo-desc">文化祭が終わってしまい悲しむ道下</p>
         </div>
 
-        <div class="photo-card" onclick="showJoke()">
+        <div class="photo-card" onclick="openImage('5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg', '文化祭をサボる道下')">
           <div class="photo-frame">
             <img src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="文化祭をサボる道下">
           </div>
@@ -361,18 +410,34 @@
     </div>
   </div>
 
+  <div id="image-modal" onclick="closeImage()">
+    <button class="btn-img-close" onclick="closeImage()">✕</button>
+    <img id="modal-img" src="" alt="拡大画像">
+    <div id="modal-caption"></div>
+  </div>
+
   <div id="reveal-modal">
     <div class="reveal-content">
       <div class="reveal-title">🎉 ドッキリ大成功！</div>
       <p class="reveal-desc">
         道下ファンクラブ公式特設サイトへようこそ！<br>
-        道下お前の方が借り多いけどありがとう
+        道下お前の方が借り多いけどありがとう！
       </p>
       <button class="btn-modal-close" onclick="closeJoke()">閉じる</button>
     </div>
   </div>
 
   <script>
+    function openImage(src, caption) {
+      document.getElementById('modal-img').src = src;
+      document.getElementById('modal-caption').innerText = caption;
+      document.getElementById('image-modal').style.display = 'flex';
+    }
+
+    function closeImage() {
+      document.getElementById('image-modal').style.display = 'none';
+    }
+
     function showJoke() {
       document.getElementById('reveal-modal').style.display = 'flex';
       confetti({
