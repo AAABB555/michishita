@@ -20,7 +20,6 @@
       padding-bottom: 60px;
     }
 
-    /* ヘッダー */
     header {
       background: #ffffff;
       padding: 14px 20px;
@@ -36,15 +35,20 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 800;
       color: #2b2b2b;
       letter-spacing: -0.5px;
     }
     .logo-mark {
       color: #f05a28;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
+      font-family: Arial, Helvetica, sans-serif;
+      letter-spacing: -0.5px;
+      background: rgba(240, 90, 40, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
     }
     .hamburger {
       display: flex;
@@ -53,13 +57,12 @@
       cursor: pointer;
     }
     .hamburger span {
-      width: 24px;
+      width: 26px;
       height: 3px;
       background: #f05a28;
       border-radius: 2px;
     }
 
-    /* メインコンテナ */
     .container {
       max-width: 480px;
       margin: 0 auto;
@@ -68,54 +71,50 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.04);
     }
 
-    /* ヒーロー画像エリア */
     .hero-banner {
       position: relative;
       width: 100%;
-      height: 200px;
+      height: 180px;
       background: #e2e8f0;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     .hero-banner img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: top;
     }
     .badge-campaign {
       position: absolute;
-      top: 20px;
-      left: 15px;
+      top: 18px;
+      left: 16px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 4px;
+      gap: 6px;
     }
     .badge-red {
       background: #e53e3e;
       color: #ffffff;
-      font-size: 13px;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 800;
       padding: 4px 10px;
       border-radius: 4px;
     }
     .badge-white {
       background: rgba(255, 255, 255, 0.95);
       color: #1a202c;
-      font-size: 15px;
-      font-weight: 800;
-      padding: 5px 12px;
+      font-size: 17px;
+      font-weight: 900;
+      padding: 5px 14px;
       border-radius: 4px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
     }
 
-    /* インジケーター（ポチポチ） */
     .slider-dots {
       display: flex;
       justify-content: center;
-      gap: 6px;
+      gap: 7px;
       margin: 16px 0 24px;
     }
     .dot {
@@ -128,14 +127,13 @@
       background: #f05a28;
     }
 
-    /* キャッチコピー */
     .copy-section {
       text-align: center;
       padding: 0 20px 24px;
     }
     .copy-main {
-      font-size: 26px;
-      font-weight: 800;
+      font-size: 28px;
+      font-weight: 900;
       line-height: 1.35;
       margin-bottom: 10px;
       color: #222222;
@@ -144,34 +142,34 @@
       color: #f05a28;
     }
     .copy-sub {
-      font-size: 13px;
+      font-size: 13.5px;
       color: #64748b;
       margin-bottom: 24px;
+      font-weight: 500;
     }
 
-    /* ボタン群 */
     .btn-group {
       display: flex;
       gap: 12px;
-      padding: 0 20px 32px;
+      padding: 0 10px;
     }
     .btn {
       flex: 1;
       height: 48px;
       border-radius: 24px;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       border: none;
-      transition: opacity 0.2s;
+      transition: transform 0.1s, opacity 0.2s;
     }
     .btn-primary {
       background: #f05a28;
       color: #ffffff;
-      box-shadow: 0 4px 10px rgba(240, 90, 40, 0.3);
+      box-shadow: 0 4px 12px rgba(240, 90, 40, 0.35);
     }
     .btn-outline {
       background: #ffffff;
@@ -180,17 +178,17 @@
     }
     .btn:active {
       opacity: 0.8;
+      transform: scale(0.98);
     }
 
-    /* ギャラリーセクション */
     .gallery-section {
-      padding: 0 20px 40px;
+      padding: 10px 20px 40px;
     }
     .section-title {
-      font-size: 20px;
-      font-weight: 800;
+      font-size: 21px;
+      font-weight: 900;
       color: #222222;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       display: inline-block;
       position: relative;
     }
@@ -200,7 +198,7 @@
       left: 0;
       bottom: -4px;
       width: 100%;
-      height: 3px;
+      height: 4px;
       background: #f05a28;
       border-radius: 2px;
     }
@@ -208,23 +206,23 @@
     .photo-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px 12px;
+      gap: 20px 14px;
     }
     .photo-card {
       display: flex;
       flex-direction: column;
+      cursor: pointer;
     }
     .photo-frame {
       width: 100%;
-      height: 110px;
+      height: 115px;
       background: #f1f5f9;
       border-radius: 6px;
       overflow: hidden;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
       border: 1px solid #e2e8f0;
     }
     .photo-frame img {
@@ -233,18 +231,17 @@
       object-fit: cover;
     }
     .photo-desc {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 600;
-      line-height: 1.4;
-      color: #334155;
+      line-height: 1.45;
+      color: #2d3748;
     }
 
-    /* ネタばらしモーダル */
     #reveal-modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       z-index: 999;
       align-items: center;
       justify-content: center;
@@ -252,31 +249,37 @@
     }
     .reveal-content {
       background: #ffffff;
-      max-width: 360px;
+      max-width: 380px;
       width: 100%;
-      border-radius: 16px;
-      padding: 28px 20px;
+      border-radius: 20px;
+      padding: 32px 24px;
       text-align: center;
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes pop {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
     .reveal-title {
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 24px;
+      font-weight: 900;
       color: #f05a28;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .reveal-desc {
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 14.5px;
+      line-height: 1.65;
       color: #4b5563;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     .btn-modal-close {
       background: #1e293b;
       color: #ffffff;
-      padding: 10px 24px;
-      border-radius: 20px;
+      padding: 12px 28px;
+      border-radius: 24px;
       border: none;
       font-weight: bold;
+      font-size: 14px;
       cursor: pointer;
     }
   </style>
@@ -284,40 +287,36 @@
 <body>
 
   <div class="container">
-    <!-- ヘッダー -->
     <header>
       <div class="header-logo">
         <span class="logo-mark">MI</span>
-        <span>道下ファンクラブ</span> <!-- ★友達の苗字に変える -->
+        <span>道下ファンクラブ</span>
       </div>
-      <div class="hamburger">
+      <div class="hamburger" onclick="showJoke()">
         <span></span>
         <span></span>
         <span></span>
       </div>
     </header>
 
-    <!-- メインビジュアル -->
     <div class="hero-banner">
-      <!-- メインの思い出写真などがあればここ -->
+      <img src="banner.jpg" onerror="this.src='m2.jpg'" alt="キャンペーンバナー">
       <div class="badge-campaign">
         <span class="badge-red">おためし</span>
         <span class="badge-white">キャンペーン実施中</span>
       </div>
     </div>
 
-    <!-- スライダーのポチ -->
     <div class="slider-dots">
       <span class="dot"></span>
       <span class="dot active"></span>
       <span class="dot"></span>
     </div>
 
-    <!-- キャッチコピー -->
     <div class="copy-section">
       <div class="copy-main">
         未来ある<br>
-        <span class="highlight">道下の一歩</span>に。 <!-- ★友達の名前に変える -->
+        <span class="highlight">道下の一歩</span>に。
       </div>
       <p class="copy-sub">道下に出来ることなら誰でも出来る。</p>
 
@@ -327,42 +326,47 @@
       </div>
     </div>
 
-    <!-- 友達の写真グリッド（画像と同じレイアウト） -->
     <div class="gallery-section">
       <div class="section-title">道下 life</div>
 
       <div class="photo-grid">
-        <!-- 写真1 -->
         <div class="photo-card" onclick="showJoke()">
-          <div class="photo-frame">📸</div>
+          <div class="photo-frame">
+            <img src="m1.jpg" alt="文化祭が楽しい道下">
+          </div>
           <p class="photo-desc">文化祭が楽しい道下</p>
         </div>
-        <!-- 写真2 -->
+
         <div class="photo-card" onclick="showJoke()">
-          <div class="photo-frame">📸</div>
+          <div class="photo-frame">
+            <img src="m2.jpg" alt="黒板アートの完成が嬉しい道下">
+          </div>
           <p class="photo-desc">黒板アートの完成が嬉しい道下</p>
         </div>
-        <!-- 写真3 -->
+
         <div class="photo-card" onclick="showJoke()">
-          <div class="photo-frame">📸</div>
-          <p class="photo-desc">夏休みが終わってしまい悲しむ山田</p>
+          <div class="photo-frame">
+            <img src="m3.jpg" alt="文化祭が終わってしまい悲しむ道下">
+          </div>
+          <p class="photo-desc">文化祭が終わってしまい悲しむ道下</p>
         </div>
-        <!-- 写真4 -->
+
         <div class="photo-card" onclick="showJoke()">
-          <div class="photo-frame">📸</div>
-          <p class="photo-desc">掃除当番をサボる山田</p>
+          <div class="photo-frame">
+            <img src="m4.jpg" alt="文化祭をサボる道下">
+          </div>
+          <p class="photo-desc">文化祭をサボる道下</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ネタばらし画面 -->
   <div id="reveal-modal">
     <div class="reveal-content">
       <div class="reveal-title">🎉 ドッキリ大成功！</div>
       <p class="reveal-desc">
-        公式ファンクラブは真っ赤な嘘です！<br>
-        いつも笑わせてくれてありがとう！
+        道下ファンクラブ公式特設サイトへようこそ！<br>
+        道下お前の方が借り多いけどありがとう
       </p>
       <button class="btn-modal-close" onclick="closeJoke()">閉じる</button>
     </div>
@@ -372,8 +376,8 @@
     function showJoke() {
       document.getElementById('reveal-modal').style.display = 'flex';
       confetti({
-        particleCount: 150,
-        spread: 80,
+        particleCount: 160,
+        spread: 85,
         origin: { y: 0.6 }
       });
     }
