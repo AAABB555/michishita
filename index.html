@@ -32,7 +32,7 @@
 
     header {
       background: #ffffff;
-      padding: 14px 20px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -44,19 +44,30 @@
     .header-logo {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 20px;
+      gap: 10px;
+      font-size: 19px;
       font-weight: 800;
       color: #1e293b;
       letter-spacing: -0.5px;
     }
-    .logo-mark {
-      color: #0284c7;
-      font-size: 20px;
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-family: "Impact", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 18px;
       font-weight: 900;
-      letter-spacing: -0.5px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-style: italic;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
+      letter-spacing: 0.5px;
     }
+
     .hamburger {
       display: flex;
       flex-direction: column;
@@ -64,7 +75,7 @@
       cursor: pointer;
     }
     .hamburger span {
-      width: 26px;
+      width: 24px;
       height: 3px;
       background: #0284c7;
       border-radius: 2px;
@@ -307,13 +318,14 @@
     }
     .shop-thumb {
       width: 100%;
-      height: 125px;
+      height: 140px;
       background: #f8fafc;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 36px;
+      overflow: hidden;
     }
     .shop-thumb img {
       width: 100%;
@@ -330,6 +342,7 @@
       font-weight: 900;
       padding: 4px 8px;
       border-bottom-right-radius: 8px;
+      z-index: 5;
     }
     .shop-info {
       padding: 10px;
@@ -481,7 +494,7 @@
   <div class="container">
     <header>
       <div class="header-logo">
-        <span class="logo-mark">MI</span>
+        <span class="logo-badge">MI</span>
         <span>道下ファンクラブ</span>
       </div>
       <div class="hamburger" onclick="showJoke('メニューは現在準備中です！')">
@@ -569,10 +582,11 @@
     <!-- タブ2: 道下 Shop -->
     <div class="tab-content" id="tabShop">
       <div class="shop-grid">
-        <div class="shop-card" onclick="buyItem('公式 道下アクリルスタンド', true)">
+        <!-- 商品1: アクスタ -->
+        <div class="shop-card" onclick="buyItem('公式 道下アクリルスタンド 2026', true)">
           <div class="shop-thumb">
-            <img src="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" alt="アクスタ">
             <span class="badge-sold">SOLD OUT</span>
+            <img src="akusta.png" alt="道下アクスタ">
           </div>
           <div class="shop-info">
             <span class="item-status status-new">● 新品・未使用</span>
@@ -582,6 +596,7 @@
           </div>
         </div>
 
+        <!-- 商品2: 消しゴム -->
         <div class="shop-card" onclick="buyItem('授業中ちぎった消しゴム', false)">
           <div class="shop-thumb">
             <span>✏️</span>
@@ -594,27 +609,29 @@
           </div>
         </div>
 
-        <div class="shop-card" onclick="buyItem('文化祭で道下が着用したTシャツ', false)">
+        <!-- 商品3: フィギュア -->
+        <div class="shop-card" onclick="buyItem('1/7スケールフィギュア あの時の僕', false)">
           <div class="shop-thumb">
+            <img src="figure.png" alt="あの時の僕 フィギュア">
+          </div>
+          <div class="shop-info">
+            <span class="item-status status-new">● 新品・未使用</span>
+            <div class="shop-title">1/7スケールフィギュア「あの時の僕」</div>
+            <div class="shop-price">¥19,800</div>
+            <button class="btn-buy">購入手続きへ</button>
+          </div>
+        </div>
+
+        <!-- 商品4: 着用Tシャツ -->
+        <div class="shop-card" onclick="buyItem('文化祭で道下が着用したTシャツ', true)">
+          <div class="shop-thumb">
+            <span class="badge-sold">SOLD OUT</span>
             <img src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="Tシャツ">
           </div>
           <div class="shop-info">
             <span class="item-status status-bad">● 全体的に状態が悪い</span>
             <div class="shop-title">文化祭で道下が着用したTシャツ</div>
             <div class="shop-price">¥99,999</div>
-            <button class="btn-buy">購入手続きへ</button>
-          </div>
-        </div>
-
-        <div class="shop-card" onclick="buyItem('直筆サイン入り黒板消し', true)">
-          <div class="shop-thumb">
-            <span>🧹</span>
-            <span class="badge-sold">SOLD OUT</span>
-          </div>
-          <div class="shop-info">
-            <span class="item-status status-bad">● 全体的に状態が悪い</span>
-            <div class="shop-title">道下直筆サイン入り 黒板消し</div>
-            <div class="shop-price">¥1,200</div>
             <button class="btn-buy sold">売り切れ</button>
           </div>
         </div>
