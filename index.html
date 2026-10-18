@@ -289,6 +289,7 @@
       transform: scale(0.98);
     }
 
+    /* 3連タブ切り替えバー */
     .tab-bar {
       display: flex;
       border-bottom: 2px solid #e2e8f0;
@@ -298,7 +299,7 @@
       flex: 1;
       text-align: center;
       padding: 12px 0;
-      font-size: 17px;
+      font-size: 15.5px;
       font-weight: 800;
       color: #64748b;
       cursor: pointer;
@@ -473,6 +474,83 @@
     .btn-buy.sold {
       background: #94a3b8;
       cursor: not-allowed;
+    }
+
+    /* 道下 SNS セクション */
+    .sns-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sns-lead {
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .sns-card {
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      color: #ffffff;
+    }
+    .sns-card:active {
+      transform: scale(0.98);
+    }
+    .sns-card-instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+    .sns-card-bereal {
+      background: #000000;
+      border: 1px solid #27272a;
+    }
+    .sns-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sns-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .sns-text-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .sns-name {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+    .sns-id {
+      font-size: 12px;
+      opacity: 0.9;
+      font-weight: 600;
+    }
+    .sns-btn-action {
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      flex-shrink: 0;
     }
 
     /* カート追加通知トースト */
@@ -656,7 +734,6 @@
       padding: 24px 0;
     }
 
-    /* 料金明細セクション */
     .cart-breakdown {
       border-top: 1px solid #e2e8f0;
       padding-top: 10px;
@@ -868,9 +945,11 @@
       </div>
     </div>
 
+    <!-- 3連タブ切り替えバー -->
     <div class="tab-bar">
       <div class="tab-item active" id="tabLifeBtn" onclick="switchTab('life')">道下 Life</div>
       <div class="tab-item" id="tabShopBtn" onclick="switchTab('shop')">道下 Shop</div>
+      <div class="tab-item" id="tabSnsBtn" onclick="switchTab('sns')">道下 SNS</div>
     </div>
 
     <!-- タブ1: 道下 Life -->
@@ -909,7 +988,7 @@
     <!-- タブ2: 道下 Shop -->
     <div class="tab-content" id="tabShop">
       <div class="shop-grid">
-        <!-- 商品1: アクスタ（在庫あり） -->
+        <!-- 商品1: アクスタ -->
         <div class="shop-card">
           <div class="shop-thumb">
             <img src="4f301a60-9027-4a08-94c1-7eca5b485e00.png" alt="道下アクスタ">
@@ -925,7 +1004,7 @@
           </div>
         </div>
 
-        <!-- 商品2: 消しゴム（在庫なし・SOLD OUT） -->
+        <!-- 商品2: 消しゴム -->
         <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
@@ -942,7 +1021,7 @@
           </div>
         </div>
 
-        <!-- 商品3: フィギュア（在庫あり） -->
+        <!-- 商品3: フィギュア -->
         <div class="shop-card">
           <div class="shop-thumb">
             <img src="f5c2e267-a515-4ce0-9a70-f294b7990cf4.png" alt="あの時の僕 フィギュア">
@@ -958,7 +1037,7 @@
           </div>
         </div>
 
-        <!-- 商品4: 着用Tシャツ（在庫なし・SOLD OUT） -->
+        <!-- 商品4: 着用Tシャツ -->
         <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
@@ -970,10 +1049,47 @@
               <span class="status-nostock">・在庫なし</span>
             </div>
             <div class="shop-title">文化祭で道下が着用したTシャツ</div>
-            <div class="shop-price">¥99,800</div>
+            <div class="shop-price">¥99,999</div>
             <button class="btn-buy sold" onclick="showJoke('「文化祭で道下が着用したTシャツ」は完売しました！')">売り切れ</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- タブ3: 道下 SNS -->
+    <div class="tab-content" id="tabSns">
+      <div class="sns-container">
+        <p class="sns-lead">道下本人の公式アカウントをチェック！</p>
+
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/haruto13606?psln=MXFzeHF3NGNseHV1Nw==" target="_blank" rel="noopener noreferrer" class="sns-card sns-card-instagram">
+          <div class="sns-left">
+            <div class="sns-icon">📷</div>
+            <div class="sns-text-group">
+              <span class="sns-name">Instagram</span>
+              <span class="sns-id">@haruto13606</span>
+            </div>
+          </div>
+          <div class="sns-btn-action">
+            <span>フォロー</span>
+            <span>↗</span>
+          </div>
+        </a>
+
+        <!-- BeReal -->
+        <a href="https://bere.al/rennsei0223" target="_blank" rel="noopener noreferrer" class="sns-card sns-card-bereal">
+          <div class="sns-left">
+            <div class="sns-icon">⚠️</div>
+            <div class="sns-text-group">
+              <span class="sns-name">BeReal.</span>
+              <span class="sns-id">rennsei0223</span>
+            </div>
+          </div>
+          <div class="sns-btn-action">
+            <span>友達追加</span>
+            <span>↗</span>
+          </div>
+        </a>
       </div>
     </div>
   </div>
@@ -986,11 +1102,8 @@
         <button class="cart-close" onclick="closeCart()">✕</button>
       </div>
 
-      <div class="cart-items" id="cartItemsList">
-        <!-- カートの中身が動的に表示されます -->
-      </div>
+      <div class="cart-items" id="cartItemsList"></div>
 
-      <!-- 料金明細 -->
       <div class="cart-breakdown">
         <div class="breakdown-row">
           <span>商品小計</span>
@@ -1037,19 +1150,29 @@
     function switchTab(tab) {
       const lifeBtn = document.getElementById('tabLifeBtn');
       const shopBtn = document.getElementById('tabShopBtn');
+      const snsBtn = document.getElementById('tabSnsBtn');
+
       const lifeTab = document.getElementById('tabLife');
       const shopTab = document.getElementById('tabShop');
+      const snsTab = document.getElementById('tabSns');
+
+      lifeBtn.classList.remove('active');
+      shopBtn.classList.remove('active');
+      snsBtn.classList.remove('active');
+
+      lifeTab.classList.remove('active');
+      shopTab.classList.remove('active');
+      snsTab.classList.remove('active');
 
       if (tab === 'life') {
         lifeBtn.classList.add('active');
-        shopBtn.classList.remove('active');
         lifeTab.classList.add('active');
-        shopTab.classList.remove('active');
-      } else {
+      } else if (tab === 'shop') {
         shopBtn.classList.add('active');
-        lifeBtn.classList.remove('active');
         shopTab.classList.add('active');
-        lifeTab.classList.remove('active');
+      } else if (tab === 'sns') {
+        snsBtn.classList.add('active');
+        snsTab.classList.add('active');
       }
     }
 
