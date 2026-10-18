@@ -34,4 +34,1370 @@
       background: #ffffff;
       padding: 12px 20px;
       display: flex;
-      align-items:
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e1e8ed;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 800;
+      color: #1e293b;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-family: "Impact", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      font-style: italic;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
+      letter-spacing: 0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .cart-btn {
+      position: relative;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .hamburger span {
+      width: 24px;
+      height: 3px;
+      background: #0284c7;
+      border-radius: 2px;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 15px rgba(0,0,0,0.04);
+    }
+
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #000;
+      overflow: hidden;
+    }
+    .video-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .video-track::-webkit-scrollbar {
+      display: none;
+    }
+    .video-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      position: relative;
+      background: #000;
+    }
+    .video-slide video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slide-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 20;
+      backdrop-filter: blur(2px);
+      transition: background 0.2s;
+    }
+    .slide-arrow:active {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .slide-arrow.prev {
+      left: 10px;
+    }
+    .slide-arrow.next {
+      right: 10px;
+    }
+
+    .badge-campaign {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .badge-blue {
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .badge-white {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      font-size: 15px;
+      font-weight: 900;
+      padding: 5px 12px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0 24px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      transition: background 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+    .dot.active {
+      background: #0284c7;
+      transform: scale(1.25);
+    }
+
+    .copy-section {
+      text-align: center;
+      padding: 0 20px 24px;
+    }
+    .copy-main {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 10px;
+      color: #1e293b;
+    }
+    .copy-main .highlight {
+      color: #0284c7;
+    }
+    .copy-sub {
+      font-size: 13.5px;
+      color: #64748b;
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      padding: 0 10px;
+    }
+    .btn {
+      flex: 1;
+      height: 48px;
+      border-radius: 24px;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn-primary {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+    .btn-outline {
+      background: #ffffff;
+      color: #0284c7;
+      border: 2px solid #0284c7;
+    }
+    .btn:active {
+      opacity: 0.8;
+      transform: scale(0.98);
+    }
+
+    /* 3連タブ切り替えバー */
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+      margin: 10px 20px 24px;
+    }
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 15.5px;
+      font-weight: 800;
+      color: #64748b;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .tab-item.active {
+      color: #0284c7;
+    }
+    .tab-item.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 3px;
+      background: #0284c7;
+      border-radius: 2px;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 0 20px 40px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 14px;
+    }
+    .photo-card {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .photo-frame {
+      width: 100%;
+      height: 115px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e2e8f0;
+      transition: transform 0.15s ease;
+    }
+    .photo-frame:active {
+      transform: scale(0.96);
+    }
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .photo-desc {
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #334155;
+    }
+
+    /* ショップカード */
+    .shop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 12px;
+    }
+    .shop-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      position: relative;
+    }
+    .shop-thumb {
+      width: 100%;
+      height: 140px;
+      background: #f8fafc;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      overflow: hidden;
+    }
+    .shop-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .badge-sold {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #e11d48;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 8px;
+      border-bottom-right-radius: 8px;
+      z-index: 5;
+    }
+    .shop-info {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 5px;
+    }
+    .item-status {
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .status-new {
+      color: #0284c7;
+    }
+    .status-bad {
+      color: #d97706;
+    }
+    .status-stock {
+      color: #10b981;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+    /* 在庫なしの文字色（赤色） */
+    .status-nostock {
+      color: #ef4444;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+    .shop-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .shop-price {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-top: auto;
+    }
+    .btn-buy {
+      margin-top: 8px;
+      width: 100%;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 7px 0;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-buy:active {
+      transform: scale(0.97);
+    }
+    .btn-buy.sold {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* 道下 SNS セクション */
+    .sns-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sns-lead {
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .sns-card {
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      color: #ffffff;
+    }
+    .sns-card:active {
+      transform: scale(0.98);
+    }
+    .sns-card-instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+    .sns-card-bereal {
+      background: #000000;
+      border: 1px solid #27272a;
+    }
+    .sns-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    /* 画像用SNSアイコン枠 */
+    .sns-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .sns-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sns-text-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .sns-name {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+    .sns-id {
+      font-size: 12px;
+      opacity: 0.9;
+      font-weight: 600;
+    }
+    .sns-btn-action {
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+
+    /* カート追加通知トースト */
+    #cart-toast {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      border: 1px solid #0284c7;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2);
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1500;
+      transition: top 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 90%;
+      width: 360px;
+    }
+    #cart-toast.show {
+      top: 20px;
+    }
+    .toast-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      border: 1px solid #e2e8f0;
+    }
+    .toast-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .toast-body {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+    .toast-status {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0284c7;
+    }
+    .toast-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* カートモーダル */
+    #cart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .cart-content {
+      background: #ffffff;
+      max-width: 410px;
+      width: 100%;
+      border-radius: 16px;
+      padding: 22px 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+    .cart-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+    .cart-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #64748b;
+    }
+    .cart-items {
+      overflow-y: auto;
+      flex-grow: 1;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 220px;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .cart-item-thumb {
+      width: 42px;
+      height: 42px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+    .cart-item-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .cart-item-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .cart-item-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cart-item-price {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0284c7;
+    }
+    .btn-item-delete {
+      background: #fee2e2;
+      color: #ef4444;
+      border: none;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .btn-item-delete:active {
+      background: #fca5a5;
+    }
+    .cart-empty {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+      padding: 24px 0;
+    }
+
+    .cart-breakdown {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .breakdown-row.total-row {
+      border-top: 2px dashed #cbd5e1;
+      padding-top: 8px;
+      margin-top: 4px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .breakdown-row.total-row .total-amount {
+      color: #0284c7;
+    }
+
+    .btn-checkout {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 13px 0;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      margin-top: 6px;
+    }
+    .btn-checkout:disabled {
+      background: #cbd5e1;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    #image-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #image-modal img {
+      max-width: 90vw;
+      max-height: 75vh;
+      border-radius: 12px;
+      object-fit: contain;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    #modal-caption {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .btn-img-close {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #ffffff;
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #reveal-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .reveal-content {
+      background: #ffffff;
+      max-width: 380px;
+      width: 100%;
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes pop {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .reveal-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #0284c7;
+      margin-bottom: 12px;
+    }
+    .reveal-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #4b5563;
+      margin-bottom: 24px;
+    }
+    .btn-modal-close {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 28px;
+      border-radius: 24px;
+      border: none;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="cart-toast">
+    <div class="toast-thumb" id="toastThumb"></div>
+    <div class="toast-body">
+      <span class="toast-status">✓ カートに追加しました</span>
+      <span class="toast-name" id="toastName"></span>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="header-logo">
+        <span class="logo-badge">MI</span>
+        <span>道下ファンクラブ</span>
+      </div>
+      <div class="header-actions">
+        <button class="cart-btn" onclick="openCart()" aria-label="カート">
+          🛒
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+        <div class="hamburger" onclick="showJoke('メニューは現在準備中です！')">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </header>
+
+    <div class="slider-container">
+      <button class="slide-arrow prev" onclick="prevSlide()" aria-label="前へ">〈</button>
+      <button class="slide-arrow next" onclick="nextSlide()" aria-label="次へ">〉</button>
+
+      <div class="badge-campaign">
+        <span class="badge-blue">道下遥人</span>
+        <span class="badge-white">Webサイト開設</span>
+      </div>
+      <div class="video-track" id="videoTrack">
+        <div class="video-slide">
+          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline></video>
+        </div>
+        <div class="video-slide">
+          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline></video>
+        </div>
+        <div class="video-slide">
+          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline></video>
+        </div>
+      </div>
+    </div>
+
+    <div class="slider-dots">
+      <span class="dot active" onclick="manualScroll(0)"></span>
+      <span class="dot" onclick="manualScroll(1)"></span>
+      <span class="dot" onclick="manualScroll(2)"></span>
+    </div>
+
+    <div class="copy-section">
+      <div class="copy-main">
+        未来ある<br>
+        <span class="highlight">道下の一歩</span>に。
+      </div>
+      <p class="copy-sub">道下に出来ることなら誰でも出来る。</p>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="showJoke('ログイン・会員登録は道下本人の厳正なる審査が必要です！')">ログイン</button>
+        <button class="btn btn-outline" onclick="showJoke('現在、道下の人気急上昇につき新規会員受付を停止しています！')">会員登録</button>
+      </div>
+    </div>
+
+    <!-- 3連タブ切り替えバー -->
+    <div class="tab-bar">
+      <div class="tab-item active" id="tabLifeBtn" onclick="switchTab('life')">道下 Life</div>
+      <div class="tab-item" id="tabShopBtn" onclick="switchTab('shop')">道下 Shop</div>
+      <div class="tab-item" id="tabSnsBtn" onclick="switchTab('sns')">道下 SNS</div>
+    </div>
+
+    <!-- タブ1: 道下 Life -->
+    <div class="tab-content active" id="tabLife">
+      <div class="photo-grid">
+        <div class="photo-card" onclick="openImage('m3.jpg', '文化祭が楽しい道下')">
+          <div class="photo-frame">
+            <img src="m3.jpg" alt="文化祭が楽しい道下">
+          </div>
+          <p class="photo-desc">文化祭が楽しい道下</p>
+        </div>
+
+        <div class="photo-card" onclick="openImage('0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg', '黒板アートの完成が嬉しい道下')">
+          <div class="photo-frame">
+            <img src="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" alt="黒板アートの完成が嬉しい道下">
+          </div>
+          <p class="photo-desc">黒板アートの完成が嬉しい道下</p>
+        </div>
+
+        <div class="photo-card" onclick="openImage('48ac578f-7e9b-458a-a0ba-72f830a9d508.jpg', '文化祭が終わってしまい悲しむ道下')">
+          <div class="photo-frame">
+            <img src="48ac578f-7e9b-458a-a0ba-72f830a9d508.jpg" alt="文化祭が終わってしまい悲しむ道下">
+          </div>
+          <p class="photo-desc">文化祭が終わってしまい悲しむ道下</p>
+        </div>
+
+        <div class="photo-card" onclick="openImage('5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg', '文化祭をサボる道下')">
+          <div class="photo-frame">
+            <img src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="文化祭をサボる道下">
+          </div>
+          <p class="photo-desc">文化祭をサボる道下</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- タブ2: 道下 Shop -->
+    <div class="tab-content" id="tabShop">
+      <div class="shop-grid">
+        <!-- 商品1: アクスタ -->
+        <div class="shop-card">
+          <div class="shop-thumb">
+            <img src="4f301a60-9027-4a08-94c1-7eca5b485e00.png" alt="道下アクスタ">
+          </div>
+          <div class="shop-info">
+            <div class="item-tags">
+              <span class="item-status status-new">● 新品・未使用</span>
+              <span class="status-stock">・在庫あり</span>
+            </div>
+            <div class="shop-title">公式 道下アクリルスタンド 2026</div>
+            <div class="shop-price">¥3,500</div>
+            <button class="btn-buy" onclick="addToCart('公式 道下アクリルスタンド 2026', 3500, '4f301a60-9027-4a08-94c1-7eca5b485e00.png')">カートに追加</button>
+          </div>
+        </div>
+
+        <!-- 商品2: 消しゴム -->
+        <div class="shop-card">
+          <div class="shop-thumb">
+            <span class="badge-sold">SOLD OUT</span>
+            <span>✏️</span>
+          </div>
+          <div class="shop-info">
+            <div class="item-tags">
+              <span class="item-status status-bad">● 全体的に状態が悪い</span>
+              <span class="status-nostock">・在庫なし</span>
+            </div>
+            <div class="shop-title">道下が授業中にちぎった消しゴム</div>
+            <div class="shop-price">¥300</div>
+            <button class="btn-buy sold" onclick="showJoke('「道下が授業中にちぎった消しゴム」は道下が使い切ったため完売しました！')">売り切れ</button>
+          </div>
+        </div>
+
+        <!-- 商品3: フィギュア -->
+        <div class="shop-card">
+          <div class="shop-thumb">
+            <img src="f5c2e267-a515-4ce0-9a70-f294b7990cf4.png" alt="あの時の僕 フィギュア">
+          </div>
+          <div class="shop-info">
+            <div class="item-tags">
+              <span class="item-status status-new">● 新品・未使用</span>
+              <span class="status-stock">・在庫あり</span>
+            </div>
+            <div class="shop-title">1/7スケールフィギュア「あの時の僕」</div>
+            <div class="shop-price">¥19,800</div>
+            <button class="btn-buy" onclick="addToCart('1/7スケールフィギュア「あの時の僕」', 19800, 'f5c2e267-a515-4ce0-9a70-f294b7990cf4.png')">カートに追加</button>
+          </div>
+        </div>
+
+        <!-- 商品4: 着用Tシャツ -->
+        <div class="shop-card">
+          <div class="shop-thumb">
+            <span class="badge-sold">SOLD OUT</span>
+            <img src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="Tシャツ">
+          </div>
+          <div class="shop-info">
+            <div class="item-tags">
+              <span class="item-status status-bad">● 全体的に状態が悪い</span>
+              <span class="status-nostock">・在庫なし</span>
+            </div>
+            <div class="shop-title">文化祭で道下が着用したTシャツ</div>
+            <div class="shop-price">¥99,999</div>
+            <button class="btn-buy sold" onclick="showJoke('「文化祭で道下が着用したTシャツ」は完売しました！')">売り切れ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- タブ3: 道下 SNS -->
+    <div class="tab-content" id="tabSns">
+      <div class="sns-container">
+        <p class="sns-lead">道下本人の公式アカウントをチェック！</p>
+
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/haruto13606?psln=MXFzeHF3NGNseHV1Nw==" target="_blank" rel="noopener noreferrer" class="sns-card sns-card-instagram">
+          <div class="sns-left">
+            <div class="sns-icon">
+              <img src="insta.png" alt="Instagram" onerror="this.parentElement.innerText='📷'">
+            </div>
+            <div class="sns-text-group">
+              <span class="sns-name">Instagram</span>
+              <span class="sns-id">@haruto13606</span>
+            </div>
+          </div>
+          <div class="sns-btn-action">
+            <span>フォロー</span>
+            <span>↗</span>
+          </div>
+        </a>
+
+        <!-- BeReal -->
+        <a href="https://bere.al/rennsei0223" target="_blank" rel="noopener noreferrer" class="sns-card sns-card-bereal">
+          <div class="sns-left">
+            <div class="sns-icon">
+              <img src="bereal.png" alt="BeReal" onerror="this.parentElement.innerText='⚠️'">
+            </div>
+            <div class="sns-text-group">
+              <span class="sns-name">BeReal.</span>
+              <span class="sns-id">rennsei0223</span>
+            </div>
+          </div>
+          <div class="sns-btn-action">
+            <span>友達追加</span>
+            <span>↗</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- カートモーダル -->
+  <div id="cart-modal">
+    <div class="cart-content">
+      <div class="cart-header">
+        <div class="cart-title">ショッピングカート</div>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </div>
+
+      <div class="cart-items" id="cartItemsList"></div>
+
+      <div class="cart-breakdown">
+        <div class="breakdown-row">
+          <span>商品小計</span>
+          <span id="cartSubtotal">¥0</span>
+        </div>
+        <div class="breakdown-row">
+          <span>送料（一律）</span>
+          <span id="cartShipping">¥0</span>
+        </div>
+        <div class="breakdown-row">
+          <span>決済手数料（3%）</span>
+          <span id="cartFee">¥0</span>
+        </div>
+        <div class="breakdown-row total-row">
+          <span>合計金額</span>
+          <span class="total-amount" id="cartTotalPrice">¥0</span>
+        </div>
+      </div>
+
+      <button class="btn-checkout" id="checkoutBtn" onclick="checkout()" disabled>注文を確定する</button>
+    </div>
+  </div>
+
+  <!-- 画像拡大モーダル -->
+  <div id="image-modal" onclick="closeImage()">
+    <button class="btn-img-close" onclick="closeImage()">✕</button>
+    <img id="modal-img" src="" alt="拡大画像">
+    <div id="modal-caption"></div>
+  </div>
+
+  <!-- ドッキリモーダル -->
+  <div id="reveal-modal">
+    <div class="reveal-content">
+      <div class="reveal-title" id="revealTitle">🎉 ドッキリ大成功！</div>
+      <p class="reveal-desc" id="revealDesc">
+        道下ファンクラブ公式特設サイトへようこそ！<br>
+        道下お前の方が借り多いけどありがとう！
+      </p>
+      <button class="btn-modal-close" onclick="closeJoke()">閉じる</button>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      const lifeBtn = document.getElementById('tabLifeBtn');
+      const shopBtn = document.getElementById('tabShopBtn');
+      const snsBtn = document.getElementById('tabSnsBtn');
+
+      const lifeTab = document.getElementById('tabLife');
+      const shopTab = document.getElementById('tabShop');
+      const snsTab = document.getElementById('tabSns');
+
+      lifeBtn.classList.remove('active');
+      shopBtn.classList.remove('active');
+      snsBtn.classList.remove('active');
+
+      lifeTab.classList.remove('active');
+      shopTab.classList.remove('active');
+      snsTab.classList.remove('active');
+
+      if (tab === 'life') {
+        lifeBtn.classList.add('active');
+        lifeTab.classList.add('active');
+      } else if (tab === 'shop') {
+        shopBtn.classList.add('active');
+        shopTab.classList.add('active');
+      } else if (tab === 'sns') {
+        snsBtn.classList.add('active');
+        snsTab.classList.add('active');
+      }
+    }
+
+    /* スライダー制御 */
+    const track = document.getElementById('videoTrack');
+    const dots = document.querySelectorAll('.slider-dots .dot');
+    let currentIndex = 0;
+    const totalSlides = 3;
+    let autoSlideTimer = null;
+
+    function updateDots(index) {
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    track.addEventListener('scroll', () => {
+      const scrollPos = track.scrollLeft;
+      const width = track.clientWidth;
+      if (width > 0) {
+        currentIndex = Math.round(scrollPos / width);
+        updateDots(currentIndex);
+      }
+    });
+
+    function scrollToSlide(index) {
+      const width = track.clientWidth;
+      track.scrollTo({
+        left: width * index,
+        behavior: 'smooth'
+      });
+      currentIndex = index;
+      updateDots(index);
+    }
+
+    function prevSlide() {
+      stopAutoSlide();
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      scrollToSlide(currentIndex);
+      startAutoSlide();
+    }
+
+    function nextSlide() {
+      stopAutoSlide();
+      currentIndex = (currentIndex + 1) % totalSlides;
+      scrollToSlide(currentIndex);
+      startAutoSlide();
+    }
+
+    function startAutoSlide() {
+      stopAutoSlide();
+      autoSlideTimer = setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        scrollToSlide(currentIndex);
+      }, 5000);
+    }
+
+    function stopAutoSlide() {
+      if (autoSlideTimer) {
+        clearInterval(autoSlideTimer);
+        autoSlideTimer = null;
+      }
+    }
+
+    function manualScroll(index) {
+      stopAutoSlide();
+      scrollToSlide(index);
+      startAutoSlide();
+    }
+
+    startAutoSlide();
+
+    /* カート機能 */
+    const cart = [];
+    let toastTimer = null;
+
+    function addToCart(title, price, imgSrc) {
+      cart.push({ title, price, imgSrc });
+      updateCartBadge();
+
+      const toast = document.getElementById('cart-toast');
+      const toastThumb = document.getElementById('toastThumb');
+      const toastName = document.getElementById('toastName');
+
+      if (imgSrc) {
+        toastThumb.innerHTML = `<img src="${imgSrc}" alt="${title}">`;
+      } else {
+        toastThumb.innerHTML = `<span>📦</span>`;
+      }
+      toastName.innerText = title;
+
+      toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartBadge();
+      renderCart();
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cartBadge');
+      if (cart.length > 0) {
+        badge.innerText = cart.length;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function renderCart() {
+      const list = document.getElementById('cartItemsList');
+      const subtotalEl = document.getElementById('cartSubtotal');
+      const shippingEl = document.getElementById('cartShipping');
+      const feeEl = document.getElementById('cartFee');
+      const totalEl = document.getElementById('cartTotalPrice');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      list.innerHTML = '';
+
+      if (cart.length === 0) {
+        list.innerHTML = '<div class="cart-empty">カートは空です</div>';
+        subtotalEl.innerText = '¥0';
+        shippingEl.innerText = '¥0';
+        feeEl.innerText = '¥0';
+        totalEl.innerText = '¥0';
+        checkoutBtn.disabled = true;
+      } else {
+        let subtotal = 0;
+        cart.forEach((item, index) => {
+          subtotal += item.price;
+          const row = document.createElement('div');
+          row.className = 'cart-item';
+          const thumbHtml = item.imgSrc ? `<img src="${item.imgSrc}" alt="${item.title}">` : `<span>📦</span>`;
+          row.innerHTML = `
+            <div class="cart-item-thumb">${thumbHtml}</div>
+            <div class="cart-item-info">
+              <span class="cart-item-name">${item.title}</span>
+              <span class="cart-item-price">¥${item.price.toLocaleString()}</span>
+            </div>
+            <button class="btn-item-delete" onclick="removeFromCart(${index})">削除</button>
+          `;
+          list.appendChild(row);
+        });
+
+        const shipping = 550;
+        const fee = Math.round(subtotal * 0.03);
+        const total = subtotal + shipping + fee;
+
+        subtotalEl.innerText = `¥${subtotal.toLocaleString()}`;
+        shippingEl.innerText = `¥${shipping.toLocaleString()}`;
+        feeEl.innerText = `¥${fee.toLocaleString()}`;
+        totalEl.innerText = `¥${total.toLocaleString()}`;
+        checkoutBtn.disabled = false;
+      }
+    }
+
+    function openCart() {
+      renderCart();
+      document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCart() {
+      document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function checkout() {
+      closeCart();
+      showJoke('ご注文ありがとうございます！<br><br>※商品の発送・受取には道下本人のサインおよび直接手渡しが必要です。');
+      cart.length = 0;
+      updateCartBadge();
+    }
+
+    /* 画像拡大モーダル */
+    function openImage(src, caption) {
+      document.getElementById('modal-img').src = src;
+      document.getElementById('modal-caption').innerText = caption;
+      document.getElementById('image-modal').style.display = 'flex';
+    }
+
+    function closeImage() {
+      document.getElementById('image-modal').style.display = 'none';
+    }
+
+    /* 紙吹雪＆ドッキリモーダル */
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const myConfetti = confetti.create(confettiCanvas, {
+      resize: true,
+      useWorker: true
+    });
+
+    function showJoke(customText) {
+      document.getElementById('revealTitle').innerText = '🎉 ドッキリ大成功！';
+      document.getElementById('revealDesc').innerHTML = customText || '道下ファンクラブ公式特設サイトへようこそ！<br>道下お前の方が借り多いけどありがとう！';
+      document.getElementById('reveal-modal').style.display = 'flex';
+      myConfetti({
+        particleCount: 160,
+        spread: 85,
+        origin: { y: 0.6 }
+      });
+    }
+
+    function closeJoke() {
+      document.getElementById('reveal-modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
