@@ -436,6 +436,11 @@
       font-size: 10.5px;
       font-weight: 800;
     }
+    .status-nostock {
+      color: #94a3b8;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
     .shop-title {
       font-size: 12.5px;
       font-weight: 700;
@@ -546,12 +551,12 @@
     }
     .cart-content {
       background: #ffffff;
-      max-width: 400px;
+      max-width: 410px;
       width: 100%;
       border-radius: 16px;
-      padding: 24px;
+      padding: 22px 20px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      max-height: 85vh;
+      max-height: 88vh;
       display: flex;
       flex-direction: column;
     }
@@ -561,7 +566,7 @@
       align-items: center;
       border-bottom: 1px solid #e2e8f0;
       padding-bottom: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .cart-title {
       font-size: 18px;
@@ -578,17 +583,18 @@
     .cart-items {
       overflow-y: auto;
       flex-grow: 1;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      max-height: 220px;
     }
     .cart-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       background: #f8fafc;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid #e2e8f0;
     }
@@ -616,7 +622,7 @@
       overflow: hidden;
     }
     .cart-item-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: #1e293b;
       white-space: nowrap;
@@ -624,9 +630,24 @@
       text-overflow: ellipsis;
     }
     .cart-item-price {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       color: #0284c7;
+    }
+    .btn-item-delete {
+      background: #fee2e2;
+      color: #ef4444;
+      border: none;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .btn-item-delete:active {
+      background: #fca5a5;
     }
     .cart-empty {
       text-align: center;
@@ -634,26 +655,46 @@
       font-size: 14px;
       padding: 24px 0;
     }
-    .cart-total {
+
+    /* 料金明細セクション */
+    .cart-breakdown {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .breakdown-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-size: 16px;
-      font-weight: 800;
-      padding-top: 12px;
-      border-top: 2px solid #e2e8f0;
-      margin-bottom: 16px;
+      font-size: 12.5px;
+      color: #64748b;
+      font-weight: 600;
     }
+    .breakdown-row.total-row {
+      border-top: 2px dashed #cbd5e1;
+      padding-top: 8px;
+      margin-top: 4px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .breakdown-row.total-row .total-amount {
+      color: #0284c7;
+    }
+
     .btn-checkout {
       background: #0284c7;
       color: #ffffff;
       border: none;
-      padding: 14px 0;
+      padding: 13px 0;
       border-radius: 24px;
       font-size: 15px;
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      margin-top: 6px;
     }
     .btn-checkout:disabled {
       background: #cbd5e1;
@@ -760,7 +801,6 @@
 
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- カート追加通知バナー（トースト） -->
   <div id="cart-toast">
     <div class="toast-thumb" id="toastThumb"></div>
     <div class="toast-body">
@@ -869,7 +909,7 @@
     <!-- タブ2: 道下 Shop -->
     <div class="tab-content" id="tabShop">
       <div class="shop-grid">
-        <!-- 商品1: アクスタ（在庫あり・購入可能） -->
+        <!-- 商品1: アクスタ（在庫あり） -->
         <div class="shop-card">
           <div class="shop-thumb">
             <img src="4f301a60-9027-4a08-94c1-7eca5b485e00.png" alt="道下アクスタ">
@@ -885,7 +925,7 @@
           </div>
         </div>
 
-        <!-- 商品2: 消しゴム（SOLD OUT） -->
+        <!-- 商品2: 消しゴム（在庫なし・SOLD OUT） -->
         <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
@@ -894,6 +934,7 @@
           <div class="shop-info">
             <div class="item-tags">
               <span class="item-status status-bad">● 全体的に状態が悪い</span>
+              <span class="status-nostock">・在庫なし</span>
             </div>
             <div class="shop-title">道下が授業中にちぎった消しゴム</div>
             <div class="shop-price">¥300</div>
@@ -901,7 +942,7 @@
           </div>
         </div>
 
-        <!-- 商品3: フィギュア（在庫あり・購入可能） -->
+        <!-- 商品3: フィギュア（在庫あり） -->
         <div class="shop-card">
           <div class="shop-thumb">
             <img src="f5c2e267-a515-4ce0-9a70-f294b7990cf4.png" alt="あの時の僕 フィギュア">
@@ -917,7 +958,7 @@
           </div>
         </div>
 
-        <!-- 商品4: 着用Tシャツ（SOLD OUT） -->
+        <!-- 商品4: 着用Tシャツ（在庫なし・SOLD OUT） -->
         <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
@@ -926,6 +967,7 @@
           <div class="shop-info">
             <div class="item-tags">
               <span class="item-status status-bad">● 全体的に状態が悪い</span>
+              <span class="status-nostock">・在庫なし</span>
             </div>
             <div class="shop-title">文化祭で道下が着用したTシャツ</div>
             <div class="shop-price">¥99,999</div>
@@ -943,13 +985,31 @@
         <div class="cart-title">ショッピングカート</div>
         <button class="cart-close" onclick="closeCart()">✕</button>
       </div>
+
       <div class="cart-items" id="cartItemsList">
         <!-- カートの中身が動的に表示されます -->
       </div>
-      <div class="cart-total">
-        <span>合計</span>
-        <span id="cartTotalPrice">¥0</span>
+
+      <!-- 料金明細 -->
+      <div class="cart-breakdown">
+        <div class="breakdown-row">
+          <span>商品小計</span>
+          <span id="cartSubtotal">¥0</span>
+        </div>
+        <div class="breakdown-row">
+          <span>送料（一律）</span>
+          <span id="cartShipping">¥0</span>
+        </div>
+        <div class="breakdown-row">
+          <span>決済手数料（3%）</span>
+          <span id="cartFee">¥0</span>
+        </div>
+        <div class="breakdown-row total-row">
+          <span>合計金額</span>
+          <span class="total-amount" id="cartTotalPrice">¥0</span>
+        </div>
       </div>
+
       <button class="btn-checkout" id="checkoutBtn" onclick="checkout()" disabled>注文を確定する</button>
     </div>
   </div>
@@ -1074,7 +1134,6 @@
       cart.push({ title, price, imgSrc });
       updateCartBadge();
 
-      // トースト通知を表示
       const toast = document.getElementById('cart-toast');
       const toastThumb = document.getElementById('toastThumb');
       const toastName = document.getElementById('toastName');
@@ -1093,6 +1152,12 @@
       }, 3000);
     }
 
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartBadge();
+      renderCart();
+    }
+
     function updateCartBadge() {
       const badge = document.getElementById('cartBadge');
       if (cart.length > 0) {
@@ -1103,20 +1168,27 @@
       }
     }
 
-    function openCart() {
+    function renderCart() {
       const list = document.getElementById('cartItemsList');
+      const subtotalEl = document.getElementById('cartSubtotal');
+      const shippingEl = document.getElementById('cartShipping');
+      const feeEl = document.getElementById('cartFee');
       const totalEl = document.getElementById('cartTotalPrice');
       const checkoutBtn = document.getElementById('checkoutBtn');
+
       list.innerHTML = '';
 
       if (cart.length === 0) {
         list.innerHTML = '<div class="cart-empty">カートは空です</div>';
+        subtotalEl.innerText = '¥0';
+        shippingEl.innerText = '¥0';
+        feeEl.innerText = '¥0';
         totalEl.innerText = '¥0';
         checkoutBtn.disabled = true;
       } else {
-        let total = 0;
-        cart.forEach((item) => {
-          total += item.price;
+        let subtotal = 0;
+        cart.forEach((item, index) => {
+          subtotal += item.price;
           const row = document.createElement('div');
           row.className = 'cart-item';
           const thumbHtml = item.imgSrc ? `<img src="${item.imgSrc}" alt="${item.title}">` : `<span>📦</span>`;
@@ -1126,13 +1198,25 @@
               <span class="cart-item-name">${item.title}</span>
               <span class="cart-item-price">¥${item.price.toLocaleString()}</span>
             </div>
+            <button class="btn-item-delete" onclick="removeFromCart(${index})">削除</button>
           `;
           list.appendChild(row);
         });
+
+        const shipping = 550;
+        const fee = Math.round(subtotal * 0.03);
+        const total = subtotal + shipping + fee;
+
+        subtotalEl.innerText = `¥${subtotal.toLocaleString()}`;
+        shippingEl.innerText = `¥${shipping.toLocaleString()}`;
+        feeEl.innerText = `¥${fee.toLocaleString()}`;
         totalEl.innerText = `¥${total.toLocaleString()}`;
         checkoutBtn.disabled = false;
       }
+    }
 
+    function openCart() {
+      renderCart();
       document.getElementById('cart-modal').style.display = 'flex';
     }
 
