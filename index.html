@@ -68,6 +68,42 @@
       letter-spacing: 0.5px;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* カートボタン */
+    .cart-btn {
+      position: relative;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
     .hamburger {
       display: flex;
       flex-direction: column;
@@ -89,6 +125,7 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.04);
     }
 
+    /* スライダーと切り替え矢印 */
     .slider-container {
       position: relative;
       width: 100%;
@@ -120,6 +157,36 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    .slide-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 20;
+      backdrop-filter: blur(2px);
+      transition: background 0.2s;
+    }
+    .slide-arrow:active {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .slide-arrow.prev {
+      left: 10px;
+    }
+    .slide-arrow.next {
+      right: 10px;
     }
 
     .badge-campaign {
@@ -312,7 +379,6 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
       position: relative;
     }
@@ -381,14 +447,123 @@
       background: #0284c7;
       color: #ffffff;
       border: none;
-      padding: 6px 0;
+      padding: 7px 0;
       border-radius: 6px;
       font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-buy:active {
+      transform: scale(0.97);
     }
     .btn-buy.sold {
       background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* カートモーダル */
+    #cart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .cart-content {
+      background: #ffffff;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .cart-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+    .cart-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #64748b;
+    }
+    .cart-items {
+      overflow-y: auto;
+      flex-grow: 1;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .cart-item-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .cart-item-price {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0284c7;
+    }
+    .cart-empty {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+      padding: 24px 0;
+    }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 800;
+      padding-top: 12px;
+      border-top: 2px solid #e2e8f0;
+      margin-bottom: 16px;
+    }
+    .btn-checkout {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 14px 0;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+    .btn-checkout:disabled {
+      background: #cbd5e1;
+      box-shadow: none;
       cursor: not-allowed;
     }
 
@@ -445,7 +620,7 @@
       width: 100vw;
       height: 100vh;
       background: rgba(0, 0, 0, 0.75);
-      z-index: 999;
+      z-index: 1100;
       align-items: center;
       justify-content: center;
       padding: 20px;
@@ -497,14 +672,25 @@
         <span class="logo-badge">MI</span>
         <span>道下ファンクラブ</span>
       </div>
-      <div class="hamburger" onclick="showJoke('メニューは現在準備中です！')">
-        <span></span>
-        <span></span>
-        <span></span>
+      <div class="header-actions">
+        <!-- カートボタン -->
+        <button class="cart-btn" onclick="openCart()" aria-label="カート">
+          🛒
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+        <div class="hamburger" onclick="showJoke('メニューは現在準備中です！')">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
     </header>
 
     <div class="slider-container">
+      <!-- 左右の切り替え矢印 -->
+      <button class="slide-arrow prev" onclick="prevSlide()" aria-label="前へ">〈</button>
+      <button class="slide-arrow next" onclick="nextSlide()" aria-label="次へ">〉</button>
+
       <div class="badge-campaign">
         <span class="badge-blue">道下遥人</span>
         <span class="badge-white">Webサイト開設</span>
@@ -546,7 +732,7 @@
       <div class="tab-item" id="tabShopBtn" onclick="switchTab('shop')">道下 Shop</div>
     </div>
 
-    <!-- タブ1: 道下 life -->
+    <!-- タブ1: 道下 Life -->
     <div class="tab-content active" id="tabLife">
       <div class="photo-grid">
         <div class="photo-card" onclick="openImage('m3.jpg', '文化祭が楽しい道下')">
@@ -582,7 +768,8 @@
     <!-- タブ2: 道下 Shop -->
     <div class="tab-content" id="tabShop">
       <div class="shop-grid">
-        <div class="shop-card" onclick="buyItem('公式 道下アクリルスタンド 2026', true)">
+        <!-- 商品1: アクスタ -->
+        <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
             <img src="4f301a60-9027-4a08-94c1-7eca5b485e00.png" alt="道下アクスタ">
@@ -591,11 +778,12 @@
             <span class="item-status status-new">● 新品・未使用</span>
             <div class="shop-title">公式 道下アクリルスタンド 2026</div>
             <div class="shop-price">¥3,500</div>
-            <button class="btn-buy sold">売り切れ</button>
+            <button class="btn-buy sold" onclick="showJoke('「公式 道下アクリルスタンド 2026」は完売しました！')">売り切れ</button>
           </div>
         </div>
 
-        <div class="shop-card" onclick="buyItem('授業中ちぎった消しゴム', false)">
+        <!-- 商品2: 消しゴム -->
+        <div class="shop-card">
           <div class="shop-thumb">
             <span>✏️</span>
           </div>
@@ -603,11 +791,12 @@
             <span class="item-status status-bad">● 全体的に状態が悪い</span>
             <div class="shop-title">道下が授業中にちぎった消しゴム</div>
             <div class="shop-price">¥300</div>
-            <button class="btn-buy">購入手続きへ</button>
+            <button class="btn-buy" onclick="addToCart('道下が授業中にちぎった消しゴム', 300)">カートに追加</button>
           </div>
         </div>
 
-        <div class="shop-card" onclick="buyItem('1/7スケールフィギュア あの時の僕', false)">
+        <!-- 商品3: フィギュア -->
+        <div class="shop-card">
           <div class="shop-thumb">
             <img src="f5c2e267-a515-4ce0-9a70-f294b7990cf4.png" alt="あの時の僕 フィギュア">
           </div>
@@ -615,11 +804,12 @@
             <span class="item-status status-new">● 新品・未使用</span>
             <div class="shop-title">1/7スケールフィギュア「あの時の僕」</div>
             <div class="shop-price">¥19,800</div>
-            <button class="btn-buy">購入手続きへ</button>
+            <button class="btn-buy" onclick="addToCart('1/7スケールフィギュア「あの時の僕」', 19800)">カートに追加</button>
           </div>
         </div>
 
-        <div class="shop-card" onclick="buyItem('文化祭で道下が着用したTシャツ', true)">
+        <!-- 商品4: 着用Tシャツ -->
+        <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
             <img src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="Tシャツ">
@@ -628,19 +818,39 @@
             <span class="item-status status-bad">● 全体的に状態が悪い</span>
             <div class="shop-title">文化祭で道下が着用したTシャツ</div>
             <div class="shop-price">¥99,999</div>
-            <button class="btn-buy sold">売り切れ</button>
+            <button class="btn-buy sold" onclick="showJoke('「文化祭で道下が着用したTシャツ」は完売しました！')">売り切れ</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- カートモーダル -->
+  <div id="cart-modal">
+    <div class="cart-content">
+      <div class="cart-header">
+        <div class="cart-title">ショッピングカート</div>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </div>
+      <div class="cart-items" id="cartItemsList">
+        <!-- カートの中身が動的に表示されます -->
+      </div>
+      <div class="cart-total">
+        <span>合計</span>
+        <span id="cartTotalPrice">¥0</span>
+      </div>
+      <button class="btn-checkout" id="checkoutBtn" onclick="checkout()" disabled>注文を確定する</button>
+    </div>
+  </div>
+
+  <!-- 画像拡大モーダル -->
   <div id="image-modal" onclick="closeImage()">
     <button class="btn-img-close" onclick="closeImage()">✕</button>
     <img id="modal-img" src="" alt="拡大画像">
     <div id="modal-caption"></div>
   </div>
 
+  <!-- ドッキリモーダル -->
   <div id="reveal-modal">
     <div class="reveal-content">
       <div class="reveal-title" id="revealTitle">🎉 ドッキリ大成功！</div>
@@ -672,6 +882,7 @@
       }
     }
 
+    /* スライダー制御 */
     const track = document.getElementById('videoTrack');
     const dots = document.querySelectorAll('.slider-dots .dot');
     let currentIndex = 0;
@@ -707,6 +918,20 @@
       updateDots(index);
     }
 
+    function prevSlide() {
+      stopAutoSlide();
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      scrollToSlide(currentIndex);
+      startAutoSlide();
+    }
+
+    function nextSlide() {
+      stopAutoSlide();
+      currentIndex = (currentIndex + 1) % totalSlides;
+      scrollToSlide(currentIndex);
+      startAutoSlide();
+    }
+
     function startAutoSlide() {
       stopAutoSlide();
       autoSlideTimer = setInterval(() => {
@@ -730,6 +955,66 @@
 
     startAutoSlide();
 
+    /* カート機能 */
+    const cart = [];
+
+    function addToCart(title, price) {
+      cart.push({ title, price });
+      updateCartBadge();
+      alert(`「${title}」をカートに追加しました！`);
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cartBadge');
+      if (cart.length > 0) {
+        badge.innerText = cart.length;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function openCart() {
+      const list = document.getElementById('cartItemsList');
+      const totalEl = document.getElementById('cartTotalPrice');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      list.innerHTML = '';
+
+      if (cart.length === 0) {
+        list.innerHTML = '<div class="cart-empty">カートは空です</div>';
+        totalEl.innerText = '¥0';
+        checkoutBtn.disabled = true;
+      } else {
+        let total = 0;
+        cart.forEach((item) => {
+          total += item.price;
+          const row = document.createElement('div');
+          row.className = 'cart-item';
+          row.innerHTML = `
+            <span class="cart-item-name">${item.title}</span>
+            <span class="cart-item-price">¥${item.price.toLocaleString()}</span>
+          `;
+          list.appendChild(row);
+        });
+        totalEl.innerText = `¥${total.toLocaleString()}`;
+        checkoutBtn.disabled = false;
+      }
+
+      document.getElementById('cart-modal').style.display = 'flex';
+    }
+
+    function closeCart() {
+      document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    function checkout() {
+      closeCart();
+      showJoke('ご注文ありがとうございます！<br><br>※商品の発送・受取には道下本人のサインおよび直接手渡しが必要です。');
+      cart.length = 0;
+      updateCartBadge();
+    }
+
+    /* 画像拡大モーダル */
     function openImage(src, caption) {
       document.getElementById('modal-img').src = src;
       document.getElementById('modal-caption').innerText = caption;
@@ -740,6 +1025,7 @@
       document.getElementById('image-modal').style.display = 'none';
     }
 
+    /* 紙吹雪＆ドッキリモーダル */
     const confettiCanvas = document.getElementById('confetti-canvas');
     const myConfetti = confetti.create(confettiCanvas, {
       resize: true,
@@ -755,14 +1041,6 @@
         spread: 85,
         origin: { y: 0.6 }
       });
-    }
-
-    function buyItem(name, isSold) {
-      if (isSold) {
-        showJoke(`「${name}」は大変好評につき完売（SOLD OUT）しました！次回入荷は未定です。`);
-      } else {
-        showJoke(`「${name}」の購入リクエストを送信しました！<br><br>※発送には道下本人のサインおよび直接手渡しが必要です。`);
-      }
     }
 
     function closeJoke() {
