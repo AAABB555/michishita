@@ -15,15 +15,20 @@
       user-select: none;
     }
 
+    /* どんな画面でも背景画像を無理やり全画面にフィットさせる設定 */
+    html {
+      height: 100%;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
       min-height: 100vh;
       padding-bottom: 60px;
       transition: background 0.4s ease, color 0.3s ease;
       background-attachment: fixed;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+      background-size: 100% 100% !important; /* 縦横比を無理やりにでも画面に合わせる */
     }
 
     body.theme-diff-0 {
@@ -398,7 +403,6 @@
       object-fit: cover;
     }
 
-    /* 黒板エリア：濃さを少し和らげたリアルな教室風の深緑に調整 */
     .word-area {
       text-align: center;
       margin-bottom: 22px;
@@ -887,7 +891,7 @@
           <div class="battle-track">
             <div class="battle-fill" id="tugBarProgress"></div>
             <div class="battle-marker" id="tugMichishitaMarker">
-              <img id="tugMichishitaImg" src="m3.jpg" alt="道下">
+              <img id="tugMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下">
             </div>
           </div>
         </div>
@@ -895,7 +899,7 @@
         <div class="word-area" id="wordAreaBoard">
           <div class="michishita-popup" id="michishitaPopup">
             <div class="michishita-popup-tag">道下参上！</div>
-            <img id="popupMichishitaImg" src="m3.jpg" alt="道下君">
+            <img id="popupMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下君">
           </div>
 
           <div class="word-kanji" id="displayKanji">スタートボタンを押してね</div>
@@ -980,9 +984,14 @@
   </div>
 
   <script>
+    /* =========================================================================
+       ★ 【画像設定エリア】 ここで自由にお好きな画像ファイル名を指定できます ★
+       ========================================================================= */
     const CUSTOM_IMAGES = {
+      // 1. 文字を打つ場所（お題エリア）の背景画像
       boardImage: "",
 
+      // 2. 全難易度用の「全体の背景画像」 (0〜6の全難易度それぞれ設定可能)
       globalBackgrounds: {
         0: "8bc84868-1341-47fc-9444-414530fc5614.jpg",
         1: "f8a8b757-9a16-4cdd-90d1-de63e0eac277.jpg",
@@ -993,7 +1002,8 @@
         6: "73d3cb00-13b3-4f05-846e-3fe6dda6a5f5.jpg"
       },
 
-      michishitaCharacter: "m3.jpg"
+      // 3. お題に「道下」があるときに出現する道下君の画像（ここを変更してください）
+      michishitaCharacter: "5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg"
     };
 
     const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
@@ -1033,7 +1043,7 @@
       const boardEl = document.getElementById('wordAreaBoard');
       if (CUSTOM_IMAGES.boardImage) {
         boardEl.style.backgroundImage = `url("${CUSTOM_IMAGES.boardImage}")`;
-        boardEl.style.backgroundSize = "cover";
+        boardEl.style.backgroundSize = "100% 100%";
       }
 
       if (CUSTOM_IMAGES.michishitaCharacter) {
@@ -1048,6 +1058,7 @@
       const bgImg = CUSTOM_IMAGES.globalBackgrounds[diff];
       if (bgImg) {
         document.body.style.backgroundImage = `url("${bgImg}")`;
+        document.body.style.backgroundSize = "100% 100%";
       } else {
         document.body.style.backgroundImage = "";
       }
@@ -1072,6 +1083,9 @@
           playerData = Object.assign(playerData, parsed);
           if (!playerData.inventory.time && parsed.inventory && parsed.inventory.blind) {
             playerData.inventory.time = parsed.inventory.blind;
+          }
+          if (playerData.latestChallengeCode && playerData.latestChallengeCode.length > 4) {
+            playerData.latestChallengeCode = "";
           }
         }
       } catch (e) {}
@@ -1107,7 +1121,7 @@
 
       document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
 
-      if (playerData.latestChallengeCode) {
+      if (playerData.latestChallengeCode && playerData.latestChallengeCode.length === 4) {
         document.getElementById('myLatestCodeDisplay').innerText = playerData.latestChallengeCode;
       }
 
@@ -1539,10 +1553,11 @@
         }
       }
 
+      // 4桁対戦コードを生成・保持
       generate4DigitCode(gameState.score);
       saveData();
 
-      let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
+      let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b><br><br>あなたの対戦コード: <b style="color: #0284c7; font-size: 18px; letter-spacing: 2px;">${playerData.latestChallengeCode}</b>`;
 
       if (gameState.isBattle) {
         if (battleVictory) {
@@ -1580,9 +1595,10 @@
       document.getElementById('reveal-modal').style.display = 'none';
     }
 
+    /* 4桁エンコード・デコードロジック */
     function encode4Digit(score, diff) {
-      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-      const s = Math.min(score, 32767);
+      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // 誤読しやすい0,1,I,Oを除外した32文字
+      const s = Math.min(Math.max(0, score), 32767);
       const c1 = chars[Math.floor(s / 1024) % 32];
       const c2 = chars[Math.floor(s / 32) % 32];
       const c3 = chars[s % 32];
