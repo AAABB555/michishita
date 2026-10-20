@@ -17,8 +17,13 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-      background-color: #f4f7f9;
-      color: #333333;
+      background-color: #f0f7ff;
+      background-image: 
+        radial-gradient(#bae6fd 1px, transparent 1px),
+        linear-gradient(180deg, #f8fafc 0%, #e0f2fe 100%);
+      background-size: 24px 24px, 100% 100%;
+      background-attachment: fixed;
+      color: #334155;
       padding-bottom: 60px;
       min-height: 100vh;
     }
@@ -35,23 +40,25 @@
 
     /* ヘッダー */
     header {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
       padding: 12px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #e1e8ed;
+      border-bottom: 2px solid #e0f2fe;
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.08);
     }
     .header-logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 19px;
-      font-weight: 800;
-      color: #1e293b;
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
       letter-spacing: -0.5px;
       text-decoration: none;
     }
@@ -59,16 +66,16 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       font-family: "Impact", -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 900;
       font-style: italic;
-      border-radius: 8px;
-      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
       letter-spacing: 0.5px;
     }
     .header-actions {
@@ -77,19 +84,24 @@
       gap: 12px;
     }
     .sound-btn {
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      border: 1.5px solid #bae6fd;
       border-radius: 20px;
       padding: 6px 14px;
       font-size: 13px;
       cursor: pointer;
-      color: #475569;
-      font-weight: 700;
+      color: #0284c7;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.1);
+      transition: all 0.15s;
+    }
+    .sound-btn:hover {
+      background: #f0f9ff;
     }
     .btn-return-home {
-      background: #f1f5f9;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       color: #0284c7;
-      border: 1px solid #cbd5e1;
+      border: 1.5px solid #cbd5e1;
       padding: 6px 16px;
       border-radius: 20px;
       font-size: 13px;
@@ -98,9 +110,14 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.15s;
+    }
+    .btn-return-home:hover {
+      background: #ffffff;
     }
 
-    /* メインコンテナ：PCで横幅をしっかり使えるように拡張 */
+    /* メインコンテナ */
     .container {
       max-width: 860px;
       margin: 24px auto 0;
@@ -109,14 +126,15 @@
 
     /* プレイヤー情報バー */
     .profile-bar {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 2px solid #bae6fd;
+      border-radius: 16px;
       padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.1);
       margin-bottom: 20px;
     }
     .profile-left {
@@ -125,55 +143,71 @@
       gap: 8px;
       font-size: 14px;
       font-weight: 800;
-      color: #1e293b;
+      color: #0f172a;
     }
     .profile-name-input {
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 4px 8px;
+      border: 2px solid #bae6fd;
+      border-radius: 8px;
+      padding: 4px 10px;
       font-size: 14px;
       font-weight: 800;
-      width: 120px;
+      width: 125px;
       color: #0284c7;
-      background: #ffffff;
+      background: #f8fafc;
       outline: none;
+      transition: all 0.15s;
+    }
+    .profile-name-input:focus {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
     }
     .rank-chip {
-      background: #e0f2fe;
-      color: #0284c7;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
       font-size: 12px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 12px;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+      letter-spacing: 0.3px;
     }
     .coin-chip {
       font-size: 14px;
-      font-weight: 800;
-      color: #64748b;
+      font-weight: 900;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     .coin-chip b {
-      color: #0284c7;
+      color: #d97706;
+      font-size: 16px;
     }
 
     /* 4連タブバー */
     .tab-bar {
       display: flex;
-      border-bottom: 2px solid #e2e8f0;
+      border-bottom: 2px solid #bae6fd;
       margin-bottom: 24px;
-      background: #ffffff;
-      border-radius: 12px 12px 0 0;
-      padding: 0 10px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px 16px 0 0;
+      padding: 4px 12px 0;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.06);
     }
     .tab-item {
       flex: 1;
       text-align: center;
-      padding: 14px 0;
-      font-size: 15px;
+      padding: 13px 0;
+      font-size: 14.5px;
       font-weight: 800;
       color: #64748b;
       cursor: pointer;
       position: relative;
-      transition: color 0.2s;
+      transition: all 0.2s;
+    }
+    .tab-item:hover {
+      color: #0284c7;
     }
     .tab-item.active {
       color: #0284c7;
@@ -181,12 +215,13 @@
     .tab-item.active::after {
       content: "";
       position: absolute;
-      left: 0;
+      left: 15%;
       bottom: -2px;
-      width: 100%;
-      height: 3px;
-      background: #0284c7;
-      border-radius: 2px;
+      width: 70%;
+      height: 3.5px;
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+      border-radius: 3px;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
     }
 
     .tab-content {
@@ -211,7 +246,7 @@
     .diff-btn {
       flex: 1;
       background: #ffffff;
-      border: 1px solid #cbd5e1;
+      border: 1.5px solid #cbd5e1;
       color: #475569;
       font-size: 13px;
       font-weight: 800;
@@ -221,75 +256,85 @@
       white-space: nowrap;
       text-align: center;
       transition: all 0.15s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+    .diff-btn:hover {
+      border-color: #38bdf8;
+      background: #f0f9ff;
     }
     .diff-btn.active {
-      background: #0284c7;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border-color: #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      transform: translateY(-1px);
     }
 
-    /* タイピングカード（PCで広々表示） */
+    /* タイピングカード（ちょいリッチ化） */
     .typing-card {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 18px;
+      border: 2px solid #e0f2fe;
+      border-radius: 22px;
       padding: 32px 28px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08), 0 1px 3px rgba(0,0,0,0.02);
       position: relative;
     }
     .typing-status {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 800;
       color: #64748b;
       padding-bottom: 14px;
       margin-bottom: 24px;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 2px dashed #e2e8f0;
     }
     .color-blue {
       color: #0284c7;
-      font-size: 20px;
+      font-size: 22px;
+      font-weight: 900;
     }
     .color-orange {
       color: #ea580c;
-      font-size: 20px;
+      font-size: 22px;
+      font-weight: 900;
     }
 
     /* 綱引きメーター（対戦時） */
     .battle-bar-wrap {
       background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
+      border: 2px solid #bae6fd;
+      border-radius: 14px;
       padding: 10px 14px;
       margin-bottom: 20px;
       display: none;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
     }
     .battle-names {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      font-weight: 800;
-      color: #64748b;
+      font-weight: 900;
+      color: #475569;
       margin-bottom: 8px;
     }
     .battle-track {
-      height: 10px;
+      height: 12px;
       background: #e2e8f0;
-      border-radius: 5px;
+      border-radius: 6px;
       position: relative;
     }
     .battle-fill {
       height: 100%;
       width: 50%;
-      background: #0284c7;
-      border-radius: 5px;
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+      border-radius: 6px;
       transition: width 0.25s ease;
     }
     .battle-marker {
       position: absolute;
-      top: -14px;
+      top: -12px;
       left: 50%;
       transform: translateX(-50%);
       width: 36px;
@@ -298,7 +343,7 @@
       border: 2px solid #0284c7;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
       transition: left 0.25s ease;
     }
     .battle-marker img {
@@ -307,30 +352,36 @@
       object-fit: cover;
     }
 
-    /* お題テキスト：大画面で見やすく拡大 */
+    /* お題テキスト */
     .word-area {
       text-align: center;
-      margin-bottom: 28px;
-      min-height: 100px;
+      margin-bottom: 26px;
+      min-height: 105px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 16px 20px;
+      border: 1px solid #e2e8f0;
     }
     .word-kanji {
       font-size: 28px;
       font-weight: 900;
-      color: #1e293b;
+      color: #0f172a;
       margin-bottom: 8px;
       line-height: 1.4;
+      letter-spacing: -0.3px;
     }
     .word-roma {
-      font-family: monospace;
-      font-size: 20px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 21px;
       font-weight: 800;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
     }
     .typed-char {
       color: #0284c7;
+      text-shadow: 0 0 12px rgba(2, 132, 199, 0.25);
     }
     .untyped-char {
       color: #94a3b8;
@@ -339,17 +390,22 @@
     /* 入力フィールド */
     .typing-input {
       width: 100%;
-      height: 52px;
-      border-radius: 26px;
+      height: 54px;
+      border-radius: 27px;
       border: 2px solid #0284c7;
       outline: none;
       text-align: center;
-      font-family: monospace;
-      font-size: 18px;
-      font-weight: 700;
+      font-family: ui-monospace, monospace;
+      font-size: 19px;
+      font-weight: 800;
       color: #0f172a;
-      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.15);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
       margin-bottom: 16px;
+      transition: all 0.15s;
+    }
+    .typing-input:focus {
+      border-color: #0369a1;
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25);
     }
     .typing-input:disabled {
       border-color: #cbd5e1;
@@ -358,23 +414,27 @@
       box-shadow: none;
     }
 
-    /* ボタン類 */
+    /* ボタンスタイル（立体押し込み） */
     .btn-clean {
       width: 100%;
-      height: 50px;
-      border-radius: 25px;
-      background: #0284c7;
+      height: 52px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 16.5px;
+      font-weight: 900;
       border: none;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
-      transition: transform 0.1s, opacity 0.2s;
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4), 0 2px 4px rgba(0,0,0,0.06);
+      transition: transform 0.1s, box-shadow 0.1s;
+      letter-spacing: 0.5px;
+    }
+    .btn-clean:hover {
+      box-shadow: 0 8px 22px rgba(2, 132, 199, 0.5);
     }
     .btn-clean:active {
-      transform: scale(0.98);
-      opacity: 0.9;
+      transform: scale(0.98) translateY(2px);
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
     }
 
     /* アイテム使用枠 */
@@ -385,40 +445,56 @@
     }
     .powerup-btn {
       flex: 1;
-      background: #f8fafc;
-      border: 1px solid #cbd5e1;
-      color: #475569;
+      background: #ffffff;
+      border: 1.5px solid #bae6fd;
+      color: #0369a1;
       font-size: 13px;
-      font-weight: 800;
-      padding: 9px 8px;
-      border-radius: 10px;
+      font-weight: 900;
+      padding: 10px 8px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .powerup-btn:hover:not(:disabled) {
+      background: #f0f9ff;
+      border-color: #0284c7;
+      transform: translateY(-1px);
     }
     .powerup-btn:disabled {
       opacity: 0.45;
       cursor: not-allowed;
+      border-color: #e2e8f0;
+      color: #94a3b8;
+      box-shadow: none;
     }
 
     /* 対戦セクション */
     .card-panel {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      border: 2px solid #e0f2fe;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.05);
     }
     .panel-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: #1e293b;
+      font-size: 16px;
+      font-weight: 900;
+      color: #0f172a;
       margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .panel-desc {
       font-size: 13px;
       color: #64748b;
-      line-height: 1.5;
+      line-height: 1.55;
       margin-bottom: 14px;
     }
     .input-row {
@@ -427,39 +503,54 @@
     }
     .code-input-clean {
       flex: 1;
-      height: 44px;
-      border: 1px solid #cbd5e1;
-      border-radius: 22px;
-      padding: 0 16px;
-      font-family: monospace;
+      height: 46px;
+      border: 2px solid #bae6fd;
+      border-radius: 23px;
+      padding: 0 18px;
+      font-family: ui-monospace, monospace;
       font-size: 14px;
       outline: none;
+      font-weight: 700;
+      background: #f8fafc;
+      transition: all 0.15s;
+    }
+    .code-input-clean:focus {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
     }
     .btn-half-clean {
-      background: #0284c7;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: none;
-      padding: 0 22px;
-      border-radius: 22px;
+      padding: 0 24px;
+      border-radius: 23px;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      transition: all 0.1s;
+    }
+    .btn-half-clean:active {
+      transform: scale(0.97);
     }
     .code-box-display {
       background: #f8fafc;
-      border: 1px dashed #0284c7;
-      padding: 12px;
-      border-radius: 10px;
-      font-family: monospace;
+      border: 1.5px dashed #0284c7;
+      padding: 14px;
+      border-radius: 12px;
+      font-family: ui-monospace, monospace;
       font-size: 13px;
       word-break: break-all;
       user-select: all;
+      color: #0f172a;
+      font-weight: 700;
     }
 
     /* ショップカード */
     .shop-grid-clean {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
     @media (max-width: 640px) {
@@ -469,52 +560,65 @@
     }
     .shop-card-clean {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 16px;
+      border: 2px solid #e0f2fe;
+      border-radius: 18px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.05);
+      transition: transform 0.15s;
+    }
+    .shop-card-clean:hover {
+      transform: translateY(-2px);
+      border-color: #bae6fd;
     }
     .shop-card-icon {
-      font-size: 36px;
+      font-size: 38px;
       text-align: center;
       margin-bottom: 10px;
     }
     .shop-card-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: #1e293b;
+      font-size: 15px;
+      font-weight: 900;
+      color: #0f172a;
       margin-bottom: 6px;
     }
     .shop-card-desc {
       font-size: 12px;
       color: #64748b;
-      margin-bottom: 14px;
-      line-height: 1.45;
+      margin-bottom: 16px;
+      line-height: 1.5;
       flex-grow: 1;
     }
     .shop-card-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid #f1f5f9;
-      padding-top: 10px;
+      border-top: 1.5px dashed #e2e8f0;
+      padding-top: 12px;
     }
     .shop-card-price {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 900;
-      color: #0284c7;
+      color: #d97706;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     .btn-buy-chip {
-      background: #0284c7;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: none;
-      padding: 6px 14px;
-      border-radius: 14px;
-      font-size: 12px;
-      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 16px;
+      font-size: 12.5px;
+      font-weight: 900;
       cursor: pointer;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
+      transition: all 0.1s;
+    }
+    .btn-buy-chip:active {
+      transform: scale(0.96);
     }
 
     /* 称号リスト */
@@ -525,34 +629,39 @@
     }
     .tier-item {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 12px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 13.5px;
+      transition: all 0.15s;
     }
     .tier-item.is-current {
-      border-color: #0284c7;
-      background: #e0f2fe;
+      border: 2px solid #0284c7;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
       font-weight: 800;
     }
     .tier-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
     .tier-num {
       font-weight: 900;
       color: #0284c7;
       width: 22px;
-      font-size: 15px;
+      font-size: 16px;
     }
     .tier-pts {
-      font-size: 12px;
-      color: #64748b;
-      font-weight: 700;
+      font-size: 12.5px;
+      color: #0369a1;
+      font-weight: 800;
+      background: #e0f2fe;
+      padding: 4px 10px;
+      border-radius: 10px;
     }
 
     /* リザルトモーダル */
@@ -563,7 +672,8 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
       z-index: 2100;
       align-items: center;
       justify-content: center;
@@ -573,37 +683,44 @@
       background: #ffffff;
       max-width: 420px;
       width: 100%;
-      border-radius: 20px;
-      padding: 30px 24px;
+      border-radius: 24px;
+      padding: 32px 26px;
       text-align: center;
       animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      border: 2px solid #e0f2fe;
     }
     @keyframes pop {
       0% { transform: scale(0.85); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
     .reveal-title {
-      font-size: 22px;
+      font-size: 23px;
       font-weight: 900;
       color: #0284c7;
       margin-bottom: 12px;
     }
     .reveal-desc {
       font-size: 14px;
-      line-height: 1.6;
-      color: #475569;
-      margin-bottom: 22px;
+      line-height: 1.65;
+      color: #334155;
+      margin-bottom: 24px;
       word-break: break-all;
     }
     .btn-modal-close {
       background: #0f172a;
       color: #ffffff;
-      padding: 12px 28px;
+      padding: 12px 32px;
       border-radius: 24px;
       border: none;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 14px;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+      transition: all 0.1s;
+    }
+    .btn-modal-close:active {
+      transform: scale(0.96);
     }
   </style>
 </head>
@@ -633,7 +750,7 @@
         <span class="rank-chip" id="playerRankBadge">道下以下</span>
       </div>
       <div class="coin-chip">
-        所持: <b id="playerCoinsText">0枚</b>
+        🪙 所持: <b id="playerCoinsText">0枚</b>
       </div>
     </div>
 
@@ -659,8 +776,8 @@
 
       <div class="typing-card">
         <div class="typing-status">
-          <span>残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
-          <span>スコア: <b class="color-orange" id="gameScore">0</b></span>
+          <span>⏳ 残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
+          <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
         </div>
 
         <!-- 綱引きメーター（対戦時） -->
@@ -691,7 +808,7 @@
 
         <div class="powerup-strip">
           <button id="useAgentBtn" onclick="usePowerup('agent')" class="powerup-btn" disabled>🤖 道下代行 (<span id="invAgentCount">0</span>)</button>
-          <button id="useBlindBtn" onclick="usePowerup('blind')" class="powerup-btn" disabled>🙈 目隠し (<span id="invBlindCount">0</span>)</button>
+          <button id="useTimeBtn" onclick="usePowerup('time')" class="powerup-btn" disabled>⏳ 集中力+10秒 (<span id="invTimeCount">0</span>)</button>
         </div>
       </div>
     </div>
@@ -699,7 +816,7 @@
     <!-- VIEW 2: 道下奪還バトル -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
-        <div class="panel-title">友達の対戦コードで道下を奪還</div>
+        <div class="panel-title">⚔️ 友達の対戦コードで道下を奪還</div>
         <p class="panel-desc">サーバー不要！友達のタイピング記録（ゴースト）と道下の寝返りバトルができます。打鍵ペースが上回ると道下がこちらにすり寄り、ミスで遅れると相手に寝返ります。</p>
         <div class="input-row">
           <input type="text" id="battleCodeInput" class="code-input-clean" placeholder="MICH-XXXXX">
@@ -708,15 +825,15 @@
       </div>
 
       <div class="card-panel">
-        <div class="panel-title">あなたの挑戦状コード</div>
+        <div class="panel-title">📜 あなたの挑戦状コード</div>
         <p class="panel-desc">プレイ終了後に自動発行されます。友達に送って道下を奪わせないように迎え撃ちましょう。</p>
         <div class="code-box-display" id="myLatestCodeDisplay">（プレイ後に発行されます）</div>
-        <button class="btn-clean" style="margin-top: 12px; height: 42px; font-size: 14px;" onclick="copyChallengeCode()">📋 コードをコピー</button>
+        <button class="btn-clean" style="margin-top: 12px; height: 44px; font-size: 14px;" onclick="copyChallengeCode()">📋 コードをコピー</button>
       </div>
 
       <div class="card-panel">
-        <div class="panel-title">通算対戦戦績</div>
-        <p class="panel-desc" id="battleStatsSummary" style="font-weight: 700; color: #0284c7;">0試合 0勝 0敗 (寝返り発生: 0回)</p>
+        <div class="panel-title">📊 通算対戦戦績</div>
+        <p class="panel-desc" id="battleStatsSummary" style="font-weight: 800; color: #0284c7; font-size: 14px;">0試合 0勝 0敗 (寝返り発生: 0回)</p>
       </div>
     </div>
 
@@ -726,9 +843,9 @@
         <div class="shop-card-clean">
           <div class="shop-card-icon">🤖</div>
           <div class="shop-card-title">道下のタイピング代行</div>
-          <div class="shop-card-desc">使用すると道下が自動で5秒間超速タイピングを代行してくれます。</div>
+          <div class="shop-card-desc">使用すると道下が自動で5秒間超速タイピングを代行してくれます。ピンチの打開に！</div>
           <div class="shop-card-bottom">
-            <span class="shop-card-price">150枚</span>
+            <span class="shop-card-price">🪙 150枚</span>
             <button class="btn-buy-chip" onclick="buyShopItem('agent', 150)">購入</button>
           </div>
         </div>
@@ -736,20 +853,10 @@
         <div class="shop-card-clean">
           <div class="shop-card-icon">⏳</div>
           <div class="shop-card-title">道下の集中力 (+10秒)</div>
-          <div class="shop-card-desc">次回プレイ時の制限時間が+10秒延長されます（自動適用）。</div>
+          <div class="shop-card-desc">タイピングプレイ中にボタンを押すと、その場で制限時間を10秒延長できます！</div>
           <div class="shop-card-bottom">
-            <span class="shop-card-price">100枚</span>
+            <span class="shop-card-price">🪙 100枚</span>
             <button class="btn-buy-chip" onclick="buyShopItem('time', 100)">購入</button>
-          </div>
-        </div>
-
-        <div class="shop-card-clean">
-          <div class="shop-card-icon">🙈</div>
-          <div class="shop-card-title">道下の目隠し</div>
-          <div class="shop-card-desc">使用すると精神を研ぎ澄まし、ミス時の減点を一定時間無効化します。</div>
-          <div class="shop-card-bottom">
-            <span class="shop-card-price">80枚</span>
-            <button class="btn-buy-chip" onclick="buyShopItem('blind', 80)">購入</button>
           </div>
         </div>
       </div>
@@ -758,8 +865,8 @@
     <!-- VIEW 4: 道下称号 -->
     <div class="tab-content" id="viewProfile">
       <div class="card-panel">
-        <div class="panel-title">うでまえ進捗（全10段階）</div>
-        <p class="panel-desc">1週間やり込んで最高到達点「革命道下」を目指せ！</p>
+        <div class="panel-title">🏆 うでまえ進捗（全10段階）</div>
+        <p class="panel-desc">1週間やり込んで最高到達点「革命道下」を目指せ！スコアを更新するごとに自動で昇格します。</p>
         <div class="rank-tier-list" id="rankTierList"></div>
       </div>
     </div>
@@ -798,9 +905,8 @@
       rankId: 0,
       inventory: {
         agent: 1,
-        blind: 1
+        time: 1
       },
-      bonusTimeNext: 0,
       stats: {
         matches: 0,
         wins: 0,
@@ -814,7 +920,11 @@
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-          playerData = Object.assign(playerData, JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          playerData = Object.assign(playerData, parsed);
+          if (!playerData.inventory.time && parsed.inventory && parsed.inventory.blind) {
+            playerData.inventory.time = parsed.inventory.blind;
+          }
         }
       } catch (e) {}
       updateUI();
@@ -841,11 +951,11 @@
       document.getElementById('playerRankBadge').innerText = currentRank.title;
       document.getElementById('tugPlayerName').innerText = playerData.name;
 
-      document.getElementById('invAgentCount').innerText = playerData.inventory.agent;
-      document.getElementById('invBlindCount').innerText = playerData.inventory.blind;
+      document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
+      document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
 
-      document.getElementById('useAgentBtn').disabled = playerData.inventory.agent <= 0 || !gameState.isRunning;
-      document.getElementById('useBlindBtn').disabled = playerData.inventory.blind <= 0 || !gameState.isRunning;
+      document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
+      document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
 
       document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
 
@@ -874,8 +984,8 @@
           <div class="tier-left">
             <span class="tier-num">${idx + 1}</span>
             <div>
-              <div style="font-weight: 800; color: #1e293b;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
-              <div style="font-size: 11px; color: #64748b;">${r.desc}</div>
+              <div style="font-weight: 900; color: #0f172a;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
+              <div style="font-size: 11.5px; color: #64748b; margin-top: 2px;">${r.desc}</div>
             </div>
           </div>
           <span class="tier-pts">${r.minScore}pt〜</span>
@@ -987,7 +1097,6 @@
       missCount: 0,
       currentWord: null,
       typedIndex: 0,
-      blindActive: false,
       agentActive: false,
       rivalCheckpoints: [],
       rivalName: "ライバル",
@@ -1020,13 +1129,9 @@
       gameState.totalStrokes = 0;
       gameState.missCount = 0;
       gameState.typedIndex = 0;
-      gameState.blindActive = false;
       gameState.agentActive = false;
       gameState.tugBalance = 0;
-
-      let initialTime = 60 + playerData.bonusTimeNext;
-      playerData.bonusTimeNext = 0;
-      gameState.timeLeft = initialTime;
+      gameState.timeLeft = 60;
 
       document.getElementById('mainStartBtn').style.display = 'none';
 
@@ -1117,9 +1222,7 @@
       } else {
         soundMiss();
         gameState.missCount++;
-        if (!gameState.blindActive) {
-          gameState.score = Math.max(0, gameState.score - 5);
-        }
+        gameState.score = Math.max(0, gameState.score - 5);
       }
 
       updateGameStatsUI();
@@ -1187,7 +1290,7 @@
     function usePowerup(type) {
       if (!gameState.isRunning) return;
 
-      if (type === 'agent' && playerData.inventory.agent > 0 && !gameState.agentActive) {
+      if (type === 'agent' && (playerData.inventory.agent || 0) > 0 && !gameState.agentActive) {
         playerData.inventory.agent--;
         gameState.agentActive = true;
         soundFanfare();
@@ -1215,14 +1318,11 @@
           gameState.agentActive = false;
         }, 5000);
 
-      } else if (type === 'blind' && playerData.inventory.blind > 0 && !gameState.blindActive) {
-        playerData.inventory.blind--;
-        gameState.blindActive = true;
+      } else if (type === 'time' && (playerData.inventory.time || 0) > 0) {
+        playerData.inventory.time--;
+        gameState.timeLeft += 10;
         soundFanfare();
-
-        setTimeout(() => {
-          gameState.blindActive = false;
-        }, 7000);
+        updateGameStatsUI();
       }
 
       saveData();
@@ -1236,12 +1336,9 @@
       playerData.coins -= price;
 
       if (item === 'agent') {
-        playerData.inventory.agent++;
+        playerData.inventory.agent = (playerData.inventory.agent || 0) + 1;
       } else if (item === 'time') {
-        playerData.bonusTimeNext += 10;
-        alert("次回プレイ時に制限時間が +10秒 延長されます！");
-      } else if (item === 'blind') {
-        playerData.inventory.blind++;
+        playerData.inventory.time = (playerData.inventory.time || 0) + 1;
       }
 
       soundCorrect();
