@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Firebase SDKの読み込み（リアルタイム同期・全員のランキング共有用） -->
+  <!-- Firebase SDKの読み込み -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
@@ -489,7 +489,8 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
       overflow: hidden;
       background: #ffffff;
-      z-index: 10;
+      z-index: 1; /* 文字やローマ字より後ろ、背景より前に配置 */
+      opacity: 0.35; /* 文字が見やすくなるよう少し透過 */
       transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
     }
@@ -953,7 +954,7 @@
 
   <div id="countdownOverlay">
     <div class="countdown-number" id="countdownNum">3</div>
-    <div class="countdown-label">対戦 開始まで</div>
+    <div class="countdown-label">ゲーム開始まで</div>
   </div>
 
   <header>
@@ -1039,7 +1040,7 @@
 
         <input type="text" id="hiddenTypeInput" class="typing-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
 
-        <button class="btn-clean" id="mainStartBtn" onclick="startGame(false)">ゲームスタート (SPACE)</button>
+        <button class="btn-clean" id="mainStartBtn" onclick="runCountdownAndStart(false)">ゲームスタート (SPACE)</button>
 
         <div class="powerup-strip">
           <button id="useAgentBtn" onclick="usePowerup('agent')" class="powerup-btn" disabled>🤖 道下代行 (<span id="invAgentCount">0</span>)</button>
@@ -1408,7 +1409,7 @@
 
     function runCountdownAndStart(isRealtime = false) {
       switchView('play');
-      selectDifficulty(2);
+      selectDifficulty(currentDifficulty);
 
       const overlay = document.getElementById('countdownOverlay');
       const numEl = document.getElementById('countdownNum');
@@ -1593,7 +1594,7 @@
         const modal = document.getElementById('reveal-modal');
         if (!gameState.isRunning && modal.style.display !== 'flex') {
           e.preventDefault();
-          startGame(false);
+          runCountdownAndStart(false);
         }
       } else if (e.code === 'Escape' && gameState.isRunning) {
         quitCurrentGame();
