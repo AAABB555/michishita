@@ -6,9 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Firebase SDKの読み込み（リアルタイム同期用） -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <!-- PeerJSの読み込み（サーバー不要の完全無料P2Pリアルタイム通信用） -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -1048,20 +1047,20 @@
       </div>
     </div>
 
-    <!-- VIEW 2: Firebaseクラウドリアルタイム対戦 -->
+    <!-- VIEW 2: 4桁コード・リアルタイム1v1対戦 -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
-        <div class="panel-title">⚔️ クラウドリアルタイム道下奪還バトル</div>
-        <p class="panel-desc">お互いに「道下 奪還」タブを開き、**同じ4桁の部屋コード**（例: `A1B2`）を決めて入力し、「ルームに入る」を押してください。同じ部屋に入ると自動でマッチングし、リアルタイムで綱引きバトルが始まります！</p>
+        <div class="panel-title">⚔️ P2P リアルタイム1v1道下奪還バトル</div>
+        <p class="panel-desc">お互いに**同じ4桁の部屋コード**（例: `A1B2`）を決めて入力し、「ルームに入る / 接続」を押してください。相手と接続されると自動でカウントダウンが始まり、リアルタイムの綱引きバトルがスタートします！</p>
 
-        <div class="input-row" style="margin-bottom: 14px;">
+        <div class="input-row" style="margin-top: 14px;">
           <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: A1B2)" maxlength="4">
-          <button class="btn-half-clean" onclick="joinFirebaseRoom()">ルームに入る</button>
+          <button class="btn-half-clean" onclick="connectPeerRoom()">ルームに入る</button>
         </div>
 
-        <div class="lobby-box" id="firebaseLobbyArea" style="display: none;">
-          <div class="lobby-status" id="firebaseLobbyStatus">ルーム接続中...</div>
-          <button class="btn-half-clean" style="background: #ef4444;" onclick="leaveFirebaseRoom()">部屋を出る・キャンセル</button>
+        <div class="lobby-box" id="peerLobbyArea" style="display: none;">
+          <div class="lobby-status" id="peerLobbyStatus">接続待機中...</div>
+          <button class="btn-half-clean" style="background: #ef4444; margin-top: 8px;" onclick="leavePeerRoom()">切断・キャンセル</button>
         </div>
       </div>
 
@@ -1071,7 +1070,7 @@
       </div>
     </div>
 
-    <!-- VIEW 3: ランキング -->
+    <!-- VIEW 3: 本物のランキング -->
     <div class="tab-content" id="viewLeaderboard">
       <div class="card-panel">
         <div class="panel-title">👑 道下タイピング 歴代ハイスコアランキング</div>
@@ -1125,15 +1124,6 @@
   </div>
 
   <script>
-    // Firebaseリアルタイムデータベースの設定
-    const firebaseConfig = {
-      databaseURL: "https://michishita-typing-default-rtdb.firebaseio.com/"
-    };
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-
     const CUSTOM_IMAGES = {
       boardImage: "",
       globalBackgrounds: {
@@ -1397,7 +1387,7 @@
       currentWord: null,
       typedIndex: 0,
       agentActive: false,
-      rivalName: "ライバル",
+      rivalName: "対戦相手",
       tugBalance: 0
     };
 
@@ -1463,8 +1453,8 @@
         clearInterval(gameState.timerId);
         gameState.timerId = null;
         gameState.isRunning = false;
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/status').set('quit');
+        if (peerConn && peerConn.open) {
+          peerConn.send({ type: 'QUIT' });
         }
         resetPlayUI();
       }
@@ -1489,8 +1479,8 @@
       gameState.timeLeft--;
       document.getElementById('gameTimer').innerText = gameState.timeLeft;
 
-      if (gameState.isRealtimeBattle && firebaseRoomRef) {
-        firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
+      if (gameState.isRealtimeBattle && peerConn && peerConn.open) {
+        peerConn.send({ type: 'SCORE', score: gameState.score });
       }
 
       if (gameState.timeLeft <= 0) {
@@ -1549,14 +1539,14 @@
         gameState.typedIndex++;
         gameState.totalStrokes++;
         gameState.score += 10;
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
+        if (gameState.isRealtimeBattle && peerConn && peerConn.open) {
+          peerConn.send({ type: 'SCORE', score: gameState.score });
         }
         if (gameState.typedIndex >= gameState.currentWord.r.length) {
           soundCorrect();
           gameState.score += gameState.currentWord.r.length * 5;
-          if (gameState.isRealtimeBattle && firebaseRoomRef) {
-            firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
+          if (gameState.isRealtimeBattle && peerConn && peerConn.open) {
+            peerConn.send({ type: 'SCORE', score: gameState.score });
           }
           nextPrompt();
         } else {
@@ -1566,8 +1556,8 @@
         soundMiss();
         gameState.missCount++;
         gameState.score = Math.max(0, gameState.score - 5);
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
+        if (gameState.isRealtimeBattle && peerConn && peerConn.open) {
+          peerConn.send({ type: 'SCORE', score: gameState.score });
         }
       }
       updateGameStatsUI();
@@ -1702,70 +1692,116 @@
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
     /* =========================================================================
-        ★ Firebase リアルタイムクラウド対戦エンジン ★
+        ★ PeerJS リアルタイム P2P 対戦エンジン（サーバー不要） ★
         ========================================================================= */
-    let firebaseRoomRef = null;
-    let myPlayerKey = 'p_' + Math.random().toString(36).substring(2, 9);
-    let opponentPlayerKey = null;
+    let peer = null;
+    let peerConn = null;
+    let myPeerId = '';
 
-    function joinFirebaseRoom() {
+    function getPeerPrefix() {
+      return "michishita_typing_2026_";
+    }
+
+    function connectPeerRoom() {
       const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
       if (!code || code.length !== 4) {
         alert("4桁の部屋コード（例: A1B2）を入力してください！");
         return;
       }
 
-      document.getElementById('firebaseLobbyArea').style.display = 'block';
-      document.getElementById('firebaseLobbyStatus').innerText = `【${code}】の部屋に入室中... 相手を待っています`;
+      document.getElementById('peerLobbyArea').style.display = 'block';
+      document.getElementById('peerLobbyStatus').innerText = `【${code}】のルームに接続中...`;
 
-      firebaseRoomRef = db.ref('typing_rooms/' + code);
+      myPeerId = getPeerPrefix() + code + "_" + Math.random().toString(36).substring(2, 5);
 
-      // 自プレイヤー情報を登録
-      firebaseRoomRef.child('players/' + myPlayerKey).set({
-        name: playerData.name,
-        score: 0,
-        status: 'waiting'
+      if (peer) {
+        try { peer.destroy(); } catch (e) {}
+      }
+
+      peer = new Peer(myPeerId);
+
+      peer.on('open', (id) => {
+        // ホストとして待機しつつ、同じ部屋コードのもう片方を探して接続を試みる
+        document.getElementById('peerLobbyStatus').innerText = `【${code}】待機中... 相手の接続を待っています`;
+        
+        // 相手のID候補（ホスト or クライアントの逆）へ接続を試みる
+        const targetIdHost = getPeerPrefix() + code + "_host";
+        const targetIdClient = getPeerPrefix() + code + "_client";
+        
+        // 簡易的に自分がホスト側IDになれるか試す
+        setTimeout(() => {
+          if (!peerConn || !peerConn.open) {
+            connectToOpponent(code);
+          }
+        }, 1000);
       });
 
-      // 切断時に自動削除
-      firebaseRoomRef.child('players/' + myPlayerKey).onDisconnect().remove();
+      peer.on('connection', (conn) => {
+        setupConnection(conn);
+      });
 
-      // ルーム内のプレイヤー監視
-      firebaseRoomRef.child('players').on('value', (snapshot) => {
-        const players = snapshot.val() || {};
-        const keys = Object.keys(players);
-
-        if (keys.length >= 2) {
-          opponentPlayerKey = keys.find(k => k !== myPlayerKey);
-          if (opponentPlayerKey) {
-            const oppName = players[opponentPlayerKey].name || "ライバル";
-            gameState.rivalName = oppName;
-            document.getElementById('firebaseLobbyStatus').innerText = `「${oppName}」と接続完了！まもなく開始します...`;
-
-            // 相手のスコアをリアルタイム同期監視
-            firebaseRoomRef.child('players/' + opponentPlayerKey + '/score').on('value', (scoreSnap) => {
-              gameState.opponentScore = scoreSnap.val() || 0;
-              if (gameState.isRealtimeBattle) recalculateRealtimeTug();
-            });
-
-            setTimeout(() => {
-              document.getElementById('firebaseLobbyArea').style.display = 'none';
-              switchView('play');
-              selectDifficulty(2);
-              startGame(true);
-            }, 1500);
-          }
-        }
+      peer.on('error', (err) => {
+        // すでに同名IDが存在する場合はゲストとして接続に切り替え
+        connectToOpponent(code);
       });
     }
 
-    function leaveFirebaseRoom() {
-      if (firebaseRoomRef) {
-        firebaseRoomRef.child('players/' + myPlayerKey).remove();
-        firebaseRoomRef = null;
+    function connectToOpponent(code) {
+      if (!peer) return;
+      // 相手のPeerIDを推測して接続
+      const opponentIdGuess = getPeerPrefix() + code;
+      
+      // クライアント側として接続試行
+      const conn = peer.connect(opponentIdGuess);
+      if (conn) {
+        setupConnection(conn);
       }
-      document.getElementById('firebaseLobbyArea').style.display = 'none';
-      alert("部屋を出ました。");
+    }
+
+    function setupConnection(conn) {
+      peerConn = conn;
+      peerConn.on('open', () => {
+        document.getElementById('peerLobbyStatus').innerText = `対戦相手と接続成功！まもなく開始します...`;
+        // 自分の名前を送信
+        peerConn.send({ type: 'INIT', name: playerData.name });
+
+        setTimeout(() => {
+          document.getElementById('peerLobbyArea').style.display = 'none';
+          switchView('play');
+          selectDifficulty(2);
+          startGame(true);
+        }, 1200);
+      });
+
+      peerConn.on('data', (data) => {
+        if (data.type === 'INIT') {
+          gameState.rivalName = data.name || "対戦相手";
+          document.getElementById('tugRivalName').innerText = gameState.rivalName;
+        } else if (data.type === 'SCORE') {
+          gameState.opponentScore = data.score || 0;
+          if (gameState.isRealtimeBattle) recalculateRealtimeTug();
+        } else if (data.type === 'QUIT') {
+          alert("対戦相手がゲームを辞めました。");
+          endGame();
+        }
+      });
+
+      peerConn.on('close', () => {
+        leavePeerRoom();
+      });
+    }
+
+    function leavePeerRoom() {
+      if (peerConn) {
+        try { peerConn.close(); } catch (e) {}
+        peerConn = null;
+      }
+      if (peer) {
+        try { peer.destroy(); } catch (e) {}
+        peer = null;
+      }
+      document.getElementById('peerLobbyArea').style.display = 'none';
+      alert("ルームから退出しました。");
     }
 
     function switchView(view) {
