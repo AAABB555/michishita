@@ -891,27 +891,6 @@
     .dark-header .lobby-status {
       color: #38bdf8;
     }
-    .btn-ready {
-      background: #10b981;
-      color: #ffffff;
-      border: none;
-      padding: 10px 28px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-      transition: all 0.15s;
-    }
-    .btn-ready:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .btn-ready.ready-active {
-      background: #059669;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
-    }
 
     #reveal-modal {
       display: none;
@@ -1092,7 +1071,7 @@
       </div>
     </div>
 
-    <!-- VIEW 3: 本物のランキング -->
+    <!-- VIEW 3: ランキング -->
     <div class="tab-content" id="viewLeaderboard">
       <div class="card-panel">
         <div class="panel-title">👑 道下タイピング 歴代ハイスコアランキング</div>
@@ -1146,7 +1125,7 @@
   </div>
 
   <script>
-    // Firebase無料公開テストサーバーの設定
+    // Firebaseリアルタイムデータベースの設定
     const firebaseConfig = {
       databaseURL: "https://michishita-typing-default-rtdb.firebaseio.com/"
     };
@@ -1723,8 +1702,8 @@
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
     /* =========================================================================
-       ★ Firebase リアルタイムクラウド対戦エンジン ★
-       ========================================================================= */
+        ★ Firebase リアルタイムクラウド対戦エンジン ★
+        ========================================================================= */
     let firebaseRoomRef = null;
     let myPlayerKey = 'p_' + Math.random().toString(36).substring(2, 9);
     let opponentPlayerKey = null;
@@ -1757,7 +1736,6 @@
         const keys = Object.keys(players);
 
         if (keys.length >= 2) {
-          // 2人揃ったら対戦開始準備
           opponentPlayerKey = keys.find(k => k !== myPlayerKey);
           if (opponentPlayerKey) {
             const oppName = players[opponentPlayerKey].name || "ライバル";
