@@ -1,1812 +1,1741 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>道下タイピング - 道下ファンクラブ公式特設</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Firebase SDKの読み込み -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>道下タイピング - 道下ファンクラブ公式特設</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Firebase SDKの読み込み -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
 
-    html {
-      height: 100%;
-    }
+    html {
+      height: 100%;
+    }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-      min-height: 100vh;
-      padding-bottom: 60px;
-      transition: background 0.4s ease, color 0.3s ease;
-      background-attachment: fixed;
-      background-position: center center !important;
-      background-repeat: no-repeat !important;
-      background-size: 100% 100% !important;
-    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+      transition: background 0.4s ease, color 0.3s ease;
+      background-attachment: fixed;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+      background-size: 100% 100% !important;
+    }
 
-    body.theme-diff-0 {
-      background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 40%, #86efac 75%, #4ade80 100%);
-      color: #1e293b;
-    }
-    body.theme-diff-1 {
-      background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 45%, #a7f3d0 100%);
-      color: #1e293b;
-    }
-    body.theme-diff-2 {
-      background: radial-gradient(circle at center, #275841 0%, #1a3a2b 70%, #0f241a 100%);
-      color: #f8fafc;
-    }
-    body.theme-diff-3 {
-      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-      color: #f8fafc;
-    }
-    body.theme-diff-4 {
-      background: linear-gradient(180deg, #581c87 0%, #9d174d 50%, #ea580c 100%);
-      color: #ffffff;
-    }
-    body.theme-diff-5 {
-      background: linear-gradient(180deg, #311042 0%, #4c0519 60%, #1c0505 100%);
-      color: #ffffff;
-    }
-    body.theme-diff-6 {
-      background: radial-gradient(circle at 50% 80%, #dc2626 0%, #7f1d1d 50%, #180303 95%);
-      color: #fef2f2;
-    }
+    body.theme-diff-0 {
+      background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 40%, #86efac 75%, #4ade80 100%);
+      color: #1e293b;
+    }
+    body.theme-diff-1 {
+      background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 45%, #a7f3d0 100%);
+      color: #1e293b;
+    }
+    body.theme-diff-2 {
+      background: radial-gradient(circle at center, #275841 0%, #1a3a2b 70%, #0f241a 100%);
+      color: #f8fafc;
+    }
+    body.theme-diff-3 {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      color: #f8fafc;
+    }
+    body.theme-diff-4 {
+      background: linear-gradient(180deg, #581c87 0%, #9d174d 50%, #ea580c 100%);
+      color: #ffffff;
+    }
+    body.theme-diff-5 {
+      background: linear-gradient(180deg, #311042 0%, #4c0519 60%, #1c0505 100%);
+      color: #ffffff;
+    }
+    body.theme-diff-6 {
+      background: radial-gradient(circle at 50% 80%, #dc2626 0%, #7f1d1d 50%, #180303 95%);
+      color: #fef2f2;
+    }
 
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 2000;
-    }
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2000;
+    }
 
-    header {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(12px);
-      padding: 12px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.4);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      transition: background 0.3s;
-    }
-    .dark-header header {
-      background: rgba(15, 23, 42, 0.88);
-      border-bottom-color: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-    }
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 20px;
-      font-weight: 900;
-      color: inherit;
-      letter-spacing: -0.5px;
-      cursor: pointer;
-    }
-    .logo-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      font-family: "Impact", -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 19px;
-      font-weight: 900;
-      font-style: italic;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .sound-btn {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1.5px solid #bae6fd;
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
-      cursor: pointer;
-      color: #0284c7;
-      font-weight: 800;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-      transition: all 0.15s;
-    }
-    .dark-header .sound-btn {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: #475569;
-      color: #38bdf8;
-    }
+    header {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: background 0.3s;
+    }
+    .dark-header header {
+      background: rgba(15, 23, 42, 0.88);
+      border-bottom-color: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 900;
+      color: inherit;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-family: "Impact", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 19px;
+      font-weight: 900;
+      font-style: italic;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sound-btn {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1.5px solid #bae6fd;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #0284c7;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      transition: all 0.15s;
+    }
+    .dark-header .sound-btn {
+      background: rgba(30, 41, 59, 0.9);
+      border-color: #475569;
+      color: #38bdf8;
+    }
 
-    .container {
-      max-width: 860px;
-      margin: 24px auto 0;
-      padding: 0 16px;
-    }
+    .container {
+      max-width: 860px;
+      margin: 24px auto 0;
+      padding: 0 16px;
+    }
 
-    .profile-bar {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 18px;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      margin-bottom: 20px;
-      transition: all 0.3s;
-    }
-    .dark-header .profile-bar {
-      background: rgba(15, 23, 42, 0.85);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-    }
-    .profile-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 800;
-    }
-    .profile-name-input {
-      border: 2px solid #bae6fd;
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-size: 14px;
-      font-weight: 800;
-      width: 125px;
-      color: #0284c7;
-      background: #f8fafc;
-      outline: none;
-      transition: all 0.15s;
-    }
-    .profile-name-input:focus {
-      background: #ffffff;
-      border-color: #0284c7;
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
-    }
-    .rank-chip {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: 900;
-      padding: 4px 12px;
-      border-radius: 14px;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
-    }
-    .coin-chip {
-      font-size: 14px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .coin-chip b {
-      color: #f59e0b;
-      font-size: 16px;
-    }
+    .profile-bar {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 18px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    .dark-header .profile-bar {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .profile-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .profile-name-input {
+      border: 2px solid #bae6fd;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 14px;
+      font-weight: 800;
+      width: 125px;
+      color: #0284c7;
+      background: #f8fafc;
+      outline: none;
+      transition: all 0.15s;
+    }
+    .profile-name-input:focus {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+    }
+    .rank-chip {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    }
+    .coin-chip {
+      font-size: 14px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .coin-chip b {
+      color: #f59e0b;
+      font-size: 16px;
+    }
 
-    .tab-bar {
-      display: flex;
-      margin-bottom: 24px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 6px 8px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-      border: 1.5px solid rgba(255, 255, 255, 0.6);
-      transition: all 0.3s;
-      gap: 4px;
-    }
-    .dark-header .tab-bar {
-      background: rgba(15, 23, 42, 0.85);
-      border-color: rgba(255, 255, 255, 0.12);
-    }
-    .tab-item {
-      flex: 1;
-      text-align: center;
-      padding: 11px 0;
-      font-size: 13.5px;
-      font-weight: 800;
-      color: #64748b;
-      cursor: pointer;
-      position: relative;
-      border-radius: 12px;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .tab-item:hover {
-      color: #0284c7;
-    }
-    .tab-item.active {
-      color: #0284c7;
-      background: rgba(2, 132, 199, 0.12);
-      font-weight: 900;
-    }
-    .dark-header .tab-item.active {
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.18);
-    }
+    .tab-bar {
+      display: flex;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 6px 8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      transition: all 0.3s;
+      gap: 4px;
+    }
+    .dark-header .tab-bar {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 11px 0;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #64748b;
+      cursor: pointer;
+      position: relative;
+      border-radius: 12px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-item:hover {
+      color: #0284c7;
+    }
+    .tab-item.active {
+      color: #0284c7;
+      background: rgba(2, 132, 199, 0.12);
+      font-weight: 900;
+    }
+    .dark-header .tab-item.active {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.18);
+    }
+    /* ロックされたタブの見た目 */
+    .tab-item.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
 
-    .diff-group {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      margin-bottom: 18px;
-      padding-bottom: 4px;
-    }
-    .diff-group::-webkit-scrollbar {
-      display: none;
-    }
-    .diff-btn {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
-      color: #475569;
-      font-size: 13px;
-      font-weight: 800;
-      padding: 9px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      white-space: nowrap;
-      text-align: center;
-      transition: all 0.2s;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
-    .dark-header .diff-btn {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #cbd5e1;
-    }
-    .diff-btn.active {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff !important;
-      border-color: #0284c7;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
-      transform: translateY(-2px);
-    }
+    .diff-group {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 18px;
+      padding-bottom: 4px;
+    }
+    .diff-group::-webkit-scrollbar {
+      display: none;
+    }
+    .diff-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      color: #475569;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 9px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      text-align: center;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    .dark-header .diff-btn {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+    }
+    .diff-btn.active {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff !important;
+      border-color: #0284c7;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+      transform: translateY(-2px);
+    }
 
-    .typing-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(14px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 24px;
-      padding: 30px 26px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
-      position: relative;
-      transition: all 0.3s;
-    }
-    .dark-header .typing-card {
-      background: rgba(15, 23, 42, 0.9);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-    }
-    .typing-status {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 15px;
-      font-weight: 800;
-      padding-bottom: 14px;
-      margin-bottom: 20px;
-      border-bottom: 2px dashed rgba(148, 163, 184, 0.3);
-    }
-    .status-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .color-blue {
-      color: #0284c7;
-      font-size: 22px;
-      font-weight: 900;
-    }
-    .dark-header .color-blue {
-      color: #38bdf8;
-    }
-    .color-orange {
-      color: #ea580c;
-      font-size: 22px;
-      font-weight: 900;
-    }
+    .typing-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 24px;
+      padding: 30px 26px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+      position: relative;
+      transition: all 0.3s;
+    }
+    .dark-header .typing-card {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .typing-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 800;
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+      border-bottom: 2px dashed rgba(148, 163, 184, 0.3);
+    }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .color-blue {
+      color: #0284c7;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .dark-header .color-blue {
+      color: #38bdf8;
+    }
+    .color-orange {
+      color: #ea580c;
+      font-size: 22px;
+      font-weight: 900;
+    }
 
-    .btn-quit {
-      background: #fee2e2;
-      color: #ef4444;
-      border: 1.5px solid #fca5a5;
-      padding: 5px 12px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      display: none;
-      transition: all 0.15s;
-    }
-    .btn-quit:hover {
-      background: #fecaca;
-    }
+    .btn-quit {
+      background: #fee2e2;
+      color: #ef4444;
+      border: 1.5px solid #fca5a5;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: none;
+      transition: all 0.15s;
+    }
+    .btn-quit:hover {
+      background: #fecaca;
+    }
 
-    .battle-bar-wrap {
-      background: rgba(241, 245, 249, 0.85);
-      border: 2px solid #bae6fd;
-      border-radius: 14px;
-      padding: 10px 14px;
-      margin-bottom: 18px;
-      display: none;
-    }
-    .dark-header .battle-bar-wrap {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-    .battle-names {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-    .battle-track {
-      height: 12px;
-      background: #cbd5e1;
-      border-radius: 6px;
-      position: relative;
-    }
-    .battle-fill {
-      height: 100%;
-      width: 50%;
-      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
-      border-radius: 6px;
-      transition: width 0.25s ease;
-    }
-    .battle-marker {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 2px solid #0284c7;
-      overflow: hidden;
-      background: #ffffff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-      transition: left 0.25s ease;
-    }
-    .battle-marker img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .battle-bar-wrap {
+      background: rgba(241, 245, 249, 0.85);
+      border: 2px solid #bae6fd;
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .dark-header .battle-bar-wrap {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .battle-names {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .battle-track {
+      height: 12px;
+      background: #cbd5e1;
+      border-radius: 6px;
+      position: relative;
+    }
+    .battle-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+      border-radius: 6px;
+      transition: width 0.25s ease;
+    }
+    .battle-marker {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #0284c7;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      transition: left 0.25s ease;
+    }
+    .battle-marker img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-    .word-area {
-      text-align: center;
-      margin-bottom: 22px;
-      min-height: 135px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-radius: 16px;
-      padding: 18px 24px;
-      position: relative;
-      overflow: hidden;
-      background-color: #234c38;
-      background-image: 
-        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-        linear-gradient(180deg, #2a5a43 0%, #1d4130 100%);
-      background-size: 14px 14px, 100% 100%;
-      background-position: center;
-      border: 6px solid #8d5b28;
-      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45), 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
+    .word-area {
+      text-align: center;
+      margin-bottom: 22px;
+      min-height: 135px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 16px;
+      padding: 18px 24px;
+      position: relative;
+      overflow: hidden;
+      background-color: #234c38;
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, #2a5a43 0%, #1d4130 100%);
+      background-size: 14px 14px, 100% 100%;
+      background-position: center;
+      border: 6px solid #8d5b28;
+      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45), 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
 
-    .word-kanji {
-      font-size: 30px;
-      font-weight: 900;
-      color: #ffffff !important;
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.7);
-      margin-bottom: 10px;
-      line-height: 1.35;
-      letter-spacing: 0.5px;
-      z-index: 5;
-    }
+    .word-kanji {
+      font-size: 30px;
+      font-weight: 900;
+      color: #ffffff !important;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.7);
+      margin-bottom: 10px;
+      line-height: 1.35;
+      letter-spacing: 0.5px;
+      z-index: 5;
+    }
 
-    .word-roma-scroll-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
-      white-space: nowrap;
-      scrollbar-width: none;
-      display: flex;
-      justify-content: center;
-      z-index: 5;
-      padding: 4px 0;
-      scroll-behavior: smooth;
-    }
-    .word-roma-scroll-wrapper::-webkit-scrollbar {
-      display: none;
-    }
+    .word-roma-scroll-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      scrollbar-width: none;
+      display: flex;
+      justify-content: center;
+      z-index: 5;
+      padding: 4px 0;
+      scroll-behavior: smooth;
+    }
+    .word-roma-scroll-wrapper::-webkit-scrollbar {
+      display: none;
+    }
 
-    .word-roma {
-      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      display: inline-block;
-      white-space: nowrap;
-    }
-    .typed-char {
-      color: #67e8f9 !important;
-      text-shadow: 0 0 10px rgba(103, 232, 249, 0.85);
-    }
-    .untyped-char {
-      color: #f1f5f9 !important;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    }
-    .current-char {
-      display: inline-block;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
+    .word-roma {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .typed-char {
+      color: #67e8f9 !important;
+      text-shadow: 0 0 10px rgba(103, 232, 249, 0.85);
+    }
+    .untyped-char {
+      color: #f1f5f9 !important;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+    .current-char {
+      display: inline-block;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
 
-    .michishita-popup {
-      position: absolute;
-      right: 14px;
-      bottom: -120px;
-      width: 82px;
-      height: 82px;
-      border-radius: 50%;
-      border: 3px solid #38bdf8;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-      overflow: hidden;
-      background: #ffffff;
-      z-index: 1; /* 文字やローマ字より後ろ、背景より前に配置 */
-      opacity: 0.35; /* 文字が見やすくなるよう少し透過 */
-      transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: none;
-    }
-    .michishita-popup.active {
-      bottom: 10px;
-    }
-    .michishita-popup img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .michishita-popup-tag {
-      position: absolute;
-      top: -24px;
-      right: 0;
-      background: #0284c7;
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 900;
-      padding: 2px 6px;
-      border-radius: 6px;
-      white-space: nowrap;
-    }
+    /* 主役の道下をくっきり表示（不透明度1） */
+    .michishita-popup {
+      position: absolute;
+      right: 14px;
+      bottom: -120px;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      border: 3px solid #38bdf8;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      background: #ffffff;
+      z-index: 1; 
+      opacity: 1; /* 主役らしくしっかりくっきり表示 */
+      transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+    .michishita-popup.active {
+      bottom: 10px;
+    }
+    .michishita-popup img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .michishita-popup-tag {
+      position: absolute;
+      top: -24px;
+      right: 0;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
 
-    .typing-input {
-      width: 100%;
-      height: 54px;
-      border-radius: 27px;
-      border: 2px solid #0284c7;
-      outline: none;
-      text-align: center;
-      font-family: ui-monospace, monospace;
-      font-size: 19px;
-      font-weight: 800;
-      color: #0f172a;
-      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.2);
-      margin-bottom: 16px;
-      transition: all 0.15s;
-      background: #ffffff;
-    }
-    .typing-input:focus {
-      border-color: #0369a1;
-      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25);
-    }
-    .typing-input:disabled {
-      border-color: #cbd5e1;
-      background: rgba(241, 245, 249, 0.85);
-      color: #94a3b8;
-      box-shadow: none;
-    }
+    .typing-input {
+      width: 100%;
+      height: 54px;
+      border-radius: 27px;
+      border: 2px solid #0284c7;
+      outline: none;
+      text-align: center;
+      font-family: ui-monospace, monospace;
+      font-size: 19px;
+      font-weight: 800;
+      color: #0f172a;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.2);
+      margin-bottom: 16px;
+      transition: all 0.15s;
+      background: #ffffff;
+    }
+    .typing-input:focus {
+      border-color: #0369a1;
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25);
+    }
+    .typing-input:disabled {
+      border-color: #cbd5e1;
+      background: rgba(241, 245, 249, 0.85);
+      color: #94a3b8;
+      box-shadow: none;
+    }
 
-    .btn-clean {
-      width: 100%;
-      height: 52px;
-      border-radius: 26px;
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      font-size: 16.5px;
-      font-weight: 900;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
-      transition: transform 0.1s, box-shadow 0.1s;
-      letter-spacing: 0.5px;
-    }
-    .btn-clean:hover {
-      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.55);
-    }
-    .btn-clean:active {
-      transform: scale(0.98) translateY(2px);
-    }
+    .btn-clean {
+      width: 100%;
+      height: 52px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-size: 16.5px;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+      transition: transform 0.1s, box-shadow 0.1s;
+      letter-spacing: 0.5px;
+    }
+    .btn-clean:hover {
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.55);
+    }
+    .btn-clean:active {
+      transform: scale(0.98) translateY(2px);
+    }
 
-    .powerup-strip {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-    }
-    .powerup-btn {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.95);
-      border: 1.5px solid #bae6fd;
-      color: #0369a1;
-      font-size: 13.5px;
-      font-weight: 900;
-      padding: 10px 8px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.15s;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .dark-header .powerup-btn {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: #475569;
-      color: #38bdf8;
-    }
-    .powerup-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-    }
-    .powerup-btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
+    .powerup-strip {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .powerup-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1.5px solid #bae6fd;
+      color: #0369a1;
+      font-size: 13.5px;
+      font-weight: 900;
+      padding: 10px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .dark-header .powerup-btn {
+      background: rgba(30, 41, 59, 0.9);
+      border-color: #475569;
+      color: #38bdf8;
+    }
+    .powerup-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+    .powerup-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
 
-    .card-panel {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
-    .dark-header .card-panel {
-      background: rgba(15, 23, 42, 0.88);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-    }
-    .panel-title {
-      font-size: 16.5px;
-      font-weight: 900;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .panel-desc {
-      font-size: 13px;
-      line-height: 1.55;
-      margin-bottom: 14px;
-      opacity: 0.85;
-    }
-    .input-row {
-      display: flex;
-      gap: 10px;
-    }
-    .code-input-clean {
-      flex: 1;
-      height: 46px;
-      border: 2px solid #bae6fd;
-      border-radius: 23px;
-      padding: 0 18px;
-      font-family: ui-monospace, monospace;
-      font-size: 17px;
-      letter-spacing: 2px;
-      outline: none;
-      font-weight: 900;
-      text-transform: uppercase;
-      background: #f8fafc;
-      transition: all 0.15s;
-    }
-    .dark-header .code-input-clean {
-      background: #0f172a;
-      color: #ffffff;
-      border-color: #475569;
-    }
-    .btn-half-clean {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      border: none;
-      padding: 0 20px;
-      border-radius: 23px;
-      font-size: 13.5px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
-      transition: all 0.1s;
-      white-space: nowrap;
-    }
+    .card-panel {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    .dark-header .card-panel {
+      background: rgba(15, 23, 42, 0.88);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .panel-title {
+      font-size: 16.5px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .panel-desc {
+      font-size: 13px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+      opacity: 0.85;
+    }
 
-    .shop-grid-clean {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-    @media (max-width: 640px) {
-      .shop-grid-clean {
-        grid-template-columns: 1fr;
-      }
-    }
-    .shop-card-clean {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 18px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-      transition: transform 0.15s;
-    }
-    .dark-header .shop-card-clean {
-      background: rgba(15, 23, 42, 0.88);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-    }
-    .shop-card-clean:hover {
-      transform: translateY(-2px);
-    }
-    .shop-card-icon {
-      font-size: 38px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .shop-card-title {
-      font-size: 15px;
-      font-weight: 900;
-      margin-bottom: 6px;
-    }
-    .shop-card-desc {
-      font-size: 12px;
-      margin-bottom: 16px;
-      line-height: 1.5;
-      flex-grow: 1;
-      opacity: 0.85;
-    }
-    .shop-card-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1.5px dashed rgba(148, 163, 184, 0.3);
-      padding-top: 12px;
-    }
-    .shop-card-price {
-      font-size: 16px;
-      font-weight: 900;
-      color: #f59e0b;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .btn-buy-chip {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      border: none;
-      padding: 7px 16px;
-      border-radius: 16px;
-      font-size: 12.5px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
-    }
+    .shop-grid-clean {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 640px) {
+      .shop-grid-clean {
+        grid-template-columns: 1fr;
+      }
+    }
+    .shop-card-clean {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      transition: transform 0.15s;
+    }
+    .dark-header .shop-card-clean {
+      background: rgba(15, 23, 42, 0.88);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .shop-card-clean:hover {
+      transform: translateY(-2px);
+    }
+    .shop-card-icon {
+      font-size: 38px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .shop-card-title {
+      font-size: 15px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .shop-card-desc {
+      font-size: 12px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      flex-grow: 1;
+      opacity: 0.85;
+    }
+    .shop-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1.5px dashed rgba(148, 163, 184, 0.3);
+      padding-top: 12px;
+    }
+    .shop-card-price {
+      font-size: 16px;
+      font-weight: 900;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-buy-chip {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 16px;
+      font-size: 12.5px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
+    }
 
-    .rank-tier-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .tier-item {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
-      border-radius: 14px;
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13.5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    }
-    .dark-header .tier-item {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-    }
-    .tier-item.is-current {
-      border: 2px solid #0284c7;
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15) 0%, rgba(56, 189, 248, 0.25) 100%);
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
-      font-weight: 800;
-    }
-    .tier-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .tier-num {
-      font-weight: 900;
-      color: #0284c7;
-      width: 22px;
-      font-size: 16px;
-    }
-    .dark-header .tier-num {
-      color: #38bdf8;
-    }
-    .tier-pts {
-      font-size: 12.5px;
-      font-weight: 800;
-      background: rgba(2, 132, 199, 0.12);
-      color: #0284c7;
-      padding: 4px 10px;
-      border-radius: 10px;
-    }
-    .dark-header .tier-pts {
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-    }
+    .rank-tier-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tier-item {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      border-radius: 14px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .dark-header .tier-item {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+    .tier-item.is-current {
+      border: 2px solid #0284c7;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15) 0%, rgba(56, 189, 248, 0.25) 100%);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
+      font-weight: 800;
+    }
+    .tier-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .tier-num {
+      font-weight: 900;
+      color: #0284c7;
+      width: 22px;
+      font-size: 16px;
+    }
+    .dark-header .tier-num {
+      color: #38bdf8;
+    }
+    .tier-pts {
+      font-size: 12.5px;
+      font-weight: 800;
+      background: rgba(2, 132, 199, 0.12);
+      color: #0284c7;
+      padding: 4px 10px;
+      border-radius: 10px;
+    }
+    .dark-header .tier-pts {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
 
-    .ranking-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 8px;
-    }
-    .ranking-row {
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    }
-    .dark-header .ranking-row {
-      background: rgba(30, 41, 59, 0.85);
-      color: #ffffff;
-    }
-    .ranking-row td {
-      padding: 12px 14px;
-      font-size: 13.5px;
-      vertical-align: middle;
-    }
-    .ranking-row td:first-child {
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px;
-      font-weight: 900;
-      text-align: center;
-      width: 50px;
-    }
-    .ranking-row td:last-child {
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px;
-      text-align: right;
-      font-weight: 900;
-      color: #ea580c;
-      font-size: 15px;
-    }
-    .ranking-row.top-1 td:first-child {
-      color: #eab308;
-      font-size: 20px;
-    }
-    .ranking-row.top-2 td:first-child {
-      color: #94a3b8;
-      font-size: 18px;
-    }
-    .ranking-row.top-3 td:first-child {
-      color: #b45309;
-      font-size: 17px;
-    }
-    .ranking-row.is-player {
-      border: 2px solid #0284c7;
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.2) 100%);
-    }
+    .ranking-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+    .ranking-row {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .dark-header .ranking-row {
+      background: rgba(30, 41, 59, 0.85);
+      color: #ffffff;
+    }
+    .ranking-row td {
+      padding: 12px 14px;
+      font-size: 13.5px;
+      vertical-align: middle;
+    }
+    .ranking-row td:first-child {
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+      font-weight: 900;
+      text-align: center;
+      width: 50px;
+    }
+    .ranking-row td:last-child {
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+      text-align: right;
+      font-weight: 900;
+      color: #ea580c;
+      font-size: 15px;
+    }
+    .ranking-row.top-1 td:first-child {
+      color: #eab308;
+      font-size: 20px;
+    }
+    .ranking-row.top-2 td:first-child {
+      color: #94a3b8;
+      font-size: 18px;
+    }
+    .ranking-row.top-3 td:first-child {
+      color: #b45309;
+      font-size: 17px;
+    }
+    .ranking-row.is-player {
+      border: 2px solid #0284c7;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.2) 100%);
+    }
 
-    #countdownOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(8px);
-      z-index: 3000;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .countdown-number {
-      font-size: 120px;
-      font-weight: 900;
-      color: #38bdf8;
-      text-shadow: 0 0 30px rgba(56, 189, 248, 0.8);
-      animation: popCount 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    @keyframes popCount {
-      0% { transform: scale(0.3); opacity: 0; }
-      50% { transform: scale(1.15); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .countdown-label {
-      font-size: 22px;
-      font-weight: 900;
-      color: #ffffff;
-      margin-top: 16px;
-      letter-spacing: 2px;
-    }
+    #countdownOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .countdown-number {
+      font-size: 120px;
+      font-weight: 900;
+      color: #38bdf8;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.8);
+      animation: popCount 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popCount {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .countdown-label {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-top: 16px;
+      letter-spacing: 2px;
+    }
 
-    .lobby-box {
-      background: rgba(2, 132, 199, 0.08);
-      border: 2px dashed #0284c7;
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      margin-top: 14px;
-    }
-    .lobby-status {
-      font-size: 14px;
-      font-weight: 800;
-      color: #0369a1;
-      margin-bottom: 12px;
-    }
-    .dark-header .lobby-status {
-      color: #38bdf8;
-    }
-
-    #reveal-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(6px);
-      z-index: 2100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .reveal-content {
-      background: #ffffff;
-      color: #0f172a;
-      max-width: 420px;
-      width: 100%;
-      border-radius: 24px;
-      padding: 32px 26px;
-      text-align: center;
-      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      border: 2px solid #e0f2fe;
-    }
-    @keyframes pop {
-      0% { transform: scale(0.85); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .reveal-title {
-      font-size: 23px;
-      font-weight: 900;
-      color: #0284c7;
-      margin-bottom: 12px;
-    }
-    .reveal-desc {
-      font-size: 14px;
-      line-height: 1.65;
-      color: #334155;
-      margin-bottom: 24px;
-      word-break: break-all;
-    }
-    .btn-modal-close {
-      background: #0f172a;
-      color: #ffffff;
-      padding: 12px 32px;
-      border-radius: 24px;
-      border: none;
-      font-weight: 900;
-      font-size: 14px;
-      cursor: pointer;
-    }
-  </style>
+    #reveal-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 2100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .reveal-content {
+      background: #ffffff;
+      color: #0f172a;
+      max-width: 420px;
+      width: 100%;
+      border-radius: 24px;
+      padding: 32px 26px;
+      text-align: center;
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border: 2px solid #e0f2fe;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .reveal-title {
+      font-size: 23px;
+      font-weight: 900;
+      color: #0284c7;
+      margin-bottom: 12px;
+    }
+    .reveal-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #334155;
+      margin-bottom: 24px;
+      word-break: break-all;
+    }
+    .btn-modal-close {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 32px;
+      border-radius: 24px;
+      border: none;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body class="theme-diff-0">
 
-  <canvas id="confetti-canvas"></canvas>
-
-  <div id="countdownOverlay">
-    <div class="countdown-number" id="countdownNum">3</div>
-    <div class="countdown-label">ゲーム開始まで</div>
-  </div>
-
-  <header>
-    <div class="header-logo" onclick="location.reload()">
-      <span class="logo-badge">MI</span>
-      <span>道下タイピング</span>
-    </div>
-    <div class="header-actions">
-      <button id="soundToggleBtn" onclick="toggleSound()" class="sound-btn">🔊 音声</button>
-    </div>
-  </header>
-
-  <div class="container">
-    <div class="profile-bar">
-      <div class="profile-left">
-        <span>名義:</span>
-        <input type="text" id="playerNameInput" class="profile-name-input" value="道下ファン" maxlength="10" onchange="updatePlayerName(this.value)">
-        <span>殿</span>
-        <span class="rank-chip" id="playerRankBadge">道下以下</span>
-      </div>
-      <div class="coin-chip">
-        🪙 所持: <b id="playerCoinsText">0枚</b>
-      </div>
-    </div>
-
-    <div class="tab-bar">
-      <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
-      <div class="tab-item" id="tabBattleBtn" onclick="switchView('battle')">🔒 対戦</div>
-      <div class="tab-item" id="tabLeaderboardBtn" onclick="switchView('leaderboard')">👑 ランキング</div>
-      <div class="tab-item" id="tabShopBtn" onclick="switchView('shop')">ショップ</div>
-      <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">称号</div>
-    </div>
-
-    <!-- VIEW 1: タイピング -->
-    <div class="tab-content active" id="viewPlay">
-      <div class="diff-group">
-        <button class="diff-btn active" id="diffBtn0" onclick="selectDifficulty(0)">クソ簡単</button>
-        <button class="diff-btn" id="diffBtn1" onclick="selectDifficulty(1)">簡単</button>
-        <button class="diff-btn" id="diffBtn2" onclick="selectDifficulty(2)">ふつう</button>
-        <button class="diff-btn" id="diffBtn3" onclick="selectDifficulty(3)">難しい</button>
-        <button class="diff-btn" id="diffBtn4" onclick="selectDifficulty(4)">激ムズ</button>
-        <button class="diff-btn" id="diffBtn5" onclick="selectDifficulty(5)">悪夢</button>
-        <button class="diff-btn" id="diffHellBtn" onclick="selectDifficulty(6)">🔒 地獄</button>
-      </div>
-
-      <div class="typing-card">
-        <div class="typing-status">
-          <div class="status-left">
-            <span>⏳ 残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
-            <button class="btn-quit" id="btnQuitGame" onclick="quitCurrentGame()">✖ 辞める</button>
-          </div>
-          <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
-        </div>
-
-        <div class="battle-bar-wrap" id="battleTugBar">
-          <div class="battle-names">
-            <span id="tugPlayerName">あなた</span>
-            <span id="traitorStatusText" style="color: #0284c7;">均衡状態</span>
-            <span id="tugRivalName">対戦相手</span>
-          </div>
-          <div class="battle-track">
-            <div class="battle-fill" id="tugBarProgress"></div>
-            <div class="battle-marker" id="tugMichishitaMarker">
-              <img id="tugMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下">
-            </div>
-          </div>
-        </div>
-
-        <div class="word-area" id="wordAreaBoard">
-          <div class="michishita-popup" id="michishitaPopup">
-            <div class="michishita-popup-tag">道下参上！</div>
-            <img id="popupMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下君">
-          </div>
-
-          <div class="word-kanji" id="displayKanji">道下タイピング</div>
-          
-          <div class="word-roma-scroll-wrapper" id="romaScrollWrapper">
-            <div class="word-roma" id="displayRomaContainer">
-              <span class="untyped-char">スタートボタンを押してね (または SPACE)</span>
-            </div>
-          </div>
-        </div>
-
-        <input type="text" id="hiddenTypeInput" class="typing-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
-
-        <button class="btn-clean" id="mainStartBtn" onclick="runCountdownAndStart(false)">ゲームスタート (SPACE)</button>
-
-        <div class="powerup-strip">
-          <button id="useAgentBtn" onclick="usePowerup('agent')" class="powerup-btn" disabled>🤖 道下代行 (<span id="invAgentCount">0</span>)</button>
-          <button id="useTimeBtn" onclick="usePowerup('time')" class="powerup-btn" disabled>⏳ 集中力+10秒 (<span id="invTimeCount">0</span>)</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- VIEW 2: 🔒 対戦 -->
-    <div class="tab-content" id="viewBattle">
-      <div class="card-panel">
-        <div class="panel-title">⚔️ 🔒 クラウドリアルタイム対戦</div>
-        <p class="panel-desc">お互いに「🔒 対戦」タブを開き、**同じ4桁の部屋コード**（例: `1111`）を入力して「ルームに入る」を押してください。2人揃うと自動でマッチングし、3秒のカウントダウンを経てリアルタイム綱引きバトルが始まります！</p>
-
-        <div class="input-row" style="margin-bottom: 14px;">
-          <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: 1111)" maxlength="4">
-          <button class="btn-half-clean" onclick="joinFirebaseRoom()">ルームに入る</button>
-        </div>
-
-        <div class="lobby-box" id="firebaseLobbyArea" style="display: none;">
-          <div class="lobby-status" id="firebaseLobbyStatus">ルーム接続中...</div>
-          <button class="btn-half-clean" style="background: #ef4444;" onclick="leaveFirebaseRoom()">部屋を出る・キャンセル</button>
-        </div>
-      </div>
-
-      <div class="card-panel">
-        <div class="panel-title">📊 通算対戦戦績</div>
-        <p class="panel-desc" id="battleStatsSummary" style="font-weight: 800; color: #0284c7; font-size: 14px;">0試合 0勝 0敗 (寝返り発生: 0回)</p>
-      </div>
-    </div>
-
-    <!-- VIEW 3: 全員共通オンラインランキング -->
-    <div class="tab-content" id="viewLeaderboard">
-      <div class="card-panel">
-        <div class="panel-title">👑 全員参加！オンライン ハイスコアランキング</div>
-        <p class="panel-desc">世界中でプレイされたスコアがリアルタイムで共有される公式ランキングです（上位10名）。</p>
-        <table class="ranking-table" id="rankingTableBody"></table>
-      </div>
-    </div>
-
-    <!-- VIEW 4: 道下ショップ -->
-    <div class="tab-content" id="viewShop">
-      <div class="shop-grid-clean">
-        <div class="shop-card-clean">
-          <div class="shop-card-icon">🤖</div>
-          <div class="shop-card-title">道下のタイピング代行</div>
-          <div class="shop-card-desc">使用すると道下が自動で5秒間超速タイピングを代行してくれます。</div>
-          <div class="shop-card-bottom">
-            <span class="shop-card-price">🪙 150枚</span>
-            <button class="btn-buy-chip" onclick="buyShopItem('agent', 150)">購入</button>
-          </div>
-        </div>
-
-        <div class="shop-card-clean">
-          <div class="shop-card-icon">⏳</div>
-          <div class="shop-card-title">道下の集中力 (+10秒)</div>
-          <div class="shop-card-desc">タイピングプレイ中にボタンを押すと、その場で制限時間を10秒延長できます！</div>
-          <div class="shop-card-bottom">
-            <span class="shop-card-price">🪙 100枚</span>
-            <button class="btn-buy-chip" onclick="buyShopItem('time', 100)">購入</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- VIEW 5: 道下称号 -->
-    <div class="tab-content" id="viewProfile">
-      <div class="card-panel">
-        <div class="panel-title">🏆 うでまえ進捗（全10段階）</div>
-        <p class="panel-desc">1週間やり込んで最高到達点「革命道下」を目指せ！スコアを更新するごとに自動で昇格します。</p>
-        <div class="rank-tier-list" id="rankTierList"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="reveal-modal">
-    <div class="reveal-content">
-      <div class="reveal-title" id="resultTitle">🎉 判定結果</div>
-      <div class="reveal-desc" id="resultDesc"></div>
-      <button class="btn-modal-close" onclick="closeResultModal()">閉じる</button>
-    </div>
-  </div>
-
-  <script>
-    // Firebase無料公開テストサーバーの設定
-    const firebaseConfig = {
-      databaseURL: "https://michishita-typing-default-rtdb.firebaseio.com/"
-    };
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-
-    const CUSTOM_IMAGES = {
-      boardImage: "",
-      globalBackgrounds: {
-        0: "8bc84868-1341-47fc-9444-414530fc5614.jpg",
-        1: "f8a8b757-9a16-4cdd-90d1-de63e0eac277.jpg",
-        2: "f657b928-b852-43cf-a692-6968b8c92f8e.jpg",
-        3: "bd0aad55-20bc-4800-aca4-5e060f518842.jpg",
-        4: "47abcba0-64c2-437e-9afe-7f50eae41451.jpg",
-        5: "9d2aa72f-12d0-4a8d-a765-9483be9700a0.jpg",
-        6: "73d3cb00-13b3-4f05-846e-3fe6dda6a5f5.jpg"
-      },
-      michishitaCharacter: "5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg"
-    };
-
-    const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
-
-    const RANKS = [
-      { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
-      { id: 1, title: "ルーキー道下", minScore: 120, desc: "キーボードの配置を思い出し始めた道下。" },
-      { id: 2, title: "ビギナー級道下", minScore: 280, desc: "ゆっくりだが確実に打ち込める道下。" },
-      { id: 3, title: "レギュラー道下", minScore: 480, desc: "日々の練習を欠かさない道下。" },
-      { id: 4, title: "ベテラン道下", minScore: 720, desc: "休み時間のタイピング対決で一目置かれる存在。" },
-      { id: 5, title: "エキスパート道下", minScore: 1000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
-      { id: 6, title: "エリート級道下", minScore: 1350, desc: "鋼の精神で打ち続ける選ばれし道下。" },
-      { id: 7, title: "マスター級道下", minScore: 1750, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
-      { id: 8, title: "レジェンド級道下", minScore: 2200, desc: "神格化された道下。もはや人間離れしている。" },
-      { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
-    ];
-
-    let playerData = {
-      name: "道下ファン",
-      coins: 100,
-      highScore: 0,
-      rankId: 0,
-      inventory: { agent: 1, time: 1 },
-      stats: { matches: 0, wins: 0, losses: 0, betrayals: 0 }
-    };
-
-    let globalRankings = [];
-
-    // Firebaseから全員のランキングをリアルタイム取得
-    function initGlobalRankingSync() {
-      db.ref('global_rankings').on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        globalRankings = Object.values(data);
-        globalRankings.sort((a, b) => b.score - a.score);
-        globalRankings = globalRankings.slice(0, 10);
-        renderLeaderboard();
-      });
-    }
-
-    function recordGlobalScore(name, score, rankTitle) {
-      if (score <= 0) return;
-      const ref = db.ref('global_rankings').push();
-      ref.set({
-        name: name || "名無し道下",
-        score: score,
-        rank: rankTitle,
-        date: new Date().toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-      });
-    }
-
-    function applyCustomImages() {
-      const boardEl = document.getElementById('wordAreaBoard');
-      if (CUSTOM_IMAGES.boardImage) {
-        boardEl.style.backgroundImage = `url("${CUSTOM_IMAGES.boardImage}")`;
-        boardEl.style.backgroundSize = "100% 100%";
-      }
-      if (CUSTOM_IMAGES.michishitaCharacter) {
-        const popupImg = document.getElementById('popupMichishitaImg');
-        const tugImg = document.getElementById('tugMichishitaImg');
-        if (popupImg) popupImg.src = CUSTOM_IMAGES.michishitaCharacter;
-        if (tugImg) tugImg.src = CUSTOM_IMAGES.michishitaCharacter;
-      }
-    }
-
-    function applyBackgroundTheme(diff) {
-      const bgImg = CUSTOM_IMAGES.globalBackgrounds[diff];
-      if (bgImg) {
-        document.body.style.backgroundImage = `url("${bgImg}")`;
-        document.body.style.backgroundSize = "100% 100%";
-      } else {
-        document.body.style.backgroundImage = "";
-      }
-      for (let i = 0; i <= 6; i++) {
-        document.body.classList.remove(`theme-diff-${i}`);
-      }
-      document.body.classList.add(`theme-diff-${diff}`);
-      if (diff >= 2) document.body.classList.add('dark-header');
-      else document.body.classList.remove('dark-header');
-    }
-
-    function loadData() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) playerData = Object.assign(playerData, JSON.parse(saved));
-      } catch (e) {}
-      updateUI();
-    }
-
-    function saveData() {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData)); } catch (e) {}
-      updateUI();
-    }
-
-    function updatePlayerName(newName) {
-      if (newName && newName.trim()) {
-        playerData.name = newName.trim().substring(0, 10);
-        saveData();
-      }
-    }
-
-    function updateUI() {
-      document.getElementById('playerNameInput').value = playerData.name;
-      document.getElementById('playerCoinsText').innerText = playerData.coins.toLocaleString() + "枚";
-      const currentRank = RANKS[playerData.rankId] || RANKS[0];
-      document.getElementById('playerRankBadge').innerText = currentRank.title;
-      document.getElementById('tugPlayerName').innerText = playerData.name;
-      document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
-      document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
-      document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
-      document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
-      document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
-      const hellBtn = document.getElementById('diffHellBtn');
-      hellBtn.innerText = playerData.rankId >= 6 ? "地獄" : "🔒 地獄";
-      renderRankList();
-      renderLeaderboard();
-    }
-
-    function renderRankList() {
-      const container = document.getElementById('rankTierList');
-      container.innerHTML = '';
-      RANKS.forEach((r, idx) => {
-        const isCurrent = playerData.rankId === idx;
-        const div = document.createElement('div');
-        div.className = `tier-item ${isCurrent ? 'is-current' : ''}`;
-        div.innerHTML = `
-          <div class="tier-left">
-            <span class="tier-num">${idx + 1}</span>
-            <div>
-              <div style="font-weight: 900;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
-              <div style="font-size: 11.5px; opacity: 0.8; margin-top: 2px;">${r.desc}</div>
-            </div>
-          </div>
-          <span class="tier-pts">${r.minScore}pt〜</span>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function renderLeaderboard() {
-      const container = document.getElementById('rankingTableBody');
-      if (!container) return;
-      container.innerHTML = '';
-      if (globalRankings.length === 0) {
-        container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ誰も記録を残していません。<br>タイピングをプレイしてランキングに載せよう！</td></tr>`;
-        return;
-      }
-      globalRankings.forEach((item, index) => {
-        const tr = document.createElement('tr');
-        const pos = index + 1;
-        let medal = pos === 1 ? "🥇" : pos === 2 ? "🥈" : pos === 3 ? "🥉" : pos;
-        let rowClass = `ranking-row top-${pos <= 3 ? pos : 'other'}`;
-        if (item.name === playerData.name) rowClass += " is-player";
-        tr.className = rowClass;
-        tr.innerHTML = `<td>${medal}</td><td><div style="font-weight: 900;">${item.name}</div><div style="font-size: 11px; opacity: 0.75;">${item.rank} (${item.date || ''})</div></td><td>${item.score.toLocaleString()} pt</td>`;
-        container.appendChild(tr);
-      });
-    }
-
-    let audioCtx = null;
-    let isSoundOn = true;
-
-    function initAudio() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    function playBeep(freq, type = 'sine', duration = 0.08, vol = 0.1) {
-      if (!isSoundOn) return;
-      initAudio();
-      try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {}
-    }
-
-    function soundType() { playBeep(750, 'triangle', 0.05, 0.08); }
-    function soundCorrect() { playBeep(1200, 'sine', 0.12, 0.12); }
-    function soundMiss() { playBeep(180, 'sawtooth', 0.15, 0.15); }
-    function soundTraitor() {
-      playBeep(260, 'square', 0.2, 0.18);
-      setTimeout(() => playBeep(210, 'square', 0.3, 0.2), 150);
-    }
-    function soundFanfare() {
-      [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playBeep(f, 'sine', 0.2, 0.15), i * 120));
-    }
-
-    function toggleSound() {
-      isSoundOn = !isSoundOn;
-      document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
-    }
-
-    const WORD_DB = {
-      0: [
-        { k: "道下", r: "mitisita" }, { k: "僕", r: "boku" }, { k: "犬", r: "inu" },
-        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" }
-      ],
-      1: [
-        { k: "道下遥人", r: "mitisitaharuto" }, { k: "あの時の僕", r: "anotokinoboku" },
-        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, { k: "昼休みダッシュ", r: "hiruyasumidassyu" }
-      ],
-      2: [
-        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" }, { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
-        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" }
-      ],
-      3: [
-        { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
-        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" }
-      ],
-      4: [
-        { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
-        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" }
-      ],
-      5: [
-        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" }
-      ],
-      6: [
-        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" }
-      ]
-    };
-
-    let currentDifficulty = 2;
-    let gameState = {
-      isRunning: false,
-      isRealtimeBattle: false,
-      timeLeft: 60,
-      timerId: null,
-      score: 0,
-      opponentScore: 0,
-      totalStrokes: 0,
-      missCount: 0,
-      currentWord: null,
-      typedIndex: 0,
-      agentActive: false,
-      rivalName: "対戦相手",
-      tugBalance: 0
-    };
-
-    function selectDifficulty(diff) {
-      if (gameState.isRunning) return;
-      if (diff === 6 && playerData.rankId < 6) {
-        alert("『地獄』はうでまえ「エリート級道下」以上で解放されます！");
-        return;
-      }
-      currentDifficulty = diff;
-      applyBackgroundTheme(diff);
-      for (let i = 0; i <= 6; i++) {
-        const btn = document.getElementById(i === 6 ? 'diffHellBtn' : `diffBtn${i}`);
-        if (btn) {
-          if (i === diff) btn.classList.add('active');
-          else btn.classList.remove('active');
-        }
-      }
-    }
-
-    function runCountdownAndStart(isRealtime = false) {
-      switchView('play');
-      selectDifficulty(currentDifficulty);
-
-      const overlay = document.getElementById('countdownOverlay');
-      const numEl = document.getElementById('countdownNum');
-      overlay.style.display = 'flex';
-      let count = 3;
-      numEl.innerText = count;
-      playBeep(600, 'sine', 0.15, 0.15);
-
-      const countInterval = setInterval(() => {
-        count--;
-        if (count > 0) {
-          numEl.innerText = count;
-          playBeep(600, 'sine', 0.15, 0.15);
-        } else if (count === 0) {
-          numEl.innerText = "スタート！";
-          playBeep(900, 'sine', 0.3, 0.2);
-        } else {
-          clearInterval(countInterval);
-          overlay.style.display = 'none';
-          startGame(isRealtime);
-        }
-      }, 1000);
-    }
-
-    function startGame(isRealtime = false) {
-      if (gameState.isRunning) return;
-
-      gameState.isRunning = true;
-      gameState.isRealtimeBattle = isRealtime;
-      gameState.score = 0;
-      gameState.opponentScore = 0;
-      gameState.totalStrokes = 0;
-      gameState.missCount = 0;
-      gameState.typedIndex = 0;
-      gameState.agentActive = false;
-      gameState.tugBalance = 0;
-      gameState.timeLeft = 60;
-
-      document.getElementById('mainStartBtn').style.display = 'none';
-      document.getElementById('btnQuitGame').style.display = 'inline-block';
-
-      const tugBar = document.getElementById('battleTugBar');
-      if (isRealtime) {
-        tugBar.style.display = 'block';
-        document.getElementById('tugRivalName').innerText = gameState.rivalName;
-        updateTugMeter(0);
-      } else {
-        tugBar.style.display = 'none';
-      }
-
-      const input = document.getElementById('hiddenTypeInput');
-      input.disabled = false;
-      input.value = '';
-      input.focus();
-
-      nextPrompt();
-      updateGameStatsUI();
-
-      if (gameState.timerId) clearInterval(gameState.timerId);
-      gameState.timerId = setInterval(gameTick, 1000);
-      saveData();
-    }
-
-    function quitCurrentGame() {
-      if (!gameState.isRunning) return;
-      if (confirm("タイピングを中断して辞めますか？")) {
-        clearInterval(gameState.timerId);
-        gameState.timerId = null;
-        gameState.isRunning = false;
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/status').set('quit');
-        }
-        resetPlayUI();
-      }
-    }
-
-    function resetPlayUI() {
-      document.getElementById('hiddenTypeInput').disabled = true;
-      document.getElementById('hiddenTypeInput').value = '';
-      document.getElementById('mainStartBtn').style.display = 'block';
-      document.getElementById('mainStartBtn').innerText = 'ゲームスタート (SPACE)';
-      document.getElementById('btnQuitGame').style.display = 'none';
-      document.getElementById('michishitaPopup').classList.remove('active');
-      document.getElementById('displayKanji').innerText = '道下タイピング';
-      document.getElementById('displayRomaContainer').innerHTML = '<span class="untyped-char">スタートボタンを押してね (または SPACE)</span>';
-      document.getElementById('romaScrollWrapper').scrollLeft = 0;
-      document.getElementById('gameTimer').innerText = '60';
-      document.getElementById('gameScore').innerText = '0';
-      document.getElementById('battleTugBar').style.display = 'none';
-    }
-
-    function gameTick() {
-      gameState.timeLeft--;
-      document.getElementById('gameTimer').innerText = gameState.timeLeft;
-
-      if (gameState.isRealtimeBattle && firebaseRoomRef) {
-        firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-      }
-
-      if (gameState.timeLeft <= 0) {
-        endGame();
-      }
-    }
-
-    function nextPrompt() {
-      const list = WORD_DB[currentDifficulty] || WORD_DB[0];
-      const selected = list[Math.floor(Math.random() * list.length)];
-      gameState.currentWord = selected;
-      gameState.typedIndex = 0;
-
-      const popup = document.getElementById('michishitaPopup');
-      if (selected.k.includes("道下")) popup.classList.add('active');
-      else popup.classList.remove('active');
-
-      updatePromptDisplay();
-    }
-
-    function updatePromptDisplay() {
-      if (!gameState.currentWord) return;
-      document.getElementById('displayKanji').innerText = gameState.currentWord.k;
-      const full = gameState.currentWord.r;
-      const typed = full.substring(0, gameState.typedIndex);
-      const currentChar = full[gameState.typedIndex] || '';
-      const untypedRest = full.substring(gameState.typedIndex + 1);
-
-      const container = document.getElementById('displayRomaContainer');
-      container.innerHTML = `<span class="typed-char">${typed}</span><span class="untyped-char current-char" id="activeCharElement">${currentChar}</span><span class="untyped-char">${untypedRest}</span>`;
-
-      requestAnimationFrame(() => {
-        const activeEl = document.getElementById('activeCharElement');
-        const wrapper = document.getElementById('romaScrollWrapper');
-        if (activeEl && wrapper) {
-          const targetLeft = activeEl.offsetLeft - (wrapper.clientWidth / 2) + (activeEl.clientWidth / 2);
-          wrapper.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
-        }
-      });
-    }
-
-    function updateGameStatsUI() {
-      document.getElementById('gameTimer').innerText = gameState.timeLeft;
-      document.getElementById('gameScore').innerText = gameState.score;
-    }
-
-    const hiddenInput = document.getElementById('hiddenTypeInput');
-    hiddenInput.addEventListener('input', (e) => {
-      if (!gameState.isRunning || !gameState.currentWord) return;
-      const inputChar = e.data ? e.data.toLowerCase() : hiddenInput.value.slice(-1).toLowerCase();
-      hiddenInput.value = '';
-      const expectedChar = gameState.currentWord.r[gameState.typedIndex];
-
-      if (inputChar === expectedChar) {
-        soundType();
-        gameState.typedIndex++;
-        gameState.totalStrokes++;
-        gameState.score += 10;
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-        }
-        if (gameState.typedIndex >= gameState.currentWord.r.length) {
-          soundCorrect();
-          gameState.score += gameState.currentWord.r.length * 5;
-          if (gameState.isRealtimeBattle && firebaseRoomRef) {
-            firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-          }
-          nextPrompt();
-        } else {
-          updatePromptDisplay();
-        }
-      } else {
-        soundMiss();
-        gameState.missCount++;
-        gameState.score = Math.max(0, gameState.score - 5);
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-        }
-      }
-      updateGameStatsUI();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
-        const modal = document.getElementById('reveal-modal');
-        if (!gameState.isRunning && modal.style.display !== 'flex') {
-          e.preventDefault();
-          runCountdownAndStart(false);
-        }
-      } else if (e.code === 'Escape' && gameState.isRunning) {
-        quitCurrentGame();
-      }
-    });
-
-    function recalculateRealtimeTug() {
-      const diff = gameState.score - gameState.opponentScore;
-      let balance = Math.max(-50, Math.min(50, diff / 4));
-      const oldBalance = gameState.tugBalance;
-      gameState.tugBalance = balance;
-      updateTugMeter(balance);
-
-      if (oldBalance >= 0 && balance < -10) triggerTraitorDefection(false);
-      else if (oldBalance <= 0 && balance > 10) triggerTraitorDefection(true);
-    }
-
-    function updateTugMeter(balance) {
-      const percent = 50 + balance;
-      document.getElementById('tugBarProgress').style.width = `${percent}%`;
-      document.getElementById('tugMichishitaMarker').style.left = `${percent}%`;
-    }
-
-    function triggerTraitorDefection(toPlayer) {
-      soundTraitor();
-      playerData.stats.betrayals++;
-      const traitorText = document.getElementById('traitorStatusText');
-      if (toPlayer) {
-        traitorText.innerText = "道下が味方に寝返り！";
-        traitorText.style.color = "#0284c7";
-      } else {
-        traitorText.innerText = "裏切り発生！逃亡中！";
-        traitorText.style.color = "#ef4444";
-      }
-    }
-
-    function usePowerup(type) {
-      if (!gameState.isRunning) return;
-      if (type === 'agent' && (playerData.inventory.agent || 0) > 0 && !gameState.agentActive) {
-        playerData.inventory.agent--;
-        gameState.agentActive = true;
-        soundFanfare();
-        let agentTimer = setInterval(() => {
-          if (!gameState.isRunning || !gameState.agentActive) { clearInterval(agentTimer); return; }
-          gameState.typedIndex++;
-          gameState.totalStrokes++;
-          gameState.score += 15;
-          soundType();
-          if (gameState.typedIndex >= gameState.currentWord.r.length) { soundCorrect(); nextPrompt(); }
-          else updatePromptDisplay();
-          updateGameStatsUI();
-        }, 120);
-        setTimeout(() => { clearInterval(agentTimer); gameState.agentActive = false; }, 5000);
-      } else if (type === 'time' && (playerData.inventory.time || 0) > 0) {
-        playerData.inventory.time--;
-        gameState.timeLeft += 10;
-        soundFanfare();
-        updateGameStatsUI();
-      }
-      saveData();
-    }
-
-    function buyShopItem(item, price) {
-      if (playerData.coins < price) { alert("道下コインが足りません！"); return; }
-      playerData.coins -= price;
-      if (item === 'agent') playerData.inventory.agent = (playerData.inventory.agent || 0) + 1;
-      else if (item === 'time') playerData.inventory.time = (playerData.inventory.time || 0) + 1;
-      soundCorrect();
-      saveData();
-    }
-
-    function endGame() {
-      clearInterval(gameState.timerId);
-      gameState.timerId = null;
-      gameState.isRunning = false;
-
-      document.getElementById('hiddenTypeInput').disabled = true;
-      document.getElementById('mainStartBtn').style.display = 'block';
-      document.getElementById('mainStartBtn').innerText = 'もう一度あそぶ (SPACE)';
-      document.getElementById('btnQuitGame').style.display = 'none';
-      document.getElementById('michishitaPopup').classList.remove('active');
-
-      const earnedCoins = Math.max(5, Math.floor(gameState.score / 15) + Math.floor(gameState.totalStrokes / 10));
-      playerData.coins += earnedCoins;
-      if (gameState.score > playerData.highScore) playerData.highScore = gameState.score;
-
-      let earnedRank = RANKS[0];
-      for (let i = RANKS.length - 1; i >= 0; i--) {
-        if (gameState.score >= RANKS[i].minScore) { earnedRank = RANKS[i]; break; }
-      }
-      if (earnedRank.id > playerData.rankId) playerData.rankId = earnedRank.id;
-
-      recordGlobalScore(playerData.name, gameState.score, earnedRank.title);
-
-      let battleVictory = false;
-      if (gameState.isRealtimeBattle) {
-        playerData.stats.matches++;
-        if (gameState.score >= gameState.opponentScore) { playerData.stats.wins++; battleVictory = true; }
-        else playerData.stats.losses++;
-      }
-      saveData();
-
-      let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
-      if (gameState.isRealtimeBattle) {
-        msg = `相手スコア: <b>${gameState.opponentScore} 点</b><br><br>` + msg;
-        if (battleVictory) msg = `⚔️ <b>対戦勝利！（あなたの勝ち）</b><br><br>` + msg;
-        else msg = `💔 <b>対戦敗北…（相手の勝ち）</b><br><br>` + msg;
-      }
-      showResultModal(msg);
-    }
-
-    const confettiCanvas = document.getElementById('confetti-canvas');
-    const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
-
-    function showResultModal(htmlText) {
-      document.getElementById('resultDesc').innerHTML = htmlText;
-      document.getElementById('reveal-modal').style.display = 'flex';
-      myConfetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-      soundFanfare();
-    }
-    function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
-
-    /* =========================================================================
-        ★ Firebase クラウド同期による確実対戦エンジン ★
-        ========================================================================= */
-    let firebaseRoomRef = null;
-    let myPlayerKey = 'p_' + Math.random().toString(36).substring(2, 9);
-    let opponentPlayerKey = null;
-    let hasStartedFirebaseBattle = false;
-
-    function joinFirebaseRoom() {
-      const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
-      if (!code || code.length !== 4) {
-        alert("4桁の部屋コード（例: 1111）を入力してください！");
-        return;
-      }
-
-      document.getElementById('firebaseLobbyArea').style.display = 'block';
-      document.getElementById('firebaseLobbyStatus').innerText = `【${code}】の部屋に入室中... 相手を待っています`;
-
-      firebaseRoomRef = db.ref('typing_rooms/' + code);
-      hasStartedFirebaseBattle = false;
-
-      // 自プレイヤー情報を登録
-      firebaseRoomRef.child('players/' + myPlayerKey).set({
-        name: playerData.name,
-        score: 0,
-        status: 'waiting'
-      });
-
-      // 切断時に自動削除
-      firebaseRoomRef.child('players/' + myPlayerKey).onDisconnect().remove();
-
-      // ルーム内のプレイヤー監視
-      firebaseRoomRef.child('players').on('value', (snapshot) => {
-        const players = snapshot.val() || {};
-        const keys = Object.keys(players);
-
-        if (keys.length >= 2 && !hasStartedFirebaseBattle) {
-          opponentPlayerKey = keys.find(k => k !== myPlayerKey);
-          if (opponentPlayerKey) {
-            hasStartedFirebaseBattle = true;
-            const oppName = players[opponentPlayerKey].name || "対戦相手";
-            gameState.rivalName = oppName;
-            document.getElementById('firebaseLobbyStatus').innerText = `「${oppName}」と接続完了！`;
-
-            // 相手のスコアをリアルタイム同期監視
-            firebaseRoomRef.child('players/' + opponentPlayerKey + '/score').on('value', (scoreSnap) => {
-              gameState.opponentScore = scoreSnap.val() || 0;
-              if (gameState.isRealtimeBattle) recalculateRealtimeTug();
-            });
-
-            setTimeout(() => {
-              document.getElementById('firebaseLobbyArea').style.display = 'none';
-              runCountdownAndStart(true);
-            }, 1000);
-          }
-        }
-      });
-    }
-
-    function leaveFirebaseRoom() {
-      if (firebaseRoomRef) {
-        firebaseRoomRef.child('players/' + myPlayerKey).remove();
-        firebaseRoomRef = null;
-      }
-      document.getElementById('firebaseLobbyArea').style.display = 'none';
-      alert("部屋を出ました。");
-    }
-
-    function switchView(view) {
-      const views = ['play', 'battle', 'leaderboard', 'shop', 'profile'];
-      views.forEach(v => {
-        const section = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
-        const tabBtn = document.getElementById(`tab${v.charAt(0).toUpperCase() + v.slice(1)}Btn`);
-        if (v === view) {
-          section.classList.add('active');
-          tabBtn.classList.add('active');
-        } else {
-          section.classList.remove('active');
-          tabBtn.classList.remove('active');
-        }
-      });
-      updateUI();
-    }
-
-    window.onload = function() {
-      applyCustomImages();
-      loadData();
-      applyBackgroundTheme(0);
-      initGlobalRankingSync();
-    };
-  </script>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="countdownOverlay">
+    <div class="countdown-number" id="countdownNum">3</div>
+    <div class="countdown-label">ゲーム開始まで</div>
+  </div>
+
+  <header>
+    <div class="header-logo" onclick="location.reload()">
+      <span class="logo-badge">MI</span>
+      <span>道下タイピング</span>
+    </div>
+    <div class="header-actions">
+      <button id="soundToggleBtn" onclick="toggleSound()" class="sound-btn">🔊 音声</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="profile-bar">
+      <div class="profile-left">
+        <span>名義:</span>
+        <input type="text" id="playerNameInput" class="profile-name-input" value="道下ファン" maxlength="10" onchange="updatePlayerName(this.value)">
+        <span>殿</span>
+        <span class="rank-chip" id="playerRankBadge">道下以下</span>
+      </div>
+      <div class="coin-chip">
+        🪙 所持: <b id="playerCoinsText">0枚</b>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
+      <div class="tab-item locked" id="tabBattleBtn" onclick="alert('🔒 対戦機能は現在準備中です！お楽しみに！')">🔒 対戦</div>
+      <div class="tab-item" id="tabLeaderboardBtn" onclick="switchView('leaderboard')">👑 ランキング</div>
+      <div class="tab-item" id="tabShopBtn" onclick="switchView('shop')">ショップ</div>
+      <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">称号</div>
+    </div>
+
+    <!-- VIEW 1: タイピング -->
+    <div class="tab-content active" id="viewPlay">
+      <div class="diff-group">
+        <button class="diff-btn active" id="diffBtn0" onclick="selectDifficulty(0)">クソ簡単</button>
+        <button class="diff-btn" id="diffBtn1" onclick="selectDifficulty(1)">簡単</button>
+        <button class="diff-btn" id="diffBtn2" onclick="selectDifficulty(2)">ふつう</button>
+        <button class="diff-btn" id="diffBtn3" onclick="selectDifficulty(3)">難しい</button>
+        <button class="diff-btn" id="diffBtn4" onclick="selectDifficulty(4)">激ムズ</button>
+        <button class="diff-btn" id="diffBtn5" onclick="selectDifficulty(5)">悪夢</button>
+        <button class="diff-btn" id="diffHellBtn" onclick="selectDifficulty(6)">🔒 地獄</button>
+      </div>
+
+      <div class="typing-card">
+        <div class="typing-status">
+          <div class="status-left">
+            <span>⏳ 残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
+            <button class="btn-quit" id="btnQuitGame" onclick="quitCurrentGame()">✖ 辞める</button>
+          </div>
+          <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
+        </div>
+
+        <div class="battle-bar-wrap" id="battleTugBar">
+          <div class="battle-names">
+            <span id="tugPlayerName">あなた</span>
+            <span id="traitorStatusText" style="color: #0284c7;">均衡状態</span>
+            <span id="tugRivalName">対戦相手</span>
+          </div>
+          <div class="battle-track">
+            <div class="battle-fill" id="tugBarProgress"></div>
+            <div class="battle-marker" id="tugMichishitaMarker">
+              <img id="tugMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下">
+            </div>
+          </div>
+        </div>
+
+        <div class="word-area" id="wordAreaBoard">
+          <!-- 主役の道下（くっきり表示・文字の後ろ、背景の前） -->
+          <div class="michishita-popup" id="michishitaPopup">
+            <div class="michishita-popup-tag">道下参上！</div>
+            <img id="popupMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下君">
+          </div>
+
+          <div class="word-kanji" id="displayKanji">道下タイピング</div>
+          
+          <div class="word-roma-scroll-wrapper" id="romaScrollWrapper">
+            <div class="word-roma" id="displayRomaContainer">
+              <span class="untyped-char">スタートボタンを押してね (または SPACE)</span>
+            </div>
+          </div>
+        </div>
+
+        <input type="text" id="hiddenTypeInput" class="typing-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+
+        <button class="btn-clean" id="mainStartBtn" onclick="runCountdownAndStart(false)">ゲームスタート (SPACE)</button>
+
+        <div class="powerup-strip">
+          <button id="useAgentBtn" onclick="usePowerup('agent')" class="powerup-btn" disabled>🤖 道下代行 (<span id="invAgentCount">0</span>)</button>
+          <button id="useTimeBtn" onclick="usePowerup('time')" class="powerup-btn" disabled>⏳ 集中力+10秒 (<span id="invTimeCount">0</span>)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: 🔒 対戦（ロック中） -->
+    <div class="tab-content" id="viewBattle">
+      <div class="card-panel">
+        <div class="panel-title">🔒 メンテナンス中</div>
+        <p class="panel-desc">対戦機能は現在ロックされています。</p>
+      </div>
+    </div>
+
+    <!-- VIEW 3: 全員共通オンラインランキング -->
+    <div class="tab-content" id="viewLeaderboard">
+      <div class="card-panel">
+        <div class="panel-title">👑 全員参加！オンライン ハイスコアランキング</div>
+        <p class="panel-desc">世界中でプレイされたスコアがリアルタイムで共有される公式ランキングです（上位10名）。</p>
+        <table class="ranking-table" id="rankingTableBody"></table>
+      </div>
+    </div>
+
+    <!-- VIEW 4: 道下ショップ -->
+    <div class="tab-content" id="viewShop">
+      <div class="shop-grid-clean">
+        <div class="shop-card-clean">
+          <div class="shop-card-icon">🤖</div>
+          <div class="shop-card-title">道下のタイピング代行</div>
+          <div class="shop-card-desc">使用すると道下が自動で5秒間超速タイピングを代行してくれます。</div>
+          <div class="shop-card-bottom">
+            <span class="shop-card-price">🪙 150枚</span>
+            <button class="btn-buy-chip" onclick="buyShopItem('agent', 150)">購入</button>
+          </div>
+        </div>
+
+        <div class="shop-card-clean">
+          <div class="shop-card-icon">⏳</div>
+          <div class="shop-card-title">道下の集中力 (+10秒)</div>
+          <div class="shop-card-desc">タイピングプレイ中にボタンを押すと、その場で制限時間を10秒延長できます！</div>
+          <div class="shop-card-bottom">
+            <span class="shop-card-price">🪙 100枚</span>
+            <button class="btn-buy-chip" onclick="buyShopItem('time', 100)">購入</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 5: 道下称号 -->
+    <div class="tab-content" id="viewProfile">
+      <div class="card-panel">
+        <div class="panel-title">🏆 うでまえ進捗（全10段階）</div>
+        <p class="panel-desc">1週間やり込んで最高到達点「革命道下」を目指せ！スコアを更新するごとに自動で昇格します。</p>
+        <div class="rank-tier-list" id="rankTierList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="reveal-modal">
+    <div class="reveal-content">
+      <div class="reveal-title" id="resultTitle">🎉 判定結果</div>
+      <div class="reveal-desc" id="resultDesc"></div>
+      <button class="btn-modal-close" onclick="closeResultModal()">閉じる</button>
+    </div>
+  </div>
+
+  <script>
+    // Firebase無料公開テストサーバーの設定
+    const firebaseConfig = {
+      databaseURL: "https://michishita-typing-default-rtdb.firebaseio.com/"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    const CUSTOM_IMAGES = {
+      boardImage: "",
+      globalBackgrounds: {
+        0: "8bc84868-1341-47fc-9444-414530fc5614.jpg",
+        1: "f8a8b757-9a16-4cdd-90d1-de63e0eac277.jpg",
+        2: "f657b928-b852-43cf-a692-6968b8c92f8e.jpg",
+        3: "bd0aad55-20bc-4800-aca4-5e060f518842.jpg",
+        4: "47abcba0-64c2-437e-9afe-7f50eae41451.jpg",
+        5: "9d2aa72f-12d0-4a8d-a765-9483be9700a0.jpg",
+        6: "73d3cb00-13b3-4f05-846e-3fe6dda6a5f5.jpg"
+      },
+      michishitaCharacter: "5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg"
+    };
+
+    const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
+
+    const RANKS = [
+      { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
+      { id: 1, title: "ルーキー道下", minScore: 120, desc: "キーボードの配置を思い出し始めた道下。" },
+      { id: 2, title: "ビギナー級道下", minScore: 280, desc: "ゆっくりだが確実に打ち込める道下。" },
+      { id: 3, title: "レギュラー道下", minScore: 480, desc: "日々の練習を欠かさない道下。" },
+      { id: 4, title: "ベテラン道下", minScore: 720, desc: "休み時間のタイピング対決で一目置かれる存在。" },
+      { id: 5, title: "エキスパート道下", minScore: 1000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
+      { id: 6, title: "エリート級道下", minScore: 1350, desc: "鋼の精神で打ち続ける選ばれし道下。" },
+      { id: 7, title: "マスター級道下", minScore: 1750, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
+      { id: 8, title: "レジェンド級道下", minScore: 2200, desc: "神格化された道下。もはや人間離れしている。" },
+      { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
+    ];
+
+    let playerData = {
+      name: "道下ファン",
+      coins: 100,
+      highScore: 0,
+      rankId: 0,
+      inventory: { agent: 1, time: 1 },
+      stats: { matches: 0, wins: 0, losses: 0, betrayals: 0 }
+    };
+
+    let globalRankings = [];
+
+    // Firebaseから全員のランキングをリアルタイム取得
+    function initGlobalRankingSync() {
+      db.ref('global_rankings').on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        globalRankings = Object.values(data);
+        globalRankings.sort((a, b) => b.score - a.score);
+        globalRankings = globalRankings.slice(0, 10);
+        renderLeaderboard();
+      });
+    }
+
+    function recordGlobalScore(name, score, rankTitle) {
+      if (score <= 0) return;
+      const ref = db.ref('global_rankings').push();
+      ref.set({
+        name: name || "名無し道下",
+        score: score,
+        rank: rankTitle,
+        date: new Date().toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      });
+    }
+
+    function applyCustomImages() {
+      const boardEl = document.getElementById('wordAreaBoard');
+      if (CUSTOM_IMAGES.boardImage) {
+        boardEl.style.backgroundImage = `url("${CUSTOM_IMAGES.boardImage}")`;
+        boardEl.style.backgroundSize = "100% 100%";
+      }
+      if (CUSTOM_IMAGES.michishitaCharacter) {
+        const popupImg = document.getElementById('popupMichishitaImg');
+        const tugImg = document.getElementById('tugMichishitaImg');
+        if (popupImg) popupImg.src = CUSTOM_IMAGES.michishitaCharacter;
+        if (tugImg) tugImg.src = CUSTOM_IMAGES.michishitaCharacter;
+      }
+    }
+
+    function applyBackgroundTheme(diff) {
+      const bgImg = CUSTOM_IMAGES.globalBackgrounds[diff];
+      if (bgImg) {
+        document.body.style.backgroundImage = `url("${bgImg}")`;
+        document.body.style.backgroundSize = "100% 100%";
+      } else {
+        document.body.style.backgroundImage = "";
+      }
+      for (let i = 0; i <= 6; i++) {
+        document.body.classList.remove(`theme-diff-${i}`);
+      }
+      document.body.classList.add(`theme-diff-${diff}`);
+      if (diff >= 2) document.body.classList.add('dark-header');
+      else document.body.classList.remove('dark-header');
+    }
+
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) playerData = Object.assign(playerData, JSON.parse(saved));
+      } catch (e) {}
+      updateUI();
+    }
+
+    function saveData() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData)); } catch (e) {}
+      updateUI();
+    }
+
+    function updatePlayerName(newName) {
+      if (newName && newName.trim()) {
+        playerData.name = newName.trim().substring(0, 10);
+        saveData();
+      }
+    }
+
+    function updateUI() {
+      document.getElementById('playerNameInput').value = playerData.name;
+      document.getElementById('playerCoinsText').innerText = playerData.coins.toLocaleString() + "枚";
+      const currentRank = RANKS[playerData.rankId] || RANKS[0];
+      document.getElementById('playerRankBadge').innerText = currentRank.title;
+      document.getElementById('tugPlayerName').innerText = playerData.name;
+      document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
+      document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
+      document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
+      document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
+      document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
+      const hellBtn = document.getElementById('diffHellBtn');
+      hellBtn.innerText = playerData.rankId >= 6 ? "地獄" : "🔒 地獄";
+      renderRankList();
+      renderLeaderboard();
+    }
+
+    function renderRankList() {
+      const container = document.getElementById('rankTierList');
+      container.innerHTML = '';
+      RANKS.forEach((r, idx) => {
+        const isCurrent = playerData.rankId === idx;
+        const div = document.createElement('div');
+        div.className = `tier-item ${isCurrent ? 'is-current' : ''}`;
+        div.innerHTML = `
+          <div class="tier-left">
+            <span class="tier-num">${idx + 1}</span>
+            <div>
+              <div style="font-weight: 900;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
+              <div style="font-size: 11.5px; opacity: 0.8; margin-top: 2px;">${r.desc}</div>
+            </div>
+          </div>
+          <span class="tier-pts">${r.minScore}pt〜</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderLeaderboard() {
+      const container = document.getElementById('rankingTableBody');
+      if (!container) return;
+      container.innerHTML = '';
+      if (globalRankings.length === 0) {
+        container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ誰も記録を残していません。<br>タイピングをプレイしてランキングに載せよう！</td></tr>`;
+        return;
+      }
+      globalRankings.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const pos = index + 1;
+        let medal = pos === 1 ? "🥇" : pos === 2 ? "🥈" : pos === 3 ? "🥉" : pos;
+        let rowClass = `ranking-row top-${pos <= 3 ? pos : 'other'}`;
+        if (item.name === playerData.name) rowClass += " is-player";
+        tr.className = rowClass;
+        tr.innerHTML = `<td>${medal}</td><td><div style="font-weight: 900;">${item.name}</div><div style="font-size: 11px; opacity: 0.75;">${item.rank} (${item.date || ''})</div></td><td>${item.score.toLocaleString()} pt</td>`;
+        container.appendChild(tr);
+      });
+    }
+
+    let audioCtx = null;
+    let isSoundOn = true;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playBeep(freq, type = 'sine', duration = 0.08, vol = 0.1) {
+      if (!isSoundOn) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundType() { playBeep(750, 'triangle', 0.05, 0.08); }
+    function soundCorrect() { playBeep(1200, 'sine', 0.12, 0.12); }
+    function soundMiss() { playBeep(180, 'sawtooth', 0.15, 0.15); }
+    function soundFanfare() {
+      [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playBeep(f, 'sine', 0.2, 0.15), i * 120));
+    }
+
+    function toggleSound() {
+      isSoundOn = !isSoundOn;
+      document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
+    }
+
+    const WORD_DB = {
+      0: [
+        { k: "道下", r: "mitisita" }, { k: "僕", r: "boku" }, { k: "犬", r: "inu" },
+        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" },
+        { k: "道下ファン", r: "mitisitafan" }, { k: "天才道下", r: "tensaimitisita" }
+      ],
+      1: [
+        { k: "道下遥人", r: "mitisitaharuto" }, { k: "あの時の僕", r: "anotokinoboku" },
+        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, { k: "昼休みダッシュ", r: "hiruyasumidassyu" },
+        { k: "道下の休日", r: "mitisitanokyuzitu" }, { k: "伝説の道下", r: "densetunomitisita" }
+      ],
+      2: [
+        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" }, { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
+        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
+        { k: "主役の道下参上", r: "syuyakunomitisitasanzyo" }, { k: "道下は今日も元気です", r: "mitisitahakyoumogenkidesu" }
+      ],
+      3: [
+        { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
+        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" },
+        { k: "誰もが羨む道下の圧倒的才能", r: "daremogauyaramumitisitanoattoutekisainou" }
+      ],
+      4: [
+        { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
+        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" },
+        { k: "主役である道下様の華麗なるタイピング", r: "syuyakudearumitisitasamanokareinarutaipinku" }
+      ],
+      5: [
+        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" },
+        { k: "主役道下のオーラは教室中を包み込んでいる", r: "syuyakumitisitanoorawahakyousitutyuuwotsutsumikondeiru" }
+      ],
+      6: [
+        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" },
+        { k: "世界を揺るがす奇跡の男道下遥人の伝説を見逃すな", r: "sekaiwoyurugasukisekinootokomitisitaharutonodensetuwotinogasukuna" }
+      ]
+    };
+
+    let currentDifficulty = 2;
+    let gameState = {
+      isRunning: false,
+      timeLeft: 60,
+      timerId: null,
+      score: 0,
+      totalStrokes: 0,
+      missCount: 0,
+      currentWord: null,
+      typedIndex: 0,
+      agentActive: false
+    };
+
+    function selectDifficulty(diff) {
+      if (gameState.isRunning) return;
+      if (diff === 6 && playerData.rankId < 6) {
+        alert("『地獄』はうでまえ「エリート級道下」以上で解放されます！");
+        return;
+      }
+      currentDifficulty = diff;
+      applyBackgroundTheme(diff);
+      for (let i = 0; i <= 6; i++) {
+        const btn = document.getElementById(i === 6 ? 'diffHellBtn' : `diffBtn${i}`);
+        if (btn) {
+          if (i === diff) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      }
+    }
+
+    function runCountdownAndStart() {
+      switchView('play');
+      selectDifficulty(currentDifficulty);
+
+      const overlay = document.getElementById('countdownOverlay');
+      const numEl = document.getElementById('countdownNum');
+      overlay.style.display = 'flex';
+      let count = 3;
+      numEl.innerText = count;
+      playBeep(600, 'sine', 0.15, 0.15);
+
+      const countInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          numEl.innerText = count;
+          playBeep(600, 'sine', 0.15, 0.15);
+        } else if (count === 0) {
+          numEl.innerText = "スタート！";
+          playBeep(900, 'sine', 0.3, 0.2);
+        } else {
+          clearInterval(countInterval);
+          overlay.style.display = 'none';
+          startGame();
+        }
+      }, 1000);
+    }
+
+    function startGame() {
+      if (gameState.isRunning) return;
+
+      gameState.isRunning = true;
+      gameState.score = 0;
+      gameState.totalStrokes = 0;
+      gameState.missCount = 0;
+      gameState.typedIndex = 0;
+      gameState.agentActive = false;
+      gameState.timeLeft = 60;
+
+      document.getElementById('mainStartBtn').style.display = 'none';
+      document.getElementById('btnQuitGame').style.display = 'inline-block';
+
+      const input = document.getElementById('hiddenTypeInput');
+      input.disabled = false;
+      input.value = '';
+      input.focus();
+
+      nextPrompt();
+      updateGameStatsUI();
+
+      if (gameState.timerId) clearInterval(gameState.timerId);
+      gameState.timerId = setInterval(gameTick, 1000);
+      saveData();
+    }
+
+    function quitCurrentGame() {
+      if (!gameState.isRunning) return;
+      if (confirm("タイピングを中断して辞めますか？")) {
+        clearInterval(gameState.timerId);
+        gameState.timerId = null;
+        gameState.isRunning = false;
+        resetPlayUI();
+      }
+    }
+
+    function resetPlayUI() {
+      document.getElementById('hiddenTypeInput').disabled = true;
+      document.getElementById('hiddenTypeInput').value = '';
+      document.getElementById('mainStartBtn').style.display = 'block';
+      document.getElementById('mainStartBtn').innerText = 'ゲームスタート (SPACE)';
+      document.getElementById('btnQuitGame').style.display = 'none';
+      document.getElementById('michishitaPopup').classList.remove('active');
+      document.getElementById('displayKanji').innerText = '道下タイピング';
+      document.getElementById('displayRomaContainer').innerHTML = '<span class="untyped-char">スタートボタンを押してね (または SPACE)</span>';
+      document.getElementById('romaScrollWrapper').scrollLeft = 0;
+      document.getElementById('gameTimer').innerText = '60';
+      document.getElementById('gameScore').innerText = '0';
+    }
+
+    function gameTick() {
+      gameState.timeLeft--;
+      document.getElementById('gameTimer').innerText = gameState.timeLeft;
+      if (gameState.timeLeft <= 0) {
+        endGame();
+      }
+    }
+
+    function nextPrompt() {
+      const list = WORD_DB[currentDifficulty] || WORD_DB[0];
+      const selected = list[Math.floor(Math.random() * list.length)];
+      gameState.currentWord = selected;
+      gameState.typedIndex = 0;
+
+      const popup = document.getElementById('michishitaPopup');
+      if (selected.k.includes("道下")) popup.classList.add('active');
+      else popup.classList.remove('active');
+
+      updatePromptDisplay();
+    }
+
+    function updatePromptDisplay() {
+      if (!gameState.currentWord) return;
+      document.getElementById('displayKanji').innerText = gameState.currentWord.k;
+      const full = gameState.currentWord.r;
+      const typed = full.substring(0, gameState.typedIndex);
+      const currentChar = full[gameState.typedIndex] || '';
+      const untypedRest = full.substring(gameState.typedIndex + 1);
+
+      const container = document.getElementById('displayRomaContainer');
+      container.innerHTML = `<span class="typed-char">${typed}</span><span class="untyped-char current-char" id="activeCharElement">${currentChar}</span><span class="untyped-char">${untypedRest}</span>`;
+
+      requestAnimationFrame(() => {
+        const activeEl = document.getElementById('activeCharElement');
+        const wrapper = document.getElementById('romaScrollWrapper');
+        if (activeEl && wrapper) {
+          const targetLeft = activeEl.offsetLeft - (wrapper.clientWidth / 2) + (activeEl.clientWidth / 2);
+          wrapper.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+        }
+      });
+    }
+
+    function updateGameStatsUI() {
+      document.getElementById('gameTimer').innerText = gameState.timeLeft;
+      document.getElementById('gameScore').innerText = gameState.score;
+    }
+
+    const hiddenInput = document.getElementById('hiddenTypeInput');
+    hiddenInput.addEventListener('input', (e) => {
+      if (!gameState.isRunning || !gameState.currentWord) return;
+      const inputChar = e.data ? e.data.toLowerCase() : hiddenInput.value.slice(-1).toLowerCase();
+      hiddenInput.value = '';
+      const expectedChar = gameState.currentWord.r[gameState.typedIndex];
+
+      if (inputChar === expectedChar) {
+        soundType();
+        gameState.typedIndex++;
+        gameState.totalStrokes++;
+        gameState.score += 10;
+        if (gameState.typedIndex >= gameState.currentWord.r.length) {
+          soundCorrect();
+          gameState.score += gameState.currentWord.r.length * 5;
+          nextPrompt();
+        } else {
+          updatePromptDisplay();
+        }
+      } else {
+        soundMiss();
+        gameState.missCount++;
+        gameState.score = Math.max(0, gameState.score - 5);
+      }
+      updateGameStatsUI();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        const modal = document.getElementById('reveal-modal');
+        if (!gameState.isRunning && modal.style.display !== 'flex') {
+          e.preventDefault();
+          runCountdownAndStart();
+        }
+      } else if (e.code === 'Escape' && gameState.isRunning) {
+        quitCurrentGame();
+      }
+    });
+
+    function usePowerup(type) {
+      if (!gameState.isRunning) return;
+      if (type === 'agent' && (playerData.inventory.agent || 0) > 0 && !gameState.agentActive) {
+        playerData.inventory.agent--;
+        gameState.agentActive = true;
+        soundFanfare();
+        let agentTimer = setInterval(() => {
+          if (!gameState.isRunning || !gameState.agentActive) { clearInterval(agentTimer); return; }
+          gameState.typedIndex++;
+          gameState.totalStrokes++;
+          gameState.score += 15;
+          soundType();
+          if (gameState.typedIndex >= gameState.currentWord.r.length) { soundCorrect(); nextPrompt(); }
+          else updatePromptDisplay();
+          updateGameStatsUI();
+        }, 120);
+        setTimeout(() => { clearInterval(agentTimer); gameState.agentActive = false; }, 5000);
+      } else if (type === 'time' && (playerData.inventory.time || 0) > 0) {
+        playerData.inventory.time--;
+        gameState.timeLeft += 10;
+        soundFanfare();
+        updateGameStatsUI();
+      }
+      saveData();
+    }
+
+    function buyShopItem(item, price) {
+      if (playerData.coins < price) { alert("道下コインが足りません！"); return; }
+      playerData.coins -= price;
+      if (item === 'agent') playerData.inventory.agent = (playerData.inventory.agent || 0) + 1;
+      else if (item === 'time') playerData.inventory.time = (playerData.inventory.time || 0) + 1;
+      soundCorrect();
+      saveData();
+    }
+
+    function endGame() {
+      clearInterval(gameState.timerId);
+      gameState.timerId = null;
+      gameState.isRunning = false;
+
+      document.getElementById('hiddenTypeInput').disabled = true;
+      document.getElementById('mainStartBtn').style.display = 'block';
+      document.getElementById('mainStartBtn').innerText = 'もう一度あそぶ (SPACE)';
+      document.getElementById('btnQuitGame').style.display = 'none';
+      document.getElementById('michishitaPopup').classList.remove('active');
+
+      const earnedCoins = Math.max(5, Math.floor(gameState.score / 15) + Math.floor(gameState.totalStrokes / 10));
+      playerData.coins += earnedCoins;
+      if (gameState.score > playerData.highScore) playerData.highScore = gameState.score;
+
+      let earnedRank = RANKS[0];
+      for (let i = RANKS.length - 1; i >= 0; i--) {
+        if (gameState.score >= RANKS[i].minScore) { earnedRank = RANKS[i]; break; }
+      }
+      if (earnedRank.id > playerData.rankId) playerData.rankId = earnedRank.id;
+
+      recordGlobalScore(playerData.name, gameState.score, earnedRank.title);
+      saveData();
+
+      let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
+      showResultModal(msg);
+    }
+
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+
+    function showResultModal(htmlText) {
+      document.getElementById('resultDesc').innerHTML = htmlText;
+      document.getElementById('reveal-modal').style.display = 'flex';
+      myConfetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      soundFanfare();
+    }
+    function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
+
+    let globalRankings = [];
+
+    function initGlobalRankingSync() {
+      db.ref('global_rankings').on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        globalRankings = Object.values(data);
+        globalRankings.sort((a, b) => b.score - a.score);
+        globalRankings = globalRankings.slice(0, 10);
+        renderLeaderboard();
+      });
+    }
+
+    function recordGlobalScore(name, score, rankTitle) {
+      if (score <= 0) return;
+      const ref = db.ref('global_rankings').push();
+      ref.set({
+        name: name || "名無し道下",
+        score: score,
+        rank: rankTitle,
+        date: new Date().toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      });
+    }
+
+    function applyCustomImages() {
+      const boardEl = document.getElementById('wordAreaBoard');
+      if (CUSTOM_IMAGES.boardImage) {
+        boardEl.style.backgroundImage = `url("${CUSTOM_IMAGES.boardImage}")`;
+        boardEl.style.backgroundSize = "100% 100%";
+      }
+      if (CUSTOM_IMAGES.michishitaCharacter) {
+        const popupImg = document.getElementById('popupMichishitaImg');
+        const tugImg = document.getElementById('tugMichishitaImg');
+        if (popupImg) popupImg.src = CUSTOM_IMAGES.michishitaCharacter;
+        if (tugImg) tugImg.src = CUSTOM_IMAGES.michishitaCharacter;
+      }
+    }
+
+    function applyBackgroundTheme(diff) {
+      const bgImg = CUSTOM_IMAGES.globalBackgrounds[diff];
+      if (bgImg) {
+        document.body.style.backgroundImage = `url("${bgImg}")`;
+        document.body.style.backgroundSize = "100% 100%";
+      } else {
+        document.body.style.backgroundImage = "";
+      }
+      for (let i = 0; i <= 6; i++) {
+        document.body.classList.remove(`theme-diff-${i}`);
+      }
+      document.body.classList.add(`theme-diff-${diff}`);
+      if (diff >= 2) document.body.classList.add('dark-header');
+      else document.body.classList.remove('dark-header');
+    }
+
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) playerData = Object.assign(playerData, JSON.parse(saved));
+      } catch (e) {}
+      updateUI();
+    }
+
+    function saveData() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData)); } catch (e) {}
+      updateUI();
+    }
+
+    function updatePlayerName(newName) {
+      if (newName && newName.trim()) {
+        playerData.name = newName.trim().substring(0, 10);
+        saveData();
+      }
+    }
+
+    function updateUI() {
+      document.getElementById('playerNameInput').value = playerData.name;
+      document.getElementById('playerCoinsText').innerText = playerData.coins.toLocaleString() + "枚";
+      const currentRank = RANKS[playerData.rankId] || RANKS[0];
+      document.getElementById('playerRankBadge').innerText = currentRank.title;
+      document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
+      document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
+      document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
+      document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
+      const hellBtn = document.getElementById('diffHellBtn');
+      hellBtn.innerText = playerData.rankId >= 6 ? "地獄" : "🔒 地獄";
+      renderRankList();
+      renderLeaderboard();
+    }
+
+    function renderRankList() {
+      const container = document.getElementById('rankTierList');
+      container.innerHTML = '';
+      RANKS.forEach((r, idx) => {
+        const isCurrent = playerData.rankId === idx;
+        const div = document.createElement('div');
+        div.className = `tier-item ${isCurrent ? 'is-current' : ''}`;
+        div.innerHTML = `
+          <div class="tier-left">
+            <span class="tier-num">${idx + 1}</span>
+            <div>
+              <div style="font-weight: 900;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
+              <div style="font-size: 11.5px; opacity: 0.8; margin-top: 2px;">${r.desc}</div>
+            </div>
+          </div>
+          <span class="tier-pts">${r.minScore}pt〜</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderLeaderboard() {
+      const container = document.getElementById('rankingTableBody');
+      if (!container) return;
+      container.innerHTML = '';
+      if (globalRankings.length === 0) {
+        container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ誰も記録を残していません。<br>タイピングをプレイしてランキングに載せよう！</td></tr>`;
+        return;
+      }
+      globalRankings.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const pos = index + 1;
+        let medal = pos === 1 ? "🥇" : pos === 2 ? "🥈" : pos === 3 ? "🥉" : pos;
+        let rowClass = `ranking-row top-${pos <= 3 ? pos : 'other'}`;
+        if (item.name === playerData.name) rowClass += " is-player";
+        tr.className = rowClass;
+        tr.innerHTML = `<td>${medal}</td><td><div style="font-weight: 900;">${item.name}</div><div style="font-size: 11px; opacity: 0.75;">${item.rank} (${item.date || ''})</div></td><td>${item.score.toLocaleString()} pt</td>`;
+        container.appendChild(tr);
+      });
+    }
+
+    function switchView(view) {
+      if (view === 'battle') {
+        alert("🔒 対戦機能は現在準備中です！");
+        return;
+      }
+      const views = ['play', 'battle', 'leaderboard', 'shop', 'profile'];
+      views.forEach(v => {
+        const section = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        const tabBtn = document.getElementById(`tab${v.charAt(0).toUpperCase() + v.slice(1)}Btn`);
+        if (v === view) {
+          section.classList.add('active');
+          tabBtn.classList.add('active');
+        } else {
+          section.classList.remove('active');
+          tabBtn.classList.remove('active');
+        }
+      });
+      updateUI();
+    }
+
+    window.onload = function() {
+      applyCustomImages();
+      loadData();
+      applyBackgroundTheme(0);
+      initGlobalRankingSync();
+    };
+  </script>
 </body>
 </html>
