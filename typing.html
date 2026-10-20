@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>道下打 - 道下ファンクラブ公式タイピング</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      background-color: #f4f7f9;
+      color: #333333;
+      padding-bottom: 60px;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2000;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e1e8ed;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 800;
+      color: #1e293b;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-family: "Impact", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      font-style: italic;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
+      letter-spacing: 0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .btn-return {
+      background: #f1f5f9;
+      color: #0284c7;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 15px rgba(0,0,0,0.04);
+    }
+
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #000;
+      overflow: hidden;
+    }
+    .slider-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge-campaign {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .badge-blue {
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .badge-white {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      font-size: 15px;
+      font-weight: 900;
+      padding: 5px 12px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0 20px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #cbd5e1;
+    }
+    .dot.active {
+      background: #0284c7;
+      transform: scale(1.25);
+    }
+
+    .copy-section {
+      text-align: center;
+      padding: 0 20px 20px;
+    }
+    .copy-main {
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    .copy-main .highlight {
+      color: #0284c7;
+    }
+    .copy-sub {
+      font-size: 13.5px;
+      color: #64748b;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .user-profile-bar {
+      margin: 0 20px 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .player-name-box {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .name-input-inline {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 13px;
+      font-weight: 800;
+      width: 90px;
+      color: #0284c7;
+      background: #ffffff;
+      outline: none;
+    }
+    .badge-rank-chip {
+      background: #e0f2fe;
+      color: #0284c7;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid #bae6fd;
+    }
+    .profile-stats-inline {
+      font-size: 12px;
+      font-weight: 800;
+      color: #64748b;
+    }
+    .profile-stats-inline b {
+      color: #0284c7;
+    }
+
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+      margin: 0 20px 22px;
+    }
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: #64748b;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .tab-item.active {
+      color: #0284c7;
+    }
+    .tab-item.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 3px;
+      background: #0284c7;
+      border-radius: 2px;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 0 20px 40px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    .diff-selector {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+      margin-bottom: 16px;
+    }
+    .diff-selector::-webkit-scrollbar {
+      display: none;
+    }
+    .diff-chip {
+      flex: 0 0 auto;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+    .diff-chip.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+    }
+
+    .typing-card-frame {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      position: relative;
+    }
+    .typing-status-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 800;
+      color: #64748b;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+    .typing-status-row b {
+      font-size: 16px;
+    }
+    .status-blue {
+      color: #0284c7;
+    }
+    .status-orange {
+      color: #ea580c;
+    }
+
+    .tug-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .tug-names {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .tug-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      position: relative;
+    }
+    .tug-fill {
+      height: 100%;
+      width: 50%;
+      background: #0284c7;
+      border-radius: 4px;
+      transition: width 0.25s ease;
+    }
+    .tug-face {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #0284c7;
+      overflow: hidden;
+      background: #ffffff;
+      transition: left 0.25s ease;
+    }
+    .tug-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .target-word-container {
+      text-align: center;
+      margin-bottom: 18px;
+      min-height: 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .target-kanji {
+      font-size: 21px;
+      font-weight: 900;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .target-roma {
+      font-family: monospace;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .typed-char {
+      color: #0284c7;
+    }
+    .untyped-char {
+      color: #94a3b8;
+    }
+
+    .typing-input-field {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      border: 2px solid #0284c7;
+      outline: none;
+      text-align: center;
+      font-family: monospace;
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f172a;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.15);
+      margin-bottom: 14px;
+    }
+    .typing-input-field:disabled {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      color: #94a3b8;
+      box-shadow: none;
+    }
+
+    .btn-main-action {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn-main-action:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
+    .rotation-area {
+      position: relative;
+      width: 100%;
+      height: 110px;
+      margin-top: 10px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .rotating-michi {
+      width: 85px;
+      height: 85px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 2px solid #0284c7;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: none;
+    }
+    .rotating-michi img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .rotating-michi.active {
+      display: block;
+      animation: swingCorner 1.2s infinite ease-in-out alternate;
+    }
+    .rotating-michi.fast {
+      animation-duration: 0.65s;
+    }
+    @keyframes swingCorner {
+      0% {
+        transform-origin: bottom left;
+        transform: rotate(-45deg);
+      }
+      50% {
+        transform-origin: bottom center;
+        transform: rotate(0deg);
+      }
+      100% {
+        transform-origin: bottom right;
+        transform: rotate(45deg);
+      }
+    }
+
+    .vs-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .vs-panel-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+    .vs-panel-desc {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+    .vs-input-wrap {
+      display: flex;
+      gap: 8px;
+    }
+    .vs-code-box {
+      flex: 1;
+      height: 42px;
+      border: 1px solid #cbd5e1;
+      border-radius: 21px;
+      padding: 0 14px;
+      font-family: monospace;
+      font-size: 13px;
+      outline: none;
+    }
+    .btn-vs-go {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 0 16px;
+      border-radius: 21px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .code-display {
+      background: #f8fafc;
+      border: 1px dashed #0284c7;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      user-select: all;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 12px;
+    }
+    .photo-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+    .photo-frame {
+      width: 100%;
+      height: 95px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .badge-unlocked {
+      font-size: 10px;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 2px;
+    }
+    .badge-locked {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+    .medal-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+    .medal-req {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .photo-card.is-locked {
+      opacity: 0.55;
+      filter: grayscale(1);
+    }
+
+    #reveal-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .reveal-content {
+      background: #ffffff;
+      max-width: 380px;
+      width: 100%;
+      border-radius: 20px;
+      padding: 28px 22px;
+      text-align: center;
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes pop {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .reveal-title {
+      font-size: 21px;
+      font-weight: 900;
+      color: #0284c7;
+      margin-bottom: 10px;
+    }
+    .reveal-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #4b5563;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+    .btn-modal-close {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 11px 26px;
+      border-radius: 22px;
+      border: none;
+      font-weight: 800;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <header>
+      <a href="index.html" class="header-logo">
+        <span class="logo-badge">MI</span>
+        <span>道下打 公式特設</span>
+      </a>
+      <div class="header-actions">
+        <a href="index.html" class="btn-return">← 本館へ</a>
+      </div>
+    </header>
+
+    <div class="slider-container">
+      <div class="badge-campaign">
+        <span class="badge-blue">道下遥人</span>
+        <span class="badge-white">タイピング対戦</span>
+      </div>
+      <img src="m3.jpg" alt="道下打">
+    </div>
+
+    <div class="slider-dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <div class="copy-section">
+      <div class="copy-main">
+        未来ある<br>
+        <span class="highlight">道下の一歩</span>に。
+      </div>
+      <p class="copy-sub">道下に出来ることなら誰でも出来る。</p>
+    </div>
+
+    <div class="user-profile-bar">
+      <div class="profile-info">
+        <div class="player-name-box">
+          <input type="text" id="playerNameInput" class="name-input-inline" value="道下ファン" maxlength="8" onchange="savePlayerName()">
+          <span>殿</span>
+        </div>
+        <span class="badge-rank-chip" id="playerRankBadge">道下以下</span>
+      </div>
+      <div class="profile-stats-inline">
+        コイン: <b id="coinCount">0枚</b>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab-item active" id="tabPlayBtn" onclick="switchTab('play')">道下打</div>
+      <div class="tab-item" id="tabVsBtn" onclick="switchTab('vs')">道下 奪還</div>
+      <div class="tab-item" id="tabRankBtn" onclick="switchTab('rank')">道下 称号</div>
+    </div>
+
+    <div class="tab-content active" id="tabPlay">
+      <div class="diff-selector">
+        <button class="diff-chip active" id="diff0" onclick="setDiff(0)">クソ簡単</button>
+        <button class="diff-chip" id="diff1" onclick="setDiff(1)">簡単</button>
+        <button class="diff-chip" id="diff2" onclick="setDiff(2)">ふつう</button>
+        <button class="diff-chip" id="diff3" onclick="setDiff(3)">難しい</button>
+        <button class="diff-chip" id="diff4" onclick="setDiff(4)">激ムズ</button>
+        <button class="diff-chip" id="diff5" onclick="setDiff(5)">悪夢</button>
+        <button class="diff-chip" id="diff6" onclick="setDiff(6)">地獄</button>
+      </div>
+
+      <div class="typing-card-frame">
+        <div class="typing-status-row">
+          <span>残り時間: <b class="status-blue" id="timerEl">60</b> 秒</span>
+          <span>スコア: <b class="status-orange" id="scoreEl">0</b></span>
+        </div>
+
+        <div class="tug-box" id="tugBox">
+          <div class="tug-names">
+            <span id="playerSideText">あなた</span>
+            <span id="enemySideText">対戦相手</span>
+          </div>
+          <div class="tug-bar">
+            <div class="tug-fill" id="tugFill"></div>
+            <div class="tug-face" id="tugFace">
+              <img src="m3.jpg" alt="道下">
+            </div>
+          </div>
+        </div>
+
+        <div class="target-word-container">
+          <div class="target-kanji" id="targetKanji">スタートボタンを押してね</div>
+          <div class="target-roma" id="targetRoma">
+            <span class="typed-char" id="typedRoma"></span><span class="untyped-char" id="untypedRoma">press start</span>
+          </div>
+        </div>
+
+        <input type="text" id="typingInput" class="typing-input-field" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+
+        <button class="btn-main-action" id="btnAction" onclick="handleStart()">ゲームスタート</button>
+
+        <div class="rotation-area">
+          <div class="rotating-michi" id="rotatingMichi">
+            <img src="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" alt="回転道下">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tabVs">
+      <div class="vs-panel">
+        <div class="vs-panel-title">対戦コードを入力して道下を奪還</div>
+        <p class="vs-panel-desc">友達から受け取ったコードを貼り付けると、相手の打鍵ゴーストと道下の寝返りバトルが始まります。</p>
+        <div class="vs-input-wrap">
+          <input type="text" id="vsInputCode" class="vs-code-box" placeholder="MICH-XXXXX">
+          <button class="btn-vs-go" onclick="startVsGame()">対戦開始</button>
+        </div>
+      </div>
+
+      <div class="vs-panel">
+        <div class="vs-panel-title">あなたの挑戦状コード</div>
+        <p class="vs-panel-desc">ゲームプレイ後に自動生成されます。コピーして友達に送りましょう。</p>
+        <div class="code-display" id="myCodeDisplay">（ソロプレイ後に発行されます）</div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tabRank">
+      <div class="photo-grid" id="rankMedalGrid">
+      </div>
+    </div>
+  </div>
+
+  <div id="reveal-modal">
+    <div class="reveal-content">
+      <div class="reveal-title" id="revealTitle">🎉 結果発表</div>
+      <div class="reveal-desc" id="revealDesc"></div>
+      <button class="btn-modal-close" onclick="closeModal()">閉じる</button>
+    </div>
+  </div>
+
+  <script>
+    const RANKS = [
+      "道下以下",
+      "ルーキー道下",
+      "ビギナー級道下",
+      "レギュラー道下",
+      "ベテラン道下",
+      "エキスパート道下",
+      "エリート級道下",
+      "マスター級道下",
+      "レジェンド級道下",
+      "革命道下"
+    ];
+
+    const MEDAL_DATA = [
+      { id: "m0", name: "脱・道下以下", req: "ルーキー道下に到達", img: "m3.jpg" },
+      { id: "m1", name: "常連道下", req: "ベテラン道下に到達", img: "0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" },
+      { id: "m2", name: "マスター道下", req: "マスター級道下に到達", img: "48ac578f-7e9b-458a-a0ba-72f830a9d508.jpg" },
+      { id: "m3", name: "革命道下", req: "最高称号に到達", img: "5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" }
+    ];
+
+    const WORD_LISTS = [
+      [
+        { kanji: "道下", roma: "mitisita" },
+        { kanji: "僕", roma: "boku" },
+        { kanji: "消しゴム", roma: "kesigomu" }
+      ],
+      [
+        { kanji: "あの時の僕", roma: "anotokinoboku" },
+        { kanji: "道下遥人", roma: "mitisitaharuto" },
+        { kanji: "黒板アート", roma: "kokuban-ato" }
+      ],
+      [
+        { kanji: "授業中にちぎった消しゴム", roma: "zyugyoutyuunitigittakesigomu" },
+        { kanji: "公式アクリルスタンド", roma: "kousikiakurirusutando" },
+        { kanji: "未来ある道下の一歩に", roma: "miraiarumitisitanoipponi" }
+      ],
+      [
+        { kanji: "お前の方が借り多いけどありがとう", roma: "omaenohougakarioikedoarigatou" },
+        { kanji: "文化祭が終わってしまい悲しむ道下", roma: "bunkasaigaowattesimaitasikanasimumitisita" }
+      ],
+      [
+        { kanji: "道下に出来ることなら誰でも出来る", roma: "mitisitanidekirukotonaradaredemodekiru" },
+        { kanji: "一週間やりこんで革命道下に到達せよ", roma: "issyuukanyarikondekakumeimitisitanitoutatuseyo" }
+      ],
+      [
+        { kanji: "道下ファンクラブ特設サイト炎上寸前", roma: "mitisitafankurabutokusetusaitoenzousunzen" },
+        { kanji: "左右に傾くうざい道下に惑わされるな", roma: "sayuunikatamukuuzaimitisitanimadowasareruna" }
+      ],
+      [
+        { kanji: "道下打地獄モード完全制覇人類未踏の革命道下覚醒", roma: "mitisitautidigokum-dokanzenseihazinruimitounokakumeimitisitakakusei" }
+      ]
+    ];
+
+    let userState = {
+      name: "道下ファン",
+      rankIdx: 0,
+      coins: 0,
+      highScore: 0,
+      unlockedMedals: []
+    };
+
+    function loadState() {
+      const saved = localStorage.getItem("MICHISHITA_SAVE_V1");
+      if (saved) {
+        try {
+          userState = Object.assign(userState, JSON.parse(saved));
+        } catch (e) {}
+      }
+      renderHeaderProfile();
+      renderMedals();
+    }
+
+    function saveState() {
+      localStorage.setItem("MICHISHITA_SAVE_V1", JSON.stringify(userState));
+      renderHeaderProfile();
+      renderMedals();
+    }
+
+    function savePlayerName() {
+      const val = document.getElementById("playerNameInput").value.trim();
+      if (val) {
+        userState.name = val;
+        saveState();
+      }
+    }
+
+    function renderHeaderProfile() {
+      document.getElementById("playerNameInput").value = userState.name;
+      document.getElementById("playerRankBadge").innerText = RANKS[userState.rankIdx];
+      document.getElementById("coinCount").innerText = userState.coins + "枚";
+    }
+
+    function renderMedals() {
+      const grid = document.getElementById("rankMedalGrid");
+      grid.innerHTML = "";
+      MEDAL_DATA.forEach((m, idx) => {
+        const isUnlocked = userState.unlockedMedals.includes(m.id);
+        const card = document.createElement("div");
+        card.className = "photo-card" + (isUnlocked ? "" : " is-locked");
+        card.innerHTML = `
+          <div class="photo-frame">
+            <img src="${m.img}" alt="${m.name}">
+          </div>
+          <span class="${isUnlocked ? 'badge-unlocked' : 'badge-locked'}">
+            ${isUnlocked ? '✓ 獲得済み' : '🔒 未獲得'}
+          </span>
+          <div class="medal-title">${m.name}</div>
+          <div class="medal-req">${m.req}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function switchTab(t) {
+      ['play', 'vs', 'rank'].forEach(tabName => {
+        const btn = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Btn`);
+        const content = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+        if (tabName === t) {
+          btn.classList.add("active");
+          content.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+          content.classList.remove("active");
+        }
+      });
+    }
+
+    let activeDiff = 0;
+    function setDiff(idx) {
+      activeDiff = idx;
+      for (let i = 0; i < 7; i++) {
+        document.getElementById(`diff${i}`).classList.remove("active");
+      }
+      document.getElementById(`diff${idx}`).classList.add("active");
+    }
+
+    let isGameRunning = false;
+    let timerRef = null;
+    let currentSeconds = 60;
+    let currentScore = 0;
+    let targetObj = null;
+    let charProgress = 0;
+    let vsModeActive = false;
+    let ghostEnemy = null;
+    let enemyCurrentScore = 0;
+
+    function handleStart(vsData = null) {
+      isGameRunning = true;
+      currentSeconds = 60;
+      currentScore = 0;
+      vsModeActive = !!vsData;
+      ghostEnemy = vsData;
+      enemyCurrentScore = 0;
+
+      document.getElementById("timerEl").innerText = currentSeconds;
+      document.getElementById("scoreEl").innerText = currentScore;
+      document.getElementById("btnAction").style.display = "none";
+
+      const tug = document.getElementById("tugBox");
+      if (vsModeActive) {
+        tug.style.display = "block";
+        document.getElementById("playerSideText").innerText = userState.name;
+        document.getElementById("enemySideText").innerText = vsData.name;
+        updateTugVisual();
+      } else {
+        tug.style.display = "none";
+      }
+
+      const rotator = document.getElementById("rotatingMichi");
+      rotator.classList.add("active");
+      if (activeDiff >= 4) {
+        rotator.classList.add("fast");
+      } else {
+        rotator.classList.remove("fast");
+      }
+
+      const input = document.getElementById("typingInput");
+      input.disabled = false;
+      input.value = "";
+      input.focus();
+
+      pullNextWord();
+
+      if (timerRef) clearInterval(timerRef);
+      timerRef = setInterval(() => {
+        currentSeconds--;
+        document.getElementById("timerEl").innerText = currentSeconds;
+
+        if (vsModeActive && ghostEnemy) {
+          const pastSec = 60 - currentSeconds;
+          enemyCurrentScore = ghostEnemy.timeline[pastSec] || ghostEnemy.timeline[ghostEnemy.timeline.length - 1] || 0;
+          updateTugVisual();
+        }
+
+        if (currentSeconds <= 0) {
+          finishGame();
+        }
+      }, 1000);
+    }
+
+    function pullNextWord() {
+      const pool = WORD_LISTS[activeDiff];
+      targetObj = pool[Math.floor(Math.random() * pool.length)];
+      charProgress = 0;
+      refreshWordUI();
+    }
+
+    function refreshWordUI() {
+      document.getElementById("targetKanji").innerText = targetObj.kanji;
+      document.getElementById("typedRoma").innerText = targetObj.roma.substring(0, charProgress);
+      document.getElementById("untypedRoma").innerText = targetObj.roma.substring(charProgress);
+    }
+
+    const typingBox = document.getElementById("typingInput");
+    typingBox.addEventListener("input", () => {
+      if (!isGameRunning || !targetObj) return;
+      const val = typingBox.value.toLowerCase();
+      const nextChar = targetObj.roma[charProgress];
+
+      if (val.endsWith(nextChar)) {
+        charProgress++;
+        currentScore += 10 + activeDiff * 2;
+        document.getElementById("scoreEl").innerText = currentScore;
+        refreshWordUI();
+
+        if (vsModeActive) updateTugVisual();
+
+        if (charProgress >= targetObj.roma.length) {
+          typingBox.value = "";
+          pullNextWord();
+        }
+      } else {
+        typingBox.value = val.slice(0, -1);
+      }
+    });
+
+    function updateTugVisual() {
+      const delta = currentScore - enemyCurrentScore;
+      let posPercent = 50 + (delta / 12);
+      if (posPercent < 5) posPercent = 5;
+      if (posPercent > 95) posPercent = 95;
+
+      document.getElementById("tugFill").style.width = posPercent + "%";
+      document.getElementById("tugFace").style.left = posPercent + "%";
+    }
+
+    function finishGame() {
+      clearInterval(timerRef);
+      timerRef = null;
+      isGameRunning = false;
+
+      document.getElementById("typingInput").disabled = true;
+      document.getElementById("btnAction").style.display = "block";
+      document.getElementById("btnAction").innerText = "もう一度あそぶ";
+      document.getElementById("rotatingMichi").classList.remove("active");
+
+      const earned = Math.floor(currentScore / 10);
+      userState.coins += earned;
+
+      if (currentScore > userState.highScore) {
+        userState.highScore = currentScore;
+      }
+
+      let calculatedRank = Math.min(Math.floor(currentScore / 80), 9);
+      if (calculatedRank > userState.rankIdx) {
+        userState.rankIdx = calculatedRank;
+      }
+
+      if (userState.rankIdx >= 1 && !userState.unlockedMedals.includes("m0")) userState.unlockedMedals.push("m0");
+      if (userState.rankIdx >= 4 && !userState.unlockedMedals.includes("m1")) userState.unlockedMedals.push("m1");
+      if (userState.rankIdx >= 7 && !userState.unlockedMedals.includes("m2")) userState.unlockedMedals.push("m2");
+      if (userState.rankIdx >= 9 && !userState.unlockedMedals.includes("m3")) userState.unlockedMedals.push("m3");
+
+      const timelineArr = [];
+      const rate = currentScore / 60;
+      for (let s = 0; s <= 60; s++) {
+        timelineArr.push(Math.round(rate * s));
+      }
+      const challengePayload = {
+        name: userState.name,
+        diff: activeDiff,
+        finalScore: currentScore,
+        timeline: timelineArr
+      };
+      const generatedCode = "MICH-" + btoa(encodeURIComponent(JSON.stringify(challengePayload)));
+      document.getElementById("myCodeDisplay").innerText = generatedCode;
+
+      let msg = `スコア: <b>${currentScore} 点</b><br>獲得コイン: <b>+${earned} 枚</b><br>うでまえ: <b>${RANKS[userState.rankIdx]}</b>`;
+
+      if (vsModeActive) {
+        if (currentScore >= enemyCurrentScore) {
+          msg = `⚔️ <b>道下奪還成功！（勝利）</b><br><br>` + msg;
+        } else {
+          msg = `💔 <b>道下は相手に寝返りました…（敗北）</b><br><br>` + msg;
+        }
+      } else {
+        msg += `<br><br>対戦コードを生成しました！「道下 奪還」タブから友達に送れます。`;
+      }
+
+      saveState();
+      triggerConfettiModal(msg);
+    }
+
+    function startVsGame() {
+      const raw = document.getElementById("vsInputCode").value.trim();
+      if (!raw.startsWith("MICH-")) {
+        alert("無効な対戦コードです！");
+        return;
+      }
+      try {
+        const jsonStr = decodeURIComponent(atob(raw.replace("MICH-", "")));
+        const parsed = JSON.parse(jsonStr);
+        switchTab("play");
+        setDiff(parsed.diff || 0);
+        handleStart(parsed);
+      } catch (e) {
+        alert("対戦コードの読み込みに失敗しました。");
+      }
+    }
+
+    const confettiEl = document.getElementById('confetti-canvas');
+    const myConfettiInstance = confetti.create(confettiEl, {
+      resize: true,
+      useWorker: true
+    });
+
+    function triggerConfettiModal(txt) {
+      document.getElementById("revealDesc").innerHTML = txt;
+      document.getElementById("revealModal").style.display = "flex";
+      myConfettiInstance({
+        particleCount: 160,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    }
+
+    function closeModal() {
+      document.getElementById("revealModal").style.display = "none";
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadState();
+    });
+  </script>
+</body>
+</html>
