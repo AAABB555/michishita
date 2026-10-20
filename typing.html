@@ -1876,7 +1876,7 @@
     }
 
     /* =========================================================================
-       ★ 4桁対戦通信エンジン（Google STUN + 即時アンロック保証版） ★
+       ★ 4桁対戦通信エンジン（TURNリレー中継＆即時強制アンロック版） ★
        ========================================================================= */
     let peer = null;
     let my4DigitCode = "";
@@ -1909,12 +1909,22 @@
       my4DigitCode = makeRandom4Code();
       const fullPeerId = PEER_APP_KEY + my4DigitCode;
 
-      // Google STUNサーバーを指定してルーター・Wi-Fi越えを確実にする
+      // 学校Wi-FiやスマホNATを突破するTURN中継設定
       peer = new Peer(fullPeerId, {
         config: {
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' }
+            { urls: 'stun:stun1.l.google.com:19302' },
+            {
+              urls: 'turn:openrelay.metered.ca:80',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
+            },
+            {
+              urls: 'turn:openrelay.metered.ca:443',
+              username: 'openrelayproject',
+              credential: 'openrelayproject'
+            }
           ]
         },
         debug: 1
@@ -1986,6 +1996,9 @@
       document.getElementById('battleLobbyArea').style.display = 'block';
       document.getElementById('lobbyStatusText').innerText = `「${inviterName}」と接続中...`;
 
+      // 承諾したら直ちに準備完了ボタンを押せる状態にする
+      document.getElementById('btnReadyToggle').disabled = false;
+
       bindConnectionEvents(conn);
     }
 
@@ -2003,20 +2016,19 @@
         } catch(e) {}
       };
 
-      // すでに開いている場合は即座にアンロック、まだならopen待ち
       if (conn.open) {
         unlockReadyButton();
       } else {
         conn.on('open', unlockReadyButton);
       }
 
-      // イベント漏れやネットワーク遅延対策：最大2.5秒で強制アンロック
+      // スマホのバックグラウンド/NAT遅延対策：1秒後に強制ロック解除
       setTimeout(() => {
         const btn = document.getElementById('btnReadyToggle');
         if (btn && btn.disabled && activePeerConn === conn) {
           unlockReadyButton();
         }
-      }, 2500);
+      }, 1000);
 
       conn.on('data', (data) => {
         handlePeerMessage(data);
@@ -2053,7 +2065,7 @@
       }
     }
 
-    function toggleReadyState() {
+function toggleReadyState() {
       if (!activePeerConn) return;
       isMyReady = !isMyReady;
       updateReadyBtnUI();
@@ -2061,7 +2073,25 @@
       try {
         activePeerConn.send({ type: 'ready_state', ready: isMyReady });
       } catch(e) {}
-      checkBothReadyAndCountdown();
+
+      // お互いの信号が正常に届いている場合は即時スタート
+      if (isMyReady && isOpponentReady) {
+        document.getElementById('lobbyStatusText').innerText = "お互い準備完了！まもなく開始します！";
+        startCountdown();
+        return;
+      }
+
+      // 【NAT/ルーター遮断対策】通信が届かない場合でも2秒後に強制カウントダウンを開始
+      if (isMyReady) {
+        document.getElementById('lobbyStatusText').innerText = "準備完了！カウントダウンに移行中...";
+        setTimeout(() => {
+          const overlay = document.getElementById('countdownOverlay');
+          if (isMyReady && overlay.style.display !== 'flex' && !gameState.isRunning) {
+            document.getElementById('lobbyStatusText').innerText = "対戦開始！";
+            startCountdown();
+          }
+        }, 2000);
+      }
     }
 
     function updateReadyBtnUI() {
