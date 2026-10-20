@@ -6,7 +6,9 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- Firebase SDKの読み込み（リアルタイム同期用） -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -872,6 +874,45 @@
       letter-spacing: 2px;
     }
 
+    .lobby-box {
+      background: rgba(2, 132, 199, 0.08);
+      border: 2px dashed #0284c7;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 14px;
+    }
+    .lobby-status {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 12px;
+    }
+    .dark-header .lobby-status {
+      color: #38bdf8;
+    }
+    .btn-ready {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transition: all 0.15s;
+    }
+    .btn-ready:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn-ready.ready-active {
+      background: #059669;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+    }
+
     #reveal-modal {
       display: none;
       position: fixed;
@@ -992,7 +1033,7 @@
           <div class="battle-names">
             <span id="tugPlayerName">あなた</span>
             <span id="traitorStatusText" style="color: #0284c7;">均衡状態</span>
-            <span id="tugRivalName">ライバル(ゴースト)</span>
+            <span id="tugRivalName">対戦相手</span>
           </div>
           <div class="battle-track">
             <div class="battle-fill" id="tugBarProgress"></div>
@@ -1028,23 +1069,21 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 4桁コード・ゴースト対戦 -->
+    <!-- VIEW 2: Firebaseクラウドリアルタイム対戦 -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
-        <div class="panel-title">⚔️ 4桁コードで道下奪還バトル（ゴースト戦）</div>
-        <p class="panel-desc">友達から教えてもらった4桁の対戦コードを入力して勝負！<br><b>【ルール】</b>お互いに同じ制限時間内でタイピングし、相手のスピード（ゴースト）を上回ることで道下が自分の側にすり寄ります。最終的に道下を持っていた方の勝利！</p>
-        
-        <div class="input-row" style="margin-top: 14px;">
-          <input type="text" id="battleCodeInput" class="code-input-clean" placeholder="例: 7K9X" maxlength="4">
-          <button class="btn-half-clean" onclick="startBattleFromCode()">対戦スタート</button>
-        </div>
-      </div>
+        <div class="panel-title">⚔️ クラウドリアルタイム道下奪還バトル</div>
+        <p class="panel-desc">お互いに「道下 奪還」タブを開き、**同じ4桁の部屋コード**（例: `A1B2`）を決めて入力し、「ルームに入る」を押してください。同じ部屋に入ると自動でマッチングし、リアルタイムで綱引きバトルが始まります！</p>
 
-      <div class="card-panel">
-        <div class="panel-title">📜 あなたの最新4桁対戦コード</div>
-        <p class="panel-desc">ソロプレイをクリアすると自動で4桁のコードが生成されます。友達にこの4文字を教えて勝負しましょう！</p>
-        <div class="code-box-display" id="myLatestCodeDisplay" style="background: rgba(248, 250, 252, 0.95); border: 2px dashed #0284c7; padding: 14px; border-radius: 12px; font-family: ui-monospace, monospace; font-size: 20px; letter-spacing: 4px; text-align: center; font-weight: 900; color: #0284c7;">----</div>
-        <button class="btn-clean" style="margin-top: 14px; height: 44px; font-size: 14px;" onclick="copyChallengeCode()">📋 4桁コードをコピー</button>
+        <div class="input-row" style="margin-bottom: 14px;">
+          <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: A1B2)" maxlength="4">
+          <button class="btn-half-clean" onclick="joinFirebaseRoom()">ルームに入る</button>
+        </div>
+
+        <div class="lobby-box" id="firebaseLobbyArea" style="display: none;">
+          <div class="lobby-status" id="firebaseLobbyStatus">ルーム接続中...</div>
+          <button class="btn-half-clean" style="background: #ef4444;" onclick="leaveFirebaseRoom()">部屋を出る・キャンセル</button>
+        </div>
       </div>
 
       <div class="card-panel">
@@ -1107,9 +1146,17 @@
   </div>
 
   <script>
+    // Firebase無料公開テストサーバーの設定
+    const firebaseConfig = {
+      databaseURL: "https://michishita-typing-default-rtdb.firebaseio.com/"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
     const CUSTOM_IMAGES = {
       boardImage: "",
-
       globalBackgrounds: {
         0: "8bc84868-1341-47fc-9444-414530fc5614.jpg",
         1: "f8a8b757-9a16-4cdd-90d1-de63e0eac277.jpg",
@@ -1119,7 +1166,6 @@
         5: "9d2aa72f-12d0-4a8d-a765-9483be9700a0.jpg",
         6: "73d3cb00-13b3-4f05-846e-3fe6dda6a5f5.jpg"
       },
-
       michishitaCharacter: "5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg"
     };
 
@@ -1144,17 +1190,8 @@
       coins: 100,
       highScore: 0,
       rankId: 0,
-      inventory: {
-        agent: 1,
-        time: 1
-      },
-      stats: {
-        matches: 0,
-        wins: 0,
-        losses: 0,
-        betrayals: 0
-      },
-      latestChallengeCode: ""
+      inventory: { agent: 1, time: 1 },
+      stats: { matches: 0, wins: 0, losses: 0, betrayals: 0 }
     };
 
     let realRankings = [];
@@ -1164,9 +1201,7 @@
         const raw = localStorage.getItem(REAL_RANKING_STORAGE_KEY);
         if (raw) realRankings = JSON.parse(raw);
         else realRankings = [];
-      } catch (e) {
-        realRankings = [];
-      }
+      } catch (e) { realRankings = []; }
     }
 
     function recordRealScore(name, score, rankTitle) {
@@ -1180,9 +1215,7 @@
       });
       realRankings.sort((a, b) => b.score - a.score);
       realRankings = realRankings.slice(0, 10);
-      try {
-        localStorage.setItem(REAL_RANKING_STORAGE_KEY, JSON.stringify(realRankings));
-      } catch (e) {}
+      try { localStorage.setItem(REAL_RANKING_STORAGE_KEY, JSON.stringify(realRankings)); } catch (e) {}
       renderLeaderboard();
     }
 
@@ -1200,7 +1233,6 @@
         boardEl.style.backgroundImage = `url("${CUSTOM_IMAGES.boardImage}")`;
         boardEl.style.backgroundSize = "100% 100%";
       }
-
       if (CUSTOM_IMAGES.michishitaCharacter) {
         const popupImg = document.getElementById('popupMichishitaImg');
         const tugImg = document.getElementById('tugMichishitaImg');
@@ -1217,35 +1249,25 @@
       } else {
         document.body.style.backgroundImage = "";
       }
-
       for (let i = 0; i <= 6; i++) {
         document.body.classList.remove(`theme-diff-${i}`);
       }
       document.body.classList.add(`theme-diff-${diff}`);
-
-      if (diff >= 2) {
-        document.body.classList.add('dark-header');
-      } else {
-        document.body.classList.remove('dark-header');
-      }
+      if (diff >= 2) document.body.classList.add('dark-header');
+      else document.body.classList.remove('dark-header');
     }
 
     function loadData() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          playerData = Object.assign(playerData, parsed);
-        }
+        if (saved) playerData = Object.assign(playerData, JSON.parse(saved));
       } catch (e) {}
       loadRealRankings();
       updateUI();
     }
 
     function saveData() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData));
-      } catch (e) {}
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData)); } catch (e) {}
       updateUI();
     }
 
@@ -1262,26 +1284,13 @@
       const currentRank = RANKS[playerData.rankId] || RANKS[0];
       document.getElementById('playerRankBadge').innerText = currentRank.title;
       document.getElementById('tugPlayerName').innerText = playerData.name;
-
       document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
       document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
-
       document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
       document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
-
       document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
-
-      if (playerData.latestChallengeCode) {
-        document.getElementById('myLatestCodeDisplay').innerText = playerData.latestChallengeCode;
-      }
-
       const hellBtn = document.getElementById('diffHellBtn');
-      if (playerData.rankId >= 6) {
-        hellBtn.innerText = "地獄";
-      } else {
-        hellBtn.innerText = "🔒 地獄";
-      }
-
+      hellBtn.innerText = playerData.rankId >= 6 ? "地獄" : "🔒 地獄";
       renderRankList();
       renderLeaderboard();
     }
@@ -1311,32 +1320,18 @@
       const container = document.getElementById('rankingTableBody');
       if (!container) return;
       container.innerHTML = '';
-
       if (realRankings.length === 0) {
         container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ記録がありません。<br>タイピングをプレイして記録を残しましょう！</td></tr>`;
         return;
       }
-
       realRankings.forEach((item, index) => {
         const tr = document.createElement('tr');
         const pos = index + 1;
-        let medal = pos;
-        if (pos === 1) medal = "🥇";
-        else if (pos === 2) medal = "🥈";
-        else if (pos === 3) medal = "🥉";
-
+        let medal = pos === 1 ? "🥇" : pos === 2 ? "🥈" : pos === 3 ? "🥉" : pos;
         let rowClass = `ranking-row top-${pos <= 3 ? pos : 'other'}`;
         if (item.name === playerData.name) rowClass += " is-player";
         tr.className = rowClass;
-
-        tr.innerHTML = `
-          <td>${medal}</td>
-          <td>
-            <div style="font-weight: 900;">${item.name}</div>
-            <div style="font-size: 11px; opacity: 0.75;">${item.rank} (${item.date || ''})</div>
-          </td>
-          <td>${item.score.toLocaleString()} pt</td>
-        `;
+        tr.innerHTML = `<td>${medal}</td><td><div style="font-weight: 900;">${item.name}</div><div style="font-size: 11px; opacity: 0.75;">${item.rank} (${item.date || ''})</div></td><td>${item.score.toLocaleString()} pt</td>`;
         container.appendChild(tr);
       });
     }
@@ -1345,9 +1340,7 @@
     let isSoundOn = true;
 
     function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
     function playBeep(freq, type = 'sine', duration = 0.08, vol = 0.1) {
@@ -1375,9 +1368,7 @@
       setTimeout(() => playBeep(210, 'square', 0.3, 0.2), 150);
     }
     function soundFanfare() {
-      [523, 659, 783, 1046].forEach((f, i) => {
-        setTimeout(() => playBeep(f, 'sine', 0.2, 0.15), i * 120);
-      });
+      [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playBeep(f, 'sine', 0.2, 0.15), i * 120));
     }
 
     function toggleSound() {
@@ -1387,62 +1378,46 @@
 
     const WORD_DB = {
       0: [
-        { k: "道下", r: "mitisita" },
-        { k: "僕", r: "boku" },
-        { k: "犬", r: "inu" },
-        { k: "サボり", r: "sabori" },
-        { k: "黒板", r: "kokuban" },
-        { k: "消しゴム", r: "kesigomu" }
+        { k: "道下", r: "mitisita" }, { k: "僕", r: "boku" }, { k: "犬", r: "inu" },
+        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" }
       ],
       1: [
-        { k: "道下遥人", r: "mitisitaharuto" },
-        { k: "あの時の僕", r: "anotokinoboku" },
-        { k: "文化祭開幕", r: "bunkasaikaimaku" },
-        { k: "ちぎり消しゴム", r: "tigirikesigomu" },
-        { k: "昼休みダッシュ", r: "hiruyasumidassyu" }
+        { k: "道下遥人", r: "mitisitaharuto" }, { k: "あの時の僕", r: "anotokinoboku" },
+        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, { k: "昼休みダッシュ", r: "hiruyasumidassyu" }
       ],
       2: [
-        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" },
-        { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
-        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" },
-        { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
-        { k: "黒板アートの完成を喜ぶ", r: "kokuban-atonokanseiwoyorokobu" },
-        { k: "未来ある道下の一歩に", r: "miraiarumitisitanoipponi" }
+        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" }, { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
+        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" }
       ],
       3: [
         { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
-        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" },
-        { k: "全国送料無料で手渡し配達対応", r: "zenkokusouryoumuryoudetewatasihaitatutaiou" }
+        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" }
       ],
       4: [
         { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
-        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" },
-        { k: "道下タイピング選手権開幕", r: "mitisitataipinkusensyukenkaimaku" }
+        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" }
       ],
       5: [
-        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" },
-        { k: "一週間ぶっ通しで練習して革命道下の座を奪い取れ", r: "issyukanbuttousiderensyuusitekakumeimitisitanozawoubaitore" }
+        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" }
       ],
       6: [
-        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" },
-        { k: "あの時の僕が残した伝説の消しゴムは時空を超えて道下の魂を揺さぶる", r: "anotokinobokuganokosidadensetunokesigomuhazikuuwo-koetemitisitanotamasiiwoyusaburu" }
+        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" }
       ]
     };
 
-    let currentDifficulty = 0;
-
+    let currentDifficulty = 2;
     let gameState = {
       isRunning: false,
-      isBattle: false,
+      isRealtimeBattle: false,
       timeLeft: 60,
       timerId: null,
       score: 0,
+      opponentScore: 0,
       totalStrokes: 0,
       missCount: 0,
       currentWord: null,
       typedIndex: 0,
       agentActive: false,
-      rivalCheckpoints: [],
       rivalName: "ライバル",
       tugBalance: 0
     };
@@ -1455,23 +1430,22 @@
       }
       currentDifficulty = diff;
       applyBackgroundTheme(diff);
-
       for (let i = 0; i <= 6; i++) {
         const btn = document.getElementById(i === 6 ? 'diffHellBtn' : `diffBtn${i}`);
-        if (i === diff) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
+        if (btn) {
+          if (i === diff) btn.classList.add('active');
+          else btn.classList.remove('active');
         }
       }
     }
 
-    function startGame(isBattle = false, rivalData = null) {
+    function startGame(isRealtime = false) {
       if (gameState.isRunning) return;
 
       gameState.isRunning = true;
-      gameState.isBattle = isBattle;
+      gameState.isRealtimeBattle = isRealtime;
       gameState.score = 0;
+      gameState.opponentScore = 0;
       gameState.totalStrokes = 0;
       gameState.missCount = 0;
       gameState.typedIndex = 0;
@@ -1483,10 +1457,8 @@
       document.getElementById('btnQuitGame').style.display = 'inline-block';
 
       const tugBar = document.getElementById('battleTugBar');
-      if (isBattle && rivalData) {
+      if (isRealtime) {
         tugBar.style.display = 'block';
-        gameState.rivalName = rivalData.name || "ライバル";
-        gameState.rivalCheckpoints = rivalData.checkpoints || [];
         document.getElementById('tugRivalName').innerText = gameState.rivalName;
         updateTugMeter(0);
       } else {
@@ -1508,10 +1480,13 @@
 
     function quitCurrentGame() {
       if (!gameState.isRunning) return;
-      if (confirm("タイピングを中断して辞めますか？（現在のスコアは破棄されます）")) {
+      if (confirm("タイピングを中断して辞めますか？")) {
         clearInterval(gameState.timerId);
         gameState.timerId = null;
         gameState.isRunning = false;
+        if (gameState.isRealtimeBattle && firebaseRoomRef) {
+          firebaseRoomRef.child('players/' + myPlayerKey + '/status').set('quit');
+        }
         resetPlayUI();
       }
     }
@@ -1523,11 +1498,9 @@
       document.getElementById('mainStartBtn').innerText = 'ゲームスタート (SPACE)';
       document.getElementById('btnQuitGame').style.display = 'none';
       document.getElementById('michishitaPopup').classList.remove('active');
-
       document.getElementById('displayKanji').innerText = '道下タイピング';
       document.getElementById('displayRomaContainer').innerHTML = '<span class="untyped-char">スタートボタンを押してね (または SPACE)</span>';
       document.getElementById('romaScrollWrapper').scrollLeft = 0;
-
       document.getElementById('gameTimer').innerText = '60';
       document.getElementById('gameScore').innerText = '0';
       document.getElementById('battleTugBar').style.display = 'none';
@@ -1537,8 +1510,8 @@
       gameState.timeLeft--;
       document.getElementById('gameTimer').innerText = gameState.timeLeft;
 
-      if (gameState.isBattle) {
-        checkTugOfWar();
+      if (gameState.isRealtimeBattle && firebaseRoomRef) {
+        firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
       }
 
       if (gameState.timeLeft <= 0) {
@@ -1553,11 +1526,8 @@
       gameState.typedIndex = 0;
 
       const popup = document.getElementById('michishitaPopup');
-      if (selected.k.includes("道下")) {
-        popup.classList.add('active');
-      } else {
-        popup.classList.remove('active');
-      }
+      if (selected.k.includes("道下")) popup.classList.add('active');
+      else popup.classList.remove('active');
 
       updatePromptDisplay();
     }
@@ -1566,15 +1536,12 @@
       if (!gameState.currentWord) return;
       document.getElementById('displayKanji').innerText = gameState.currentWord.k;
       const full = gameState.currentWord.r;
-
       const typed = full.substring(0, gameState.typedIndex);
       const currentChar = full[gameState.typedIndex] || '';
       const untypedRest = full.substring(gameState.typedIndex + 1);
 
       const container = document.getElementById('displayRomaContainer');
-      container.innerHTML = `
-        <span class="typed-char">${typed}</span><span class="untyped-char current-char" id="activeCharElement">${currentChar}</span><span class="untyped-char">${untypedRest}</span>
-      `;
+      container.innerHTML = `<span class="typed-char">${typed}</span><span class="untyped-char current-char" id="activeCharElement">${currentChar}</span><span class="untyped-char">${untypedRest}</span>`;
 
       requestAnimationFrame(() => {
         const activeEl = document.getElementById('activeCharElement');
@@ -1594,10 +1561,8 @@
     const hiddenInput = document.getElementById('hiddenTypeInput');
     hiddenInput.addEventListener('input', (e) => {
       if (!gameState.isRunning || !gameState.currentWord) return;
-
       const inputChar = e.data ? e.data.toLowerCase() : hiddenInput.value.slice(-1).toLowerCase();
       hiddenInput.value = '';
-
       const expectedChar = gameState.currentWord.r[gameState.typedIndex];
 
       if (inputChar === expectedChar) {
@@ -1605,11 +1570,15 @@
         gameState.typedIndex++;
         gameState.totalStrokes++;
         gameState.score += 10;
-
+        if (gameState.isRealtimeBattle && firebaseRoomRef) {
+          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
+        }
         if (gameState.typedIndex >= gameState.currentWord.r.length) {
           soundCorrect();
-          const wordBonus = gameState.currentWord.r.length * 5;
-          gameState.score += wordBonus;
+          gameState.score += gameState.currentWord.r.length * 5;
+          if (gameState.isRealtimeBattle && firebaseRoomRef) {
+            firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
+          }
           nextPrompt();
         } else {
           updatePromptDisplay();
@@ -1618,8 +1587,10 @@
         soundMiss();
         gameState.missCount++;
         gameState.score = Math.max(0, gameState.score - 5);
+        if (gameState.isRealtimeBattle && firebaseRoomRef) {
+          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
+        }
       }
-
       updateGameStatsUI();
     });
 
@@ -1635,29 +1606,15 @@
       }
     });
 
-    function checkTugOfWar() {
-      const elapsed = 60 - gameState.timeLeft;
-      let targetRivalScore = 0;
-      if (gameState.rivalCheckpoints.length > 0) {
-        const factor = Math.min(1, elapsed / 60);
-        const finalRival = gameState.rivalCheckpoints[gameState.rivalCheckpoints.length - 1];
-        targetRivalScore = Math.round(finalRival * factor);
-      } else {
-        targetRivalScore = elapsed * 15;
-      }
-
-      const diff = gameState.score - targetRivalScore;
+    function recalculateRealtimeTug() {
+      const diff = gameState.score - gameState.opponentScore;
       let balance = Math.max(-50, Math.min(50, diff / 4));
       const oldBalance = gameState.tugBalance;
       gameState.tugBalance = balance;
-
       updateTugMeter(balance);
 
-      if (oldBalance >= 0 && balance < -10) {
-        triggerTraitorDefection(false);
-      } else if (oldBalance <= 0 && balance > 10) {
-        triggerTraitorDefection(true);
-      }
+      if (oldBalance >= 0 && balance < -10) triggerTraitorDefection(false);
+      else if (oldBalance <= 0 && balance > 10) triggerTraitorDefection(true);
     }
 
     function updateTugMeter(balance) {
@@ -1670,7 +1627,6 @@
       soundTraitor();
       playerData.stats.betrayals++;
       const traitorText = document.getElementById('traitorStatusText');
-
       if (toPlayer) {
         traitorText.innerText = "道下が味方に寝返り！";
         traitorText.style.color = "#0284c7";
@@ -1682,58 +1638,35 @@
 
     function usePowerup(type) {
       if (!gameState.isRunning) return;
-
       if (type === 'agent' && (playerData.inventory.agent || 0) > 0 && !gameState.agentActive) {
         playerData.inventory.agent--;
         gameState.agentActive = true;
         soundFanfare();
-
         let agentTimer = setInterval(() => {
-          if (!gameState.isRunning || !gameState.agentActive) {
-            clearInterval(agentTimer);
-            return;
-          }
+          if (!gameState.isRunning || !gameState.agentActive) { clearInterval(agentTimer); return; }
           gameState.typedIndex++;
           gameState.totalStrokes++;
           gameState.score += 15;
           soundType();
-          if (gameState.typedIndex >= gameState.currentWord.r.length) {
-            soundCorrect();
-            nextPrompt();
-          } else {
-            updatePromptDisplay();
-          }
+          if (gameState.typedIndex >= gameState.currentWord.r.length) { soundCorrect(); nextPrompt(); }
+          else updatePromptDisplay();
           updateGameStatsUI();
         }, 120);
-
-        setTimeout(() => {
-          clearInterval(agentTimer);
-          gameState.agentActive = false;
-        }, 5000);
-
+        setTimeout(() => { clearInterval(agentTimer); gameState.agentActive = false; }, 5000);
       } else if (type === 'time' && (playerData.inventory.time || 0) > 0) {
         playerData.inventory.time--;
         gameState.timeLeft += 10;
         soundFanfare();
         updateGameStatsUI();
       }
-
       saveData();
     }
 
     function buyShopItem(item, price) {
-      if (playerData.coins < price) {
-        alert("道下コインが足りません！");
-        return;
-      }
+      if (playerData.coins < price) { alert("道下コインが足りません！"); return; }
       playerData.coins -= price;
-
-      if (item === 'agent') {
-        playerData.inventory.agent = (playerData.inventory.agent || 0) + 1;
-      } else if (item === 'time') {
-        playerData.inventory.time = (playerData.inventory.time || 0) + 1;
-      }
-
+      if (item === 'agent') playerData.inventory.agent = (playerData.inventory.agent || 0) + 1;
+      else if (item === 'time') playerData.inventory.time = (playerData.inventory.time || 0) + 1;
       soundCorrect();
       saveData();
     }
@@ -1751,145 +1684,110 @@
 
       const earnedCoins = Math.max(5, Math.floor(gameState.score / 15) + Math.floor(gameState.totalStrokes / 10));
       playerData.coins += earnedCoins;
-
-      if (gameState.score > playerData.highScore) {
-        playerData.highScore = gameState.score;
-      }
+      if (gameState.score > playerData.highScore) playerData.highScore = gameState.score;
 
       let earnedRank = RANKS[0];
       for (let i = RANKS.length - 1; i >= 0; i--) {
-        if (gameState.score >= RANKS[i].minScore) {
-          earnedRank = RANKS[i];
-          break;
-        }
+        if (gameState.score >= RANKS[i].minScore) { earnedRank = RANKS[i]; break; }
       }
-
-      let rankUp = false;
-      if (earnedRank.id > playerData.rankId) {
-        playerData.rankId = earnedRank.id;
-        rankUp = true;
-      }
+      if (earnedRank.id > playerData.rankId) playerData.rankId = earnedRank.id;
 
       recordRealScore(playerData.name, gameState.score, earnedRank.title);
 
       let battleVictory = false;
-      if (gameState.isBattle) {
+      if (gameState.isRealtimeBattle) {
         playerData.stats.matches++;
-        if (gameState.tugBalance >= 0) {
-          playerData.stats.wins++;
-          battleVictory = true;
-        } else {
-          playerData.stats.losses++;
-        }
+        if (gameState.score >= gameState.opponentScore) { playerData.stats.wins++; battleVictory = true; }
+        else playerData.stats.losses++;
       }
-
-      generate4DigitCode(gameState.score);
       saveData();
 
       let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
-
-      if (gameState.isBattle) {
-        if (battleVictory) {
-          msg = `⚔️ <b>道下奪還成功！（あなたの勝利）</b><br>${gameState.rivalName} から道下を取り戻しました！<br><br>` + msg;
-        } else {
-          msg = `💔 <b>道下は寝返りました…（敗北）</b><br>道下は ${gameState.rivalName} の側へつきました。<br><br>` + msg;
-        }
-      } else {
-        if (rankUp) {
-          msg = `🌟 <b>うでまえ昇格！新階級【${earnedRank.title}】！</b><br><br>` + msg;
-        }
+      if (gameState.isRealtimeBattle) {
+        msg = `相手スコア: <b>${gameState.opponentScore} 点</b><br><br>` + msg;
+        if (battleVictory) msg = `⚔️ <b>道下奪還成功！（あなたの勝利）</b><br><br>` + msg;
+        else msg = `💔 <b>道下は寝返りました…（敗北）</b><br><br>` + msg;
       }
-
       showResultModal(msg);
     }
 
     const confettiCanvas = document.getElementById('confetti-canvas');
-    const myConfetti = confetti.create(confettiCanvas, {
-      resize: true,
-      useWorker: true
-    });
+    const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
 
     function showResultModal(htmlText) {
       document.getElementById('resultDesc').innerHTML = htmlText;
       document.getElementById('reveal-modal').style.display = 'flex';
-      myConfetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
+      myConfetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
       soundFanfare();
     }
+    function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
-    function closeResultModal() {
-      document.getElementById('reveal-modal').style.display = 'none';
-    }
+    /* =========================================================================
+       ★ Firebase リアルタイムクラウド対戦エンジン ★
+       ========================================================================= */
+    let firebaseRoomRef = null;
+    let myPlayerKey = 'p_' + Math.random().toString(36).substring(2, 9);
+    let opponentPlayerKey = null;
 
-    /* 4桁エンコード・デコード（ゴースト対戦データ生成ロジック） */
-    function encode4Digit(score, diff) {
-      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-      const s = Math.min(Math.max(0, score), 32767);
-      const c1 = chars[Math.floor(s / 1024) % 32];
-      const c2 = chars[Math.floor(s / 32) % 32];
-      const c3 = chars[s % 32];
-      const c4 = chars[(diff * 4 + (s % 4)) % 32];
-      return `${c1}${c2}${c3}${c4}`;
-    }
-
-    function decode4Digit(code) {
-      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-      if (!code || code.length !== 4) return null;
-      const v1 = chars.indexOf(code[0]);
-      const v2 = chars.indexOf(code[1]);
-      const v3 = chars.indexOf(code[2]);
-      const v4 = chars.indexOf(code[3]);
-      if (v1 === -1 || v2 === -1 || v3 === -1 || v4 === -1) return null;
-
-      const score = (v1 * 1024) + (v2 * 32) + v3;
-      const diff = Math.floor(v4 / 4) % 7;
-      return { score, diff };
-    }
-
-    function generate4DigitCode(finalScore) {
-      const fourCode = encode4Digit(finalScore, currentDifficulty);
-      playerData.latestChallengeCode = fourCode;
-      const display = document.getElementById('myLatestCodeDisplay');
-      if (display) display.innerText = fourCode;
-    }
-
-    function copyChallengeCode() {
-      if (!playerData.latestChallengeCode) {
-        alert("まずは1回プレイして対戦コードを発行してください！");
+    function joinFirebaseRoom() {
+      const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+      if (!code || code.length !== 4) {
+        alert("4桁の部屋コード（例: A1B2）を入力してください！");
         return;
       }
-      navigator.clipboard.writeText(playerData.latestChallengeCode).then(() => {
-        alert(`4桁対戦コード【 ${playerData.latestChallengeCode} 】をコピーしました！友達に教えて勝負しましょう。`);
+
+      document.getElementById('firebaseLobbyArea').style.display = 'block';
+      document.getElementById('firebaseLobbyStatus').innerText = `【${code}】の部屋に入室中... 相手を待っています`;
+
+      firebaseRoomRef = db.ref('typing_rooms/' + code);
+
+      // 自プレイヤー情報を登録
+      firebaseRoomRef.child('players/' + myPlayerKey).set({
+        name: playerData.name,
+        score: 0,
+        status: 'waiting'
+      });
+
+      // 切断時に自動削除
+      firebaseRoomRef.child('players/' + myPlayerKey).onDisconnect().remove();
+
+      // ルーム内のプレイヤー監視
+      firebaseRoomRef.child('players').on('value', (snapshot) => {
+        const players = snapshot.val() || {};
+        const keys = Object.keys(players);
+
+        if (keys.length >= 2) {
+          // 2人揃ったら対戦開始準備
+          opponentPlayerKey = keys.find(k => k !== myPlayerKey);
+          if (opponentPlayerKey) {
+            const oppName = players[opponentPlayerKey].name || "ライバル";
+            gameState.rivalName = oppName;
+            document.getElementById('firebaseLobbyStatus').innerText = `「${oppName}」と接続完了！まもなく開始します...`;
+
+            // 相手のスコアをリアルタイム同期監視
+            firebaseRoomRef.child('players/' + opponentPlayerKey + '/score').on('value', (scoreSnap) => {
+              gameState.opponentScore = scoreSnap.val() || 0;
+              if (gameState.isRealtimeBattle) recalculateRealtimeTug();
+            });
+
+            setTimeout(() => {
+              document.getElementById('firebaseLobbyArea').style.display = 'none';
+              switchView('play');
+              selectDifficulty(2);
+              startGame(true);
+            }, 1500);
+          }
+        }
       });
     }
 
-    function startBattleFromCode() {
-      const input = document.getElementById('battleCodeInput').value.trim().toUpperCase();
-      if (!input || input.length !== 4) {
-        alert("有効な4桁の英数字コードを入力してください。(例: 7K9X)");
-        return;
+    function leaveFirebaseRoom() {
+      if (firebaseRoomRef) {
+        firebaseRoomRef.child('players/' + myPlayerKey).remove();
+        firebaseRoomRef = null;
       }
-
-      const decoded = decode4Digit(input);
-      if (!decoded) {
-        alert("対戦コードが正しくありません。4文字を確認してください。");
-        return;
-      }
-
-      const cp1 = Math.round(decoded.score * 0.25);
-      const cp2 = Math.round(decoded.score * 0.55);
-      const cp3 = Math.round(decoded.score * 0.85);
-      const cp4 = decoded.score;
-
-      switchView('play');
-      selectDifficulty(decoded.diff);
-      startGame(true, {
-        name: `挑戦者(${input})`,
-        checkpoints: [cp1, cp2, cp3, cp4]
-      });
+      document.getElementById('firebaseLobbyArea').style.display = 'none';
+      alert("部屋を出ました。");
     }
 
     function switchView(view) {
