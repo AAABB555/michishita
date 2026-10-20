@@ -237,7 +237,7 @@
 
     .copy-section {
       text-align: center;
-      padding: 0 20px 24px;
+      padding: 0 20px 20px;
     }
     .copy-main {
       font-size: 28px;
@@ -252,7 +252,7 @@
     .copy-sub {
       font-size: 13.5px;
       color: #64748b;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       font-weight: 500;
     }
 
@@ -260,6 +260,7 @@
       display: flex;
       gap: 12px;
       padding: 0 10px;
+      margin-bottom: 18px;
     }
     .btn {
       flex: 1;
@@ -272,6 +273,7 @@
       justify-content: center;
       cursor: pointer;
       border: none;
+      text-decoration: none;
       transition: transform 0.1s, opacity 0.2s;
     }
     .btn-primary {
@@ -289,11 +291,65 @@
       transform: scale(0.98);
     }
 
+    /* ゲーム誘導特設バナー */
+    .typing-promo-card {
+      margin: 0 20px 22px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28);
+      transition: transform 0.15s ease, opacity 0.2s;
+    }
+    .typing-promo-card:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+    .promo-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .promo-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .promo-text h3 {
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+    .promo-text p {
+      font-size: 11px;
+      opacity: 0.9;
+      font-weight: 500;
+      margin-top: 1px;
+    }
+    .promo-btn-arrow {
+      background: #ffffff;
+      color: #0284c7;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 16px;
+      white-space: nowrap;
+    }
+
     /* 3連タブ切り替えバー */
     .tab-bar {
       display: flex;
       border-bottom: 2px solid #e2e8f0;
-      margin: 10px 20px 24px;
+      margin: 0 20px 24px;
     }
     .tab-item {
       flex: 1;
@@ -516,7 +572,6 @@
       align-items: center;
       gap: 14px;
     }
-    /* 画像用SNSアイコン枠 */
     .sns-icon {
       width: 44px;
       height: 44px;
@@ -923,13 +978,13 @@
       </div>
       <div class="video-track" id="videoTrack">
         <div class="video-slide">
-          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline></video>
+          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline poster="m3.jpg"></video>
         </div>
         <div class="video-slide">
-          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline></video>
+          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline poster="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg"></video>
         </div>
         <div class="video-slide">
-          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline></video>
+          <video src="タイトルなし-2026-10-18_00_05_25-1.mp4" autoplay loop muted playsinline poster="48ac578f-7e9b-458a-a0ba-72f830a9d508.jpg"></video>
         </div>
       </div>
     </div>
@@ -948,10 +1003,23 @@
       <p class="copy-sub">道下に出来ることなら誰でも出来る。</p>
 
       <div class="btn-group">
-        <button class="btn btn-primary" onclick="showJoke('ログイン・会員登録は道下本人の厳正なる審査が必要です！')">ログイン</button>
+        <!-- ログインボタンを押すと typing.html（道下タイピング）へジャンプ -->
+        <a href="typing.html" class="btn btn-primary">ログイン</a>
         <button class="btn btn-outline" onclick="showJoke('現在、道下の人気急上昇につき新規会員受付を停止しています！')">会員登録</button>
       </div>
     </div>
+
+    <!-- 道下タイピングへの直接案内バナー -->
+    <a href="typing.html" class="typing-promo-card">
+      <div class="promo-left">
+        <div class="promo-icon">⌨️</div>
+        <div class="promo-text">
+          <h3>公式ゲーム「道下打」公開中！</h3>
+          <p>道下の妨害に耐えて革命道下を目指せ！</p>
+        </div>
+      </div>
+      <span class="promo-btn-arrow">プレイ ↗</span>
+    </a>
 
     <!-- 3連タブ切り替えバー -->
     <div class="tab-bar">
