@@ -6,7 +6,6 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- リアルタイムP2P通信用ライブラリ (サーバー不要・無料) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * {
@@ -227,7 +226,6 @@
       font-size: 16px;
     }
 
-    /* 5連タブバー */
     .tab-bar {
       display: flex;
       margin-bottom: 24px;
@@ -360,7 +358,6 @@
       font-weight: 900;
     }
 
-    /* 途中リタイア（辞める）ボタン */
     .btn-quit {
       background: #fee2e2;
       color: #ef4444;
@@ -429,10 +426,11 @@
       object-fit: cover;
     }
 
+    /* 黒板エリア */
     .word-area {
       text-align: center;
       margin-bottom: 22px;
-      min-height: 130px;
+      min-height: 135px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -455,17 +453,36 @@
       font-weight: 900;
       color: #ffffff !important;
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.7);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       line-height: 1.35;
       letter-spacing: 0.5px;
       z-index: 5;
     }
+
+    /* ローマ字読み仮名の自動横スクロール枠（はみ出し防止） */
+    .word-roma-scroll-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      scrollbar-width: none;
+      display: flex;
+      justify-content: center;
+      z-index: 5;
+      padding: 4px 0;
+      scroll-behavior: smooth;
+    }
+    .word-roma-scroll-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
     .word-roma {
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 800;
       letter-spacing: 2px;
-      z-index: 5;
+      display: inline-block;
+      white-space: nowrap;
     }
     .typed-char {
       color: #67e8f9 !important;
@@ -474,6 +491,12 @@
     .untyped-char {
       color: #f1f5f9 !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+    /* 次に打つ文字を目印にしてスクロール追従 */
+    .current-char {
+      display: inline-block;
+      text-decoration: underline;
+      text-underline-offset: 4px;
     }
 
     .michishita-popup {
@@ -636,10 +659,9 @@
       border-radius: 23px;
       padding: 0 18px;
       font-family: ui-monospace, monospace;
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
       font-weight: 800;
-      text-transform: uppercase;
       background: #f8fafc;
       transition: all 0.15s;
     }
@@ -652,26 +674,14 @@
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: none;
-      padding: 0 24px;
+      padding: 0 20px;
       border-radius: 23px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 900;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
       transition: all 0.1s;
-    }
-    .code-box-display {
-      background: rgba(248, 250, 252, 0.95);
-      border: 2px dashed #0284c7;
-      padding: 14px;
-      border-radius: 12px;
-      font-family: ui-monospace, monospace;
-      font-size: 20px;
-      letter-spacing: 4px;
-      text-align: center;
-      user-select: all;
-      font-weight: 900;
-      color: #0284c7;
+      white-space: nowrap;
     }
 
     .shop-grid-clean {
@@ -801,7 +811,6 @@
       color: #38bdf8;
     }
 
-    /* 総合ランキング専用スタイル */
     .ranking-table {
       width: 100%;
       border-collapse: separate;
@@ -811,7 +820,6 @@
       background: rgba(255, 255, 255, 0.92);
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-      transition: all 0.15s;
     }
     .dark-header .ranking-row {
       background: rgba(30, 41, 59, 0.85);
@@ -854,7 +862,6 @@
       background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.2) 100%);
     }
 
-    /* カウントダウンオーバーレイ */
     #countdownOverlay {
       display: none;
       position: fixed;
@@ -886,7 +893,6 @@
       letter-spacing: 2px;
     }
 
-    /* 対戦ロビーボックス */
     .lobby-box {
       background: rgba(2, 132, 199, 0.08);
       border: 2px dashed #0284c7;
@@ -915,6 +921,11 @@
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
       transition: all 0.15s;
+    }
+    .btn-ready:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
     }
     .btn-ready.ready-active {
       background: #059669;
@@ -980,7 +991,6 @@
 
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- 3秒カウントダウンオーバーレイ -->
   <div id="countdownOverlay">
     <div class="countdown-number" id="countdownNum">3</div>
     <div class="countdown-label">道下奪還バトル 開始まで</div>
@@ -1054,15 +1064,19 @@
           </div>
         </div>
 
+        <!-- 黒板エリア（初期表示：道下タイピング / スタートボタンを押してね） -->
         <div class="word-area" id="wordAreaBoard">
           <div class="michishita-popup" id="michishitaPopup">
             <div class="michishita-popup-tag">道下参上！</div>
             <img id="popupMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下君">
           </div>
 
-          <div class="word-kanji" id="displayKanji">スタートボタンを押してね</div>
-          <div class="word-roma">
-            <span class="typed-char" id="displayTypedRoma"></span><span class="untyped-char" id="displayUntypedRoma">press start to play</span>
+          <div class="word-kanji" id="displayKanji">道下タイピング</div>
+          
+          <div class="word-roma-scroll-wrapper" id="romaScrollWrapper">
+            <div class="word-roma" id="displayRomaContainer">
+              <span class="untyped-char">スタートボタンを押してね (または SPACE)</span>
+            </div>
           </div>
         </div>
 
@@ -1077,28 +1091,25 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 道下奪還バトル (リアルタイム通信招待対応) -->
+    <!-- VIEW 2: 道下奪還バトル -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
         <div class="panel-title">⚔️ リアルタイム道下奪還バトル</div>
-        <p class="panel-desc">お互いにサイトを開き、相手の対戦IDを入力して招待！承諾後、お互いが「準備OK」を押すと3秒後に同時にバトルが始まります。</p>
+        <p class="panel-desc">お互いに「道下 奪還」タブを開き、相手のIDを入力して招待してください。承諾後、お互いが「準備OK」を押すと3秒後に同時にバトルが始まります！</p>
 
-        <!-- 自分の対戦ID -->
-        <div style="background: rgba(2, 132, 199, 0.06); padding: 12px 16px; border-radius: 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="background: rgba(2, 132, 199, 0.06); padding: 14px 18px; border-radius: 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; border: 1.5px solid #bae6fd;">
           <div>
-            <div style="font-size: 11px; font-weight: 800; color: #64748b;">あなたの対戦ID (友達に教えて招待してもらう):</div>
-            <div style="font-size: 20px; font-weight: 900; letter-spacing: 2px; color: #0284c7;" id="myPeerIdText">接続中...</div>
+            <div style="font-size: 11.5px; font-weight: 800; color: #64748b;">あなたの対戦ID:</div>
+            <div style="font-size: 18px; font-weight: 900; letter-spacing: 1px; color: #0284c7;" id="myPeerIdText">接続中...</div>
           </div>
-          <button class="btn-half-clean" style="padding: 6px 14px; font-size: 12px;" onclick="copyMyPeerId()">IDコピー</button>
+          <button class="btn-half-clean" style="padding: 7px 16px; font-size: 12.5px;" onclick="copyMyPeerId()">IDをコピー</button>
         </div>
 
-        <!-- 相手を招待 -->
         <div class="input-row">
-          <input type="text" id="targetPeerIdInput" class="code-input-clean" placeholder="相手の対戦IDを入力">
-          <button class="btn-half-clean" onclick="sendBattleInvite()">対戦を申し込む</button>
+          <input type="text" id="targetPeerIdInput" class="code-input-clean" placeholder="友達の対戦IDを入力">
+          <button class="btn-half-clean" onclick="sendBattleInvite()">招待を送る</button>
         </div>
 
-        <!-- マッチング待機・ロビー -->
         <div class="lobby-box" id="battleLobbyArea" style="display: none;">
           <div class="lobby-status" id="lobbyStatusText">相手の承諾を待っています...</div>
           <div style="display: flex; justify-content: center; gap: 12px;">
@@ -1114,12 +1125,13 @@
       </div>
     </div>
 
-    <!-- VIEW 3: 総合ランキング -->
+    <!-- VIEW 3: 本物のランキング -->
     <div class="tab-content" id="viewLeaderboard">
       <div class="card-panel">
-        <div class="panel-title">👑 道下タイピング 総合ランキング</div>
-        <p class="panel-desc">全国の歴代道下ランカーの記録です。あなたの最高スコアも自動で反映されます！</p>
+        <div class="panel-title">👑 道下タイピング 歴代ハイスコアランキング</div>
+        <p class="panel-desc">この端末で実際にプレイして記録された本物のランキングです（上位10件を自動保存）。</p>
         <table class="ranking-table" id="rankingTableBody"></table>
+        <button class="btn-clean" style="margin-top: 14px; height: 40px; font-size: 13px; background: #94a3b8;" onclick="resetRealRanking()">ランキング記録を初期化</button>
       </div>
     </div>
 
@@ -1187,6 +1199,7 @@
     };
 
     const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
+    const REAL_RANKING_STORAGE_KEY = 'MICHISHITA_REAL_RANKING_LIST';
 
     const RANKS = [
       { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
@@ -1199,15 +1212,6 @@
       { id: 7, title: "マスター級道下", minScore: 1750, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
       { id: 8, title: "レジェンド級道下", minScore: 2200, desc: "神格化された道下。もはや人間離れしている。" },
       { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
-    ];
-
-    const DEFAULT_LEADERBOARD = [
-      { name: "道下遥人(本人)", rank: "革命道下", score: 3240 },
-      { name: "伝説の消しゴム使い", rank: "レジェンド級道下", score: 2480 },
-      { name: "放課後タイパー", rank: "マスター級道下", score: 1910 },
-      { name: "文化祭サボり魔", rank: "エリート級道下", score: 1520 },
-      { name: "黒板アート職人", rank: "エキスパート道下", score: 1140 },
-      { name: "タイピング初心者M", rank: "レギュラー道下", score: 530 }
     ];
 
     let playerData = {
@@ -1226,6 +1230,46 @@
         betrayals: 0
       }
     };
+
+    let realRankings = [];
+
+    function loadRealRankings() {
+      try {
+        const raw = localStorage.getItem(REAL_RANKING_STORAGE_KEY);
+        if (raw) {
+          realRankings = JSON.parse(raw);
+        } else {
+          realRankings = [];
+        }
+      } catch (e) {
+        realRankings = [];
+      }
+    }
+
+    function recordRealScore(name, score, rankTitle) {
+      if (score <= 0) return;
+      loadRealRankings();
+      realRankings.push({
+        name: name || "名無し道下",
+        score: score,
+        rank: rankTitle,
+        date: new Date().toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      });
+      realRankings.sort((a, b) => b.score - a.score);
+      realRankings = realRankings.slice(0, 10);
+      try {
+        localStorage.setItem(REAL_RANKING_STORAGE_KEY, JSON.stringify(realRankings));
+      } catch (e) {}
+      renderLeaderboard();
+    }
+
+    function resetRealRanking() {
+      if (confirm("ランキングの記録を初期化しますか？")) {
+        realRankings = [];
+        localStorage.removeItem(REAL_RANKING_STORAGE_KEY);
+        renderLeaderboard();
+      }
+    }
 
     function applyCustomImages() {
       const boardEl = document.getElementById('wordAreaBoard');
@@ -1269,11 +1313,9 @@
         if (saved) {
           const parsed = JSON.parse(saved);
           playerData = Object.assign(playerData, parsed);
-          if (!playerData.inventory.time && parsed.inventory && parsed.inventory.blind) {
-            playerData.inventory.time = parsed.inventory.blind;
-          }
         }
       } catch (e) {}
+      loadRealRankings();
       updateUI();
     }
 
@@ -1343,20 +1385,12 @@
       if (!container) return;
       container.innerHTML = '';
 
-      let list = [...DEFAULT_LEADERBOARD];
-      if (playerData.highScore > 0) {
-        const currentRank = RANKS[playerData.rankId] || RANKS[0];
-        list.push({
-          name: `${playerData.name} (あなた)`,
-          rank: currentRank.title,
-          score: playerData.highScore,
-          isPlayer: true
-        });
+      if (realRankings.length === 0) {
+        container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ記録がありません。<br>タイピングをプレイして記録を残しましょう！</td></tr>`;
+        return;
       }
 
-      list.sort((a, b) => b.score - a.score);
-
-      list.forEach((item, index) => {
+      realRankings.forEach((item, index) => {
         const tr = document.createElement('tr');
         const pos = index + 1;
         let medal = pos;
@@ -1365,14 +1399,14 @@
         else if (pos === 3) medal = "🥉";
 
         let rowClass = `ranking-row top-${pos <= 3 ? pos : 'other'}`;
-        if (item.isPlayer) rowClass += " is-player";
+        if (item.name === playerData.name) rowClass += " is-player";
         tr.className = rowClass;
 
         tr.innerHTML = `
           <td>${medal}</td>
           <td>
             <div style="font-weight: 900;">${item.name}</div>
-            <div style="font-size: 11px; opacity: 0.75;">${item.rank}</div>
+            <div style="font-size: 11px; opacity: 0.75;">${item.rank} (${item.date || ''})</div>
           </td>
           <td>${item.score.toLocaleString()} pt</td>
         `;
@@ -1505,7 +1539,6 @@
       }
     }
 
-    /* ゲーム開始（ソロ or リアルタイム対戦） */
     function startGame(isRealtime = false) {
       if (gameState.isRunning) return;
 
@@ -1545,7 +1578,6 @@
       saveData();
     }
 
-    /* 途中リタイア（辞める） */
     function quitCurrentGame() {
       if (!gameState.isRunning) return;
       if (confirm("タイピングを中断して辞めますか？（現在のスコアは破棄されます）")) {
@@ -1569,9 +1601,10 @@
       document.getElementById('btnQuitGame').style.display = 'none';
       document.getElementById('michishitaPopup').classList.remove('active');
 
-      document.getElementById('displayKanji').innerText = 'スタートボタンを押してね';
-      document.getElementById('displayTypedRoma').innerText = '';
-      document.getElementById('displayUntypedRoma').innerText = 'press start to play';
+      document.getElementById('displayKanji').innerText = '道下タイピング';
+      document.getElementById('displayRomaContainer').innerHTML = '<span class="untyped-char">スタートボタンを押してね (または SPACE)</span>';
+      document.getElementById('romaScrollWrapper').scrollLeft = 0;
+
       document.getElementById('gameTimer').innerText = '60';
       document.getElementById('gameScore').innerText = '0';
       document.getElementById('battleTugBar').style.display = 'none';
@@ -1602,15 +1635,30 @@
       updatePromptDisplay();
     }
 
+    /* ローマ字読み仮名の描画＆自動追従スクロール処理 */
     function updatePromptDisplay() {
       if (!gameState.currentWord) return;
       document.getElementById('displayKanji').innerText = gameState.currentWord.k;
       const full = gameState.currentWord.r;
-      const typed = full.substring(0, gameState.typedIndex);
-      const untyped = full.substring(gameState.typedIndex);
 
-      document.getElementById('displayTypedRoma').innerText = typed;
-      document.getElementById('displayUntypedRoma').innerText = untyped;
+      const typed = full.substring(0, gameState.typedIndex);
+      const currentChar = full[gameState.typedIndex] || '';
+      const untypedRest = full.substring(gameState.typedIndex + 1);
+
+      const container = document.getElementById('displayRomaContainer');
+      container.innerHTML = `
+        <span class="typed-char">${typed}</span><span class="untyped-char current-char" id="activeCharElement">${currentChar}</span><span class="untyped-char">${untypedRest}</span>
+      `;
+
+      // 長文時に現在打つべき文字の位置へ自動でスクロール追従
+      requestAnimationFrame(() => {
+        const activeEl = document.getElementById('activeCharElement');
+        const wrapper = document.getElementById('romaScrollWrapper');
+        if (activeEl && wrapper) {
+          const targetLeft = activeEl.offsetLeft - (wrapper.clientWidth / 2) + (activeEl.clientWidth / 2);
+          wrapper.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+        }
+      });
     }
 
     function updateGameStatsUI() {
@@ -1661,10 +1709,12 @@
       if (gameState.isRealtimeBattle) recalculateRealtimeTug();
     });
 
+    /* SPACEキーでのスタート & ESCキーでの中断 */
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !gameState.isRunning) {
+      if (e.code === 'Space') {
         const modal = document.getElementById('reveal-modal');
-        if (modal.style.display !== 'flex') {
+        if (!gameState.isRunning && modal.style.display !== 'flex') {
+          // 入力欄にスペースが入るのを防ぐ
           e.preventDefault();
           startGame(false);
         }
@@ -1673,7 +1723,6 @@
       }
     });
 
-    /* リアルタイム綱引き計算 */
     function recalculateRealtimeTug() {
       const diff = gameState.score - gameState.opponentScore;
       let balance = Math.max(-50, Math.min(50, diff / 4));
@@ -1803,6 +1852,8 @@
         rankUp = true;
       }
 
+      recordRealScore(playerData.name, gameState.score, earnedRank.title);
+
       let battleVictory = false;
       if (gameState.isRealtimeBattle) {
         playerData.stats.matches++;
@@ -1855,29 +1906,15 @@
       document.getElementById('reveal-modal').style.display = 'none';
     }
 
-    /* =========================================================================
-       ★ リアルタイム通信対戦エンジン (PeerJS P2P) ★
-       ========================================================================= */
+    /* リアルタイムP2P通信 */
     let peer = null;
     let myPeerId = "";
     let activePeerConn = null;
     let isMyReady = false;
     let isOpponentReady = false;
 
-    function generateShortId() {
-      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-      let res = "";
-      for (let i = 0; i < 4; i++) {
-        res += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return res;
-    }
-
     function initPeerNetwork() {
-      const customShort = "MICH-" + generateShortId();
-      peer = new Peer(customShort, {
-        debug: 1
-      });
+      peer = new Peer({ debug: 1 });
 
       peer.on('open', (id) => {
         myPeerId = id;
@@ -1886,13 +1923,9 @@
       });
 
       peer.on('error', (err) => {
-        // 重複等で失敗した場合は再生成
-        if (err.type === 'unavailable-id') {
-          initPeerNetwork();
-        }
+        console.error("Peer error:", err);
       });
 
-      // 相手からの接続・招待を受信
       peer.on('connection', (conn) => {
         setupIncomingConnection(conn);
       });
@@ -1901,13 +1934,12 @@
     function copyMyPeerId() {
       if (!myPeerId) return;
       navigator.clipboard.writeText(myPeerId).then(() => {
-        alert("あなたの対戦ID【 " + myPeerId + " 】をコピーしました！友達に教えてください。");
+        alert("あなたの対戦IDをコピーしました！友達に貼り付けて教えてあげてください。");
       });
     }
 
-    /* 招待を送る側 */
     function sendBattleInvite() {
-      const targetId = document.getElementById('targetPeerIdInput').value.trim().toUpperCase();
+      const targetId = document.getElementById('targetPeerIdInput').value.trim();
       if (!targetId) {
         alert("相手の対戦IDを入力してください。");
         return;
@@ -1918,16 +1950,16 @@
       }
 
       document.getElementById('battleLobbyArea').style.display = 'block';
-      document.getElementById('lobbyStatusText').innerText = `${targetId} に招待を送信中...`;
+      document.getElementById('lobbyStatusText').innerText = `相手に招待を送信中...（承諾を待っています）`;
 
       const conn = peer.connect(targetId, {
+        reliable: true,
         metadata: { senderName: playerData.name }
       });
 
       bindConnectionEvents(conn);
     }
 
-    /* 招待を受け取る側 */
     function setupIncomingConnection(conn) {
       const inviter = conn.metadata && conn.metadata.senderName ? conn.metadata.senderName : "誰か";
       const accept = confirm(`【対戦招待】\n「${inviter}」から道下タイピングの対戦申し込みが届きました！\n対戦を承諾しますか？`);
@@ -1951,13 +1983,12 @@
       activePeerConn = conn;
 
       conn.on('open', () => {
-        document.getElementById('lobbyStatusText').innerText = "対戦ルーム接続完了！準備OKを押してください。";
+        document.getElementById('lobbyStatusText').innerText = "対戦ルーム接続完了！「準備完了！」を押してください。";
         document.getElementById('btnReadyToggle').disabled = false;
         isMyReady = false;
         isOpponentReady = false;
         updateReadyBtnUI();
 
-        // 接続完了通知とお互いの名前を送信
         conn.send({ type: 'handshake', name: playerData.name });
       });
 
@@ -1966,7 +1997,7 @@
       });
 
       conn.on('close', () => {
-        alert("相手との対戦接続が切れました。");
+        alert("対戦相手との接続が切れました。");
         cancelBattleRoom();
       });
     }
@@ -1980,9 +2011,9 @@
       } else if (data.type === 'ready_state') {
         isOpponentReady = data.ready;
         if (isOpponentReady) {
-          document.getElementById('lobbyStatusText').innerText = `相手が準備完了しました！あなたも準備OKを押してください。`;
+          document.getElementById('lobbyStatusText').innerText = `相手が準備完了しました！あなたも「準備完了！」を押してください。`;
         } else {
-          document.getElementById('lobbyStatusText').innerText = `対戦相手が準備を解除しました。`;
+          document.getElementById('lobbyStatusText').innerText = `相手が準備を解除しました。`;
         }
         checkBothReadyAndCountdown();
       } else if (data.type === 'score_update') {
@@ -1991,7 +2022,7 @@
           recalculateRealtimeTug();
         }
       } else if (data.type === 'opponent_quit') {
-        alert("対戦相手が途中でリタイアしました！あなたの不戦勝です。");
+        alert("対戦相手が途中で辞めました！あなたの不戦勝です。");
         endGame();
       }
     }
@@ -2023,7 +2054,6 @@
       }
     }
 
-    /* 3秒カウントダウン後にゲームスタート */
     function startCountdown() {
       const overlay = document.getElementById('countdownOverlay');
       const numEl = document.getElementById('countdownNum');
@@ -2042,7 +2072,7 @@
           clearInterval(timer);
           overlay.style.display = 'none';
           switchView('play');
-          selectDifficulty(2); // 対戦は公平な「ふつう」に自動設定
+          selectDifficulty(2);
           startGame(true);
         }
       }, 1000);
