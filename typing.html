@@ -1208,7 +1208,7 @@
       document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
     }
 
-    // 登録された通りのローマ字で厳密に判定されるワードデータベース
+    // 各お題ごとに showMichishita: true をつけると道下が出現します
     const WORD_DB = {
       0: [
         { k: "道下", r: "mitisita", showMichishita: true },
@@ -1236,38 +1236,37 @@
       ],
       1: [
         { k: "道下遥人", r: "mitisitaharuto", showMichishita: true },
-        { k: "", r: "" },
         { k: "文化祭", r: "bunnkasai" },
         { k: "ちぎり消しゴム", r: "tigirikesigomu" },
         { k: "昼休みダッシュ", r: "hiruyasumidassyu" },
-        { k: "道下の休日", r: "mitisitanokyuzitu" },
-        { k: "伝説の道下", r: "densetunomitisita" }
+        { k: "道下の休日", r: "mitisitanokyuzitu", showMichishita: true },
+        { k: "伝説の道下", r: "densetunomitisita", showMichishita: true }
       ],
       2: [
-        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" },
-        { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
-        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" },
+        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita", showMichishita: true },
+        { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita", showMichishita: true },
+        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando", showMichishita: true },
         { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
-        { k: "主役の道下参上", r: "syuyakunomitisitasanzyo" },
-        { k: "道下は今日も元気です", r: "mitisitahakyoumogenkidesu" }
+        { k: "主役の道下参上", r: "syuyakunomitisitasanzyo", showMichishita: true },
+        { k: "道下は今日も元気です", r: "mitisitahakyoumogenkidesu", showMichishita: true }
       ],
       3: [
         { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
-        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" },
-        { k: "誰もが羨む道下の圧倒的才能", r: "daremogauyaramumitisitanoattoutekisainou" }
+        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru", showMichishita: true },
+        { k: "誰もが羨む道下の圧倒적才能", r: "daremogauyaramumitisitanoattoutekisainou", showMichishita: true }
       ],
       4: [
-        { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
+        { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen", showMichishita: true },
         { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" },
-        { k: "主役である道下様の華麗なるタイピング", r: "syuyakudearumitisitasamanokareinarutaipinku" }
+        { k: "主役である道下様の華麗なるタイピング", r: "syuyakudearumitisitasamanokareinarutaipinku", showMichishita: true }
       ],
       5: [
-        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" },
-        { k: "主役道下のオーラは教室中を包み込んでいる", r: "syuyakumitisitanoorawahakyousitutyuuwotsutsumikondeiru" }
+        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai", showMichishita: true },
+        { k: "主役道下のオーラは教室中を包み込んでいる", r: "syuyakumitisitanoorawahakyousitutyuuwotsutsumikondeiru", showMichishita: true }
       ],
       6: [
-        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" },
-        { k: "世界を揺るがす奇跡の男道下遥人の伝説を見逃すな", r: "sekaiwoyurugasukisekinootokomitisitaharutonodensetuwotinogasukuna" }
+        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda", showMichishita: true },
+        { k: "世界を揺るがす奇跡の男道下遥人の伝説を見逃すな", r: "sekaiwoyurugasukisekinootokomitisitaharutonodensetuwotinogasukuna", showMichishita: true }
       ]
     };
 
@@ -1394,8 +1393,11 @@
       gameState.typedIndex = 0;
 
       const popup = document.getElementById('michishitaPopup');
-      if (selected.k.includes("道下")) popup.classList.add('active');
-      else popup.classList.remove('active');
+      if (selected.showMichishita) {
+        popup.classList.add('active');
+      } else {
+        popup.classList.remove('active');
+      }
 
       updatePromptDisplay();
     }
@@ -1426,7 +1428,6 @@
       document.getElementById('gameScore').innerText = gameState.score;
     }
 
-    // 厳密な文字一致判定（nが1個か2個かなどを確実に区別する）
     const hiddenInput = document.getElementById('hiddenTypeInput');
     hiddenInput.addEventListener('input', (e) => {
       if (!gameState.isRunning || !gameState.currentWord) return;
