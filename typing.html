@@ -15,7 +15,6 @@
       user-select: none;
     }
 
-    /* どんな画面でも背景画像を無理やり全画面にフィットさせる設定 */
     html {
       height: 100%;
     }
@@ -28,7 +27,7 @@
       background-attachment: fixed;
       background-position: center center !important;
       background-repeat: no-repeat !important;
-      background-size: 100% 100% !important; /* 縦横比を無理やりにでも画面に合わせる */
+      background-size: 100% 100% !important;
     }
 
     body.theme-diff-0 {
@@ -226,16 +225,18 @@
       font-size: 16px;
     }
 
+    /* 5連タブバー */
     .tab-bar {
       display: flex;
       margin-bottom: 24px;
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(10px);
       border-radius: 16px;
-      padding: 6px 12px;
+      padding: 6px 8px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
       border: 1.5px solid rgba(255, 255, 255, 0.6);
       transition: all 0.3s;
+      gap: 4px;
     }
     .dark-header .tab-bar {
       background: rgba(15, 23, 42, 0.85);
@@ -244,14 +245,15 @@
     .tab-item {
       flex: 1;
       text-align: center;
-      padding: 12px 0;
-      font-size: 14.5px;
+      padding: 11px 0;
+      font-size: 13.5px;
       font-weight: 800;
       color: #64748b;
       cursor: pointer;
       position: relative;
       border-radius: 12px;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .tab-item:hover {
       color: #0284c7;
@@ -337,6 +339,11 @@
       margin-bottom: 20px;
       border-bottom: 2px dashed rgba(148, 163, 184, 0.3);
     }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .color-blue {
       color: #0284c7;
       font-size: 22px;
@@ -349,6 +356,23 @@
       color: #ea580c;
       font-size: 22px;
       font-weight: 900;
+    }
+
+    /* 途中リタイア（辞める）ボタン */
+    .btn-quit {
+      background: #fee2e2;
+      color: #ef4444;
+      border: 1.5px solid #fca5a5;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: none;
+      transition: all 0.15s;
+    }
+    .btn-quit:hover {
+      background: #fecaca;
     }
 
     .battle-bar-wrap {
@@ -775,6 +799,59 @@
       color: #38bdf8;
     }
 
+    /* 総合ランキング専用スタイル */
+    .ranking-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+    .ranking-row {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: all 0.15s;
+    }
+    .dark-header .ranking-row {
+      background: rgba(30, 41, 59, 0.85);
+      color: #ffffff;
+    }
+    .ranking-row td {
+      padding: 12px 14px;
+      font-size: 13.5px;
+      vertical-align: middle;
+    }
+    .ranking-row td:first-child {
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+      font-weight: 900;
+      text-align: center;
+      width: 50px;
+    }
+    .ranking-row td:last-child {
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+      text-align: right;
+      font-weight: 900;
+      color: #ea580c;
+      font-size: 15px;
+    }
+    .ranking-row.top-1 td:first-child {
+      color: #eab308;
+      font-size: 20px;
+    }
+    .ranking-row.top-2 td:first-child {
+      color: #94a3b8;
+      font-size: 18px;
+    }
+    .ranking-row.top-3 td:first-child {
+      color: #b45309;
+      font-size: 17px;
+    }
+    .ranking-row.is-player {
+      border: 2px solid #0284c7;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.2) 100%);
+    }
+
     #reveal-modal {
       display: none;
       position: fixed;
@@ -858,13 +935,16 @@
       </div>
     </div>
 
+    <!-- 5連タブバー -->
     <div class="tab-bar">
       <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
       <div class="tab-item" id="tabBattleBtn" onclick="switchView('battle')">道下 奪還</div>
+      <div class="tab-item" id="tabLeaderboardBtn" onclick="switchView('leaderboard')">👑 ランキング</div>
       <div class="tab-item" id="tabShopBtn" onclick="switchView('shop')">ショップ</div>
       <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">称号</div>
     </div>
 
+    <!-- VIEW 1: タイピング -->
     <div class="tab-content active" id="viewPlay">
       <div class="diff-group">
         <button class="diff-btn active" id="diffBtn0" onclick="selectDifficulty(0)">クソ簡単</button>
@@ -878,7 +958,11 @@
 
       <div class="typing-card">
         <div class="typing-status">
-          <span>⏳ 残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
+          <div class="status-left">
+            <span>⏳ 残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
+            <!-- プレイ中のみ表示される中断ボタン -->
+            <button class="btn-quit" id="btnQuitGame" onclick="quitCurrentGame()">✖ 辞める</button>
+          </div>
           <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
         </div>
 
@@ -919,6 +1003,7 @@
       </div>
     </div>
 
+    <!-- VIEW 2: 道下奪還バトル -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
         <div class="panel-title">⚔️ 友達の対戦コードで道下を奪還</div>
@@ -942,6 +1027,18 @@
       </div>
     </div>
 
+    <!-- VIEW 3: 総合ランキング (新設) -->
+    <div class="tab-content" id="viewLeaderboard">
+      <div class="card-panel">
+        <div class="panel-title">👑 道下タイピング 総合ランキング</div>
+        <p class="panel-desc">全国の歴代道下ランカーの記録です。あなたの最高スコアも自動で反映されます！</p>
+        <table class="ranking-table" id="rankingTableBody">
+          <!-- JSで自動描画 -->
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW 4: 道下ショップ -->
     <div class="tab-content" id="viewShop">
       <div class="shop-grid-clean">
         <div class="shop-card-clean">
@@ -966,6 +1063,7 @@
       </div>
     </div>
 
+    <!-- VIEW 5: 道下称号 -->
     <div class="tab-content" id="viewProfile">
       <div class="card-panel">
         <div class="panel-title">🏆 うでまえ進捗（全10段階）</div>
@@ -985,13 +1083,11 @@
 
   <script>
     /* =========================================================================
-       ★ 【画像設定エリア】 ここで自由にお好きな画像ファイル名を指定できます ★
+       ★ 【画像設定エリア】 ★
        ========================================================================= */
     const CUSTOM_IMAGES = {
-      // 1. 文字を打つ場所（お題エリア）の背景画像
       boardImage: "",
 
-      // 2. 全難易度用の「全体の背景画像」 (0〜6の全難易度それぞれ設定可能)
       globalBackgrounds: {
         0: "8bc84868-1341-47fc-9444-414530fc5614.jpg",
         1: "f8a8b757-9a16-4cdd-90d1-de63e0eac277.jpg",
@@ -1002,7 +1098,6 @@
         6: "73d3cb00-13b3-4f05-846e-3fe6dda6a5f5.jpg"
       },
 
-      // 3. お題に「道下」があるときに出現する道下君の画像（ここを変更してください）
       michishitaCharacter: "5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg"
     };
 
@@ -1019,6 +1114,16 @@
       { id: 7, title: "マスター級道下", minScore: 1750, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
       { id: 8, title: "レジェンド級道下", minScore: 2200, desc: "神格化された道下。もはや人間離れしている。" },
       { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
+    ];
+
+    /* 総合ランキングの初期デフォルトランカー */
+    const DEFAULT_LEADERBOARD = [
+      { name: "道下遥人(本人)", rank: "革命道下", score: 3240 },
+      { name: "伝説の消しゴム使い", rank: "レジェンド級道下", score: 2480 },
+      { name: "放課後タイパー", rank: "マスター級道下", score: 1910 },
+      { name: "文化祭サボり魔", rank: "エリート級道下", score: 1520 },
+      { name: "黒板アート職人", rank: "エキスパート道下", score: 1140 },
+      { name: "タイピング初心者M", rank: "レギュラー道下", score: 530 }
     ];
 
     let playerData = {
@@ -1133,6 +1238,7 @@
       }
 
       renderRankList();
+      renderLeaderboard();
     }
 
     function renderRankList() {
@@ -1153,6 +1259,50 @@
           <span class="tier-pts">${r.minScore}pt〜</span>
         `;
         container.appendChild(div);
+      });
+    }
+
+    /* 総合ランキングの描画（プレイヤーのハイスコアも組み込み） */
+    function renderLeaderboard() {
+      const container = document.getElementById('rankingTableBody');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let list = [...DEFAULT_LEADERBOARD];
+      if (playerData.highScore > 0) {
+        const currentRank = RANKS[playerData.rankId] || RANKS[0];
+        list.push({
+          name: `${playerData.name} (あなた)`,
+          rank: currentRank.title,
+          score: playerData.highScore,
+          isPlayer: true
+        });
+      }
+
+      // スコア降順ソート
+      list.sort((a, b) => b.score - a.score);
+
+      list.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const pos = index + 1;
+        let medal = pos;
+        if (pos === 1) medal = "🥇";
+        else if (pos === 2) medal = "🥈";
+        else if (pos === 3) medal = "🥉";
+
+        let rowClass = `ranking-row top-${pos <= 3 ? pos : 'other'}`;
+        if (item.isPlayer) rowClass += " is-player";
+        tr.className = rowClass;
+
+        tr.innerHTML = `
+          <td>${medal}</td>
+          <td>
+            <div style="font-weight: 900;">${item.name}</div>
+            <div style="font-size: 11px; opacity: 0.75;">${item.rank}</div>
+          </td>
+          <td>${item.score.toLocaleString()} pt</td>
+        `;
+        container.appendChild(tr);
       });
     }
 
@@ -1295,6 +1445,7 @@
       gameState.timeLeft = 60;
 
       document.getElementById('mainStartBtn').style.display = 'none';
+      document.getElementById('btnQuitGame').style.display = 'inline-block'; // 辞めるボタンを表示
 
       const tugBar = document.getElementById('battleTugBar');
       if (isBattle && rivalData) {
@@ -1318,6 +1469,30 @@
       if (gameState.timerId) clearInterval(gameState.timerId);
       gameState.timerId = setInterval(gameTick, 1000);
       saveData();
+    }
+
+    /* 途中リタイア（辞める）関数 */
+    function quitCurrentGame() {
+      if (!gameState.isRunning) return;
+      if (confirm("タイピングを中断して辞めますか？（現在のスコアは破棄されます）")) {
+        clearInterval(gameState.timerId);
+        gameState.timerId = null;
+        gameState.isRunning = false;
+
+        document.getElementById('hiddenTypeInput').disabled = true;
+        document.getElementById('hiddenTypeInput').value = '';
+        document.getElementById('mainStartBtn').style.display = 'block';
+        document.getElementById('mainStartBtn').innerText = 'ゲームスタート (SPACE)';
+        document.getElementById('btnQuitGame').style.display = 'none';
+        document.getElementById('michishitaPopup').classList.remove('active');
+
+        document.getElementById('displayKanji').innerText = 'スタートボタンを押してね';
+        document.getElementById('displayTypedRoma').innerText = '';
+        document.getElementById('displayUntypedRoma').innerText = 'press start to play';
+        document.getElementById('gameTimer').innerText = '60';
+        document.getElementById('gameScore').innerText = '0';
+        document.getElementById('battleTugBar').style.display = 'none';
+      }
     }
 
     function gameTick() {
@@ -1405,7 +1580,7 @@
           startGame(false);
         }
       } else if (e.code === 'Escape' && gameState.isRunning) {
-        endGame();
+        quitCurrentGame();
       }
     });
 
@@ -1519,6 +1694,7 @@
       document.getElementById('hiddenTypeInput').disabled = true;
       document.getElementById('mainStartBtn').style.display = 'block';
       document.getElementById('mainStartBtn').innerText = 'もう一度あそぶ (SPACE)';
+      document.getElementById('btnQuitGame').style.display = 'none';
       document.getElementById('michishitaPopup').classList.remove('active');
 
       const earnedCoins = Math.max(5, Math.floor(gameState.score / 15) + Math.floor(gameState.totalStrokes / 10));
@@ -1553,7 +1729,6 @@
         }
       }
 
-      // 4桁対戦コードを生成・保持
       generate4DigitCode(gameState.score);
       saveData();
 
@@ -1595,98 +1770,6 @@
       document.getElementById('reveal-modal').style.display = 'none';
     }
 
-    /* 4桁エンコード・デコードロジック */
     function encode4Digit(score, diff) {
-      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // 誤読しやすい0,1,I,Oを除外した32文字
-      const s = Math.min(Math.max(0, score), 32767);
-      const c1 = chars[Math.floor(s / 1024) % 32];
-      const c2 = chars[Math.floor(s / 32) % 32];
-      const c3 = chars[s % 32];
-      const c4 = chars[(diff * 4 + (s % 4)) % 32];
-      return `${c1}${c2}${c3}${c4}`;
-    }
-
-    function decode4Digit(code) {
       const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-      if (!code || code.length !== 4) return null;
-      const v1 = chars.indexOf(code[0]);
-      const v2 = chars.indexOf(code[1]);
-      const v3 = chars.indexOf(code[2]);
-      const v4 = chars.indexOf(code[3]);
-      if (v1 === -1 || v2 === -1 || v3 === -1 || v4 === -1) return null;
-
-      const score = (v1 * 1024) + (v2 * 32) + v3;
-      const diff = Math.floor(v4 / 4) % 7;
-      return { score, diff };
-    }
-
-    function generate4DigitCode(finalScore) {
-      const fourCode = encode4Digit(finalScore, currentDifficulty);
-      playerData.latestChallengeCode = fourCode;
-      document.getElementById('myLatestCodeDisplay').innerText = fourCode;
-    }
-
-    function copyChallengeCode() {
-      if (!playerData.latestChallengeCode) {
-        alert("まずは1回プレイして対戦コードを発行してください！");
-        return;
-      }
-      const temp = document.createElement('textarea');
-      temp.value = playerData.latestChallengeCode;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand('copy');
-      document.body.removeChild(temp);
-      alert(`4桁対戦コード【 ${playerData.latestChallengeCode} 】をコピーしました！友達に教えて勝負しましょう。`);
-    }
-
-    function startBattleFromCode() {
-      const input = document.getElementById('battleCodeInput').value.trim().toUpperCase();
-      if (!input || input.length !== 4) {
-        alert("有効な4桁の英数字コードを入力してください。(例: 7K9X)");
-        return;
-      }
-
-      const decoded = decode4Digit(input);
-      if (!decoded) {
-        alert("対戦コードが正しくありません。4文字を確認してください。");
-        return;
-      }
-
-      const cp1 = Math.round(decoded.score * 0.25);
-      const cp2 = Math.round(decoded.score * 0.55);
-      const cp3 = Math.round(decoded.score * 0.85);
-      const cp4 = decoded.score;
-
-      switchView('play');
-      selectDifficulty(decoded.diff);
-      startGame(true, {
-        name: `挑戦者(${input})`,
-        checkpoints: [cp1, cp2, cp3, cp4]
-      });
-    }
-
-    function switchView(view) {
-      const views = ['play', 'battle', 'shop', 'profile'];
-      views.forEach(v => {
-        const section = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
-        const tabBtn = document.getElementById(`tab${v.charAt(0).toUpperCase() + v.slice(1)}Btn`);
-        if (v === view) {
-          section.classList.add('active');
-          tabBtn.classList.add('active');
-        } else {
-          section.classList.remove('active');
-          tabBtn.classList.remove('active');
-        }
-      });
-      updateUI();
-    }
-
-    window.onload = function() {
-      applyCustomImages();
-      loadData();
-      applyBackgroundTheme(0);
-    };
-  </script>
-</body>
-</html>
+      const s = Math.min(Math.max(0, score),
