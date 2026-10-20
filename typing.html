@@ -97,7 +97,7 @@
       font-weight: 900;
       color: inherit;
       letter-spacing: -0.5px;
-      text-decoration: none;
+      cursor: pointer;
     }
     .logo-badge {
       display: inline-flex;
@@ -135,26 +135,6 @@
       background: rgba(30, 41, 59, 0.9);
       border-color: #475569;
       color: #38bdf8;
-    }
-    .btn-return-home {
-      background: rgba(255, 255, 255, 0.9);
-      color: #0284c7;
-      border: 1.5px solid #cbd5e1;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 800;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      transition: all 0.15s;
-    }
-    .dark-header .btn-return-home {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: #475569;
-      color: #f8fafc;
     }
 
     .container {
@@ -996,13 +976,12 @@
   </div>
 
   <header>
-    <a href="index.html" class="header-logo">
+    <div class="header-logo" onclick="location.reload()">
       <span class="logo-badge">MI</span>
       <span>道下タイピング</span>
-    </a>
+    </div>
     <div class="header-actions">
       <button id="soundToggleBtn" onclick="toggleSound()" class="sound-btn">🔊 音声</button>
-      <a href="index.html" class="btn-return-home">← ファンクラブ本館</a>
     </div>
   </header>
 
@@ -1088,7 +1067,7 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 道下奪還バトル (完全4桁ID対戦) -->
+    <!-- VIEW 2: 道下奪還バトル -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
         <div class="panel-title">⚔️ リアルタイム道下奪還バトル</div>
@@ -1097,7 +1076,7 @@
         <div style="background: rgba(2, 132, 199, 0.06); padding: 14px 18px; border-radius: 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; border: 1.5px solid #bae6fd;">
           <div>
             <div style="font-size: 11.5px; font-weight: 800; color: #64748b;">あなたの4桁対戦コード:</div>
-            <div style="font-size: 26px; font-weight: 900; letter-spacing: 4px; color: #0284c7;" id="myPeerIdText">----</div>
+            <div style="font-size: 26px; font-weight: 900; letter-spacing: 4px; color: #0284c7;" id="myPeerIdText">接続中...</div>
           </div>
           <button class="btn-half-clean" style="padding: 7px 16px; font-size: 12.5px;" onclick="copyMyPeerId()">コードをコピー</button>
         </div>
@@ -1896,15 +1875,15 @@
       document.getElementById('reveal-modal').style.display = 'none';
     }
 
-    /* =========================================================================
-       ★ 4桁対戦コード P2P通信エンジン ★
-       ========================================================================= */
+    /* 安定接続型 4桁マッチングエンジン */
     let peer = null;
     let my4DigitCode = "";
     let activePeerConn = null;
     let isMyReady = false;
     let isOpponentReady = false;
-    const PEER_PREFIX = "michi_v4_";
+
+    // 日本国内専用のプレフィックスで世界重複を回避
+    const PEER_APP_KEY = "michityping_2026_room_";
 
     function makeRandom4Code() {
       const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -1916,14 +1895,22 @@
     }
 
     function initPeerNetwork() {
+      if (typeof Peer === 'undefined') {
+        const displayEl = document.getElementById('myPeerIdText');
+        if (displayEl) displayEl.innerText = "通信利用不可";
+        return;
+      }
+
       if (peer) {
         try { peer.destroy(); } catch (e) {}
       }
 
       my4DigitCode = makeRandom4Code();
-      const fullId = PEER_PREFIX + my4DigitCode;
+      const fullPeerId = PEER_APP_KEY + my4DigitCode;
 
-      peer = new Peer(fullId, { debug: 1 });
+      peer = new Peer(fullPeerId, {
+        debug: 1
+      });
 
       peer.on('open', () => {
         const displayEl = document.getElementById('myPeerIdText');
@@ -1934,7 +1921,7 @@
         if (err.type === 'unavailable-id') {
           initPeerNetwork();
         } else {
-          console.error("Peer error:", err);
+          console.warn("Peer error:", err);
         }
       });
 
@@ -1964,7 +1951,7 @@
       document.getElementById('battleLobbyArea').style.display = 'block';
       document.getElementById('lobbyStatusText').innerText = `【${code}】に招待を送信中...`;
 
-      const targetFullId = PEER_PREFIX + code;
+      const targetFullId = PEER_APP_KEY + code;
       const conn = peer.connect(targetFullId, {
         reliable: true,
         metadata: { senderName: playerData.name, senderCode: my4DigitCode }
