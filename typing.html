@@ -1051,11 +1051,16 @@
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
         <div class="panel-title">⚔️ P2P リアルタイム1v1道下奪還バトル</div>
-        <p class="panel-desc">お互いに**同じ4桁の部屋コード**（例: `A1B2`）を決めて入力し、「ルームに入る / 接続」を押してください。相手と接続されると自動でカウントダウンが始まり、リアルタイムの綱引きバトルがスタートします！</p>
+        <p class="panel-desc">
+          お互いに**同じ4桁の部屋コード**（例: `1111`）を入力してください。<br>
+          ・先に1人が「<b>① 部屋を作る(ホスト)</b>」を押して待機します。<br>
+          ・もう1人は「<b>② 部屋に参加(ゲスト)</b>」を押すと自動で接続され対戦が始まります！
+        </p>
 
         <div class="input-row" style="margin-top: 14px;">
-          <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: A1B2)" maxlength="4">
-          <button class="btn-half-clean" onclick="connectPeerRoom()">ルームに入る</button>
+          <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: 1111)" maxlength="4">
+          <button class="btn-half-clean" style="background: #0284c7;" onclick="startAsHost()">① 部屋を作る</button>
+          <button class="btn-half-clean" style="background: #10b981;" onclick="startAsGuest()">② 部屋に参加</button>
         </div>
 
         <div class="lobby-box" id="peerLobbyArea" style="display: none;">
@@ -1692,48 +1697,29 @@
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
     /* =========================================================================
-        ★ PeerJS リアルタイム P2P 対戦エンジン（サーバー不要） ★
+        ★ 確実につながる P2P ホスト／ゲスト対戦エンジン ★
         ========================================================================= */
     let peer = null;
     let peerConn = null;
-    let myPeerId = '';
 
-    function getPeerPrefix() {
-      return "michishita_typing_2026_";
-    }
-
-    function connectPeerRoom() {
+    function startAsHost() {
       const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
       if (!code || code.length !== 4) {
-        alert("4桁の部屋コード（例: A1B2）を入力してください！");
+        alert("4桁の部屋コードを入力してください！");
         return;
       }
 
       document.getElementById('peerLobbyArea').style.display = 'block';
-      document.getElementById('peerLobbyStatus').innerText = `【${code}】のルームに接続中...`;
+      document.getElementById('peerLobbyStatus').innerText = `【${code}】部屋を作成しました。相手の参加を待っています...`;
 
-      myPeerId = getPeerPrefix() + code + "_" + Math.random().toString(36).substring(2, 5);
+      if (peer) { try { peer.destroy(); } catch (e) {} }
 
-      if (peer) {
-        try { peer.destroy(); } catch (e) {}
-      }
-
-      peer = new Peer(myPeerId);
+      // ホスト側の専用ID
+      const hostId = "michishita_host_" + code;
+      peer = new Peer(hostId);
 
       peer.on('open', (id) => {
-        // ホストとして待機しつつ、同じ部屋コードのもう片方を探して接続を試みる
-        document.getElementById('peerLobbyStatus').innerText = `【${code}】待機中... 相手の接続を待っています`;
-        
-        // 相手のID候補（ホスト or クライアントの逆）へ接続を試みる
-        const targetIdHost = getPeerPrefix() + code + "_host";
-        const targetIdClient = getPeerPrefix() + code + "_client";
-        
-        // 簡易的に自分がホスト側IDになれるか試す
-        setTimeout(() => {
-          if (!peerConn || !peerConn.open) {
-            connectToOpponent(code);
-          }
-        }, 1000);
+        // ホストとして待機
       });
 
       peer.on('connection', (conn) => {
@@ -1741,28 +1727,42 @@
       });
 
       peer.on('error', (err) => {
-        // すでに同名IDが存在する場合はゲストとして接続に切り替え
-        connectToOpponent(code);
+        alert("この部屋コードはすでに使われているかエラーが発生しました。別のコードを試してください。");
+        document.getElementById('peerLobbyArea').style.display = 'none';
       });
     }
 
-    function connectToOpponent(code) {
-      if (!peer) return;
-      // 相手のPeerIDを推測して接続
-      const opponentIdGuess = getPeerPrefix() + code;
-      
-      // クライアント側として接続試行
-      const conn = peer.connect(opponentIdGuess);
-      if (conn) {
-        setupConnection(conn);
+    function startAsGuest() {
+      const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+      if (!code || code.length !== 4) {
+        alert("4桁の部屋コードを入力してください！");
+        return;
       }
+
+      document.getElementById('peerLobbyArea').style.display = 'block';
+      document.getElementById('peerLobbyStatus').innerText = `【${code}】の部屋に接続中...`;
+
+      if (peer) { try { peer.destroy(); } catch (e) {} }
+
+      // ゲストとしてランダムIDで参加
+      peer = new Peer();
+
+      peer.on('open', (id) => {
+        const hostId = "michishita_host_" + code;
+        const conn = peer.connect(hostId);
+        setupConnection(conn);
+      });
+
+      peer.on('error', (err) => {
+        alert("ホストが見つかりませんでした。先に相手が「部屋を作る」を押しているか確認してください。");
+        document.getElementById('peerLobbyArea').style.display = 'none';
+      });
     }
 
     function setupConnection(conn) {
       peerConn = conn;
       peerConn.on('open', () => {
-        document.getElementById('peerLobbyStatus').innerText = `対戦相手と接続成功！まもなく開始します...`;
-        // 自分の名前を送信
+        document.getElementById('peerLobbyStatus').innerText = `接続成功！まもなく対戦が始まります...`;
         peerConn.send({ type: 'INIT', name: playerData.name });
 
         setTimeout(() => {
