@@ -26,7 +26,6 @@
       background-repeat: no-repeat;
     }
 
-    /* デフォルトの難易度別グラデーション（画像未設定時に自動適用） */
     body.theme-diff-0 {
       background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 40%, #86efac 75%, #4ade80 100%);
       color: #1e293b;
@@ -36,7 +35,7 @@
       color: #1e293b;
     }
     body.theme-diff-2 {
-      background: radial-gradient(circle at center, #1e3a2b 0%, #142a1e 70%, #0b1a13 100%);
+      background: radial-gradient(circle at center, #275841 0%, #1a3a2b 70%, #0f241a 100%);
       color: #f8fafc;
     }
     body.theme-diff-3 {
@@ -66,7 +65,6 @@
       z-index: 2000;
     }
 
-    /* ヘッダー */
     header {
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(12px);
@@ -154,14 +152,12 @@
       color: #f8fafc;
     }
 
-    /* メインコンテナ */
     .container {
       max-width: 860px;
       margin: 24px auto 0;
       padding: 0 16px;
     }
 
-    /* プロフィールバー */
     .profile-bar {
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(10px);
@@ -225,7 +221,6 @@
       font-size: 16px;
     }
 
-    /* タブバー */
     .tab-bar {
       display: flex;
       margin-bottom: 24px;
@@ -273,7 +268,6 @@
       display: block;
     }
 
-    /* 難易度ピル */
     .diff-group {
       display: flex;
       gap: 8px;
@@ -313,7 +307,6 @@
       transform: translateY(-2px);
     }
 
-    /* タイピングカード */
     .typing-card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(14px);
@@ -353,7 +346,6 @@
       font-weight: 900;
     }
 
-    /* 綱引きメーター（対戦時） */
     .battle-bar-wrap {
       background: rgba(241, 245, 249, 0.85);
       border: 2px solid #bae6fd;
@@ -406,7 +398,7 @@
       object-fit: cover;
     }
 
-    /* ★ 文字を打つ場所（常に黒板・白文字） ★ */
+    /* 黒板エリア：濃さを少し和らげたリアルな教室風の深緑に調整 */
     .word-area {
       text-align: center;
       margin-bottom: 22px;
@@ -418,29 +410,26 @@
       padding: 18px 24px;
       position: relative;
       overflow: hidden;
-      /* デフォルトのリアル黒板テクスチャ */
-      background-color: #173829;
+      background-color: #234c38;
       background-image: 
-        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(180deg, #1f4533 0%, #132f22 100%);
-      background-size: 16px 16px, 100% 100%;
+        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, #2a5a43 0%, #1d4130 100%);
+      background-size: 14px 14px, 100% 100%;
       background-position: center;
-      border: 6px solid #854d0e; /* 木枠 */
-      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.7), 0 8px 20px rgba(0, 0, 0, 0.25);
+      border: 6px solid #8d5b28;
+      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45), 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
-    /* お題の漢字：見やすい白文字（チョーク感） */
     .word-kanji {
       font-size: 30px;
       font-weight: 900;
       color: #ffffff !important;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0.7), 0 2px 4px rgba(0, 0, 0, 0.8);
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.7);
       margin-bottom: 8px;
       line-height: 1.35;
       letter-spacing: 0.5px;
       z-index: 5;
     }
-    /* ローマ字表示 */
     .word-roma {
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
       font-size: 22px;
@@ -449,15 +438,14 @@
       z-index: 5;
     }
     .typed-char {
-      color: #38bdf8 !important; /* 入力済みの爽快な水色 */
-      text-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+      color: #67e8f9 !important;
+      text-shadow: 0 0 10px rgba(103, 232, 249, 0.85);
     }
     .untyped-char {
-      color: #cbd5e1 !important; /* 未入力のチョーク白 */
+      color: #f1f5f9 !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
 
-    /* ★ お題に「道下」があるとき飛び出してくる道下君 ★ */
     .michishita-popup {
       position: absolute;
       right: 14px;
@@ -494,7 +482,6 @@
       white-space: nowrap;
     }
 
-    /* 入力フィールド */
     .typing-input {
       width: 100%;
       height: 54px;
@@ -522,7 +509,6 @@
       box-shadow: none;
     }
 
-    /* ボタン類 */
     .btn-clean {
       width: 100%;
       height: 52px;
@@ -581,7 +567,6 @@
       box-shadow: none;
     }
 
-    /* 対戦セクション */
     .card-panel {
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(12px);
@@ -659,7 +644,6 @@
       color: #0284c7;
     }
 
-    /* ショップカード */
     .shop-grid-clean {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -733,7 +717,6 @@
       box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
     }
 
-    /* 称号リスト */
     .rank-tier-list {
       display: flex;
       flex-direction: column;
@@ -788,7 +771,6 @@
       color: #38bdf8;
     }
 
-    /* リザルトモーダル */
     #reveal-modal {
       display: none;
       position: fixed;
@@ -848,7 +830,6 @@
 
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- ヘッダー -->
   <header>
     <a href="index.html" class="header-logo">
       <span class="logo-badge">MI</span>
@@ -861,7 +842,6 @@
   </header>
 
   <div class="container">
-    <!-- プロフィールバー -->
     <div class="profile-bar">
       <div class="profile-left">
         <span>名義:</span>
@@ -874,7 +854,6 @@
       </div>
     </div>
 
-    <!-- 4連タブバー -->
     <div class="tab-bar">
       <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
       <div class="tab-item" id="tabBattleBtn" onclick="switchView('battle')">道下 奪還</div>
@@ -882,7 +861,6 @@
       <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">称号</div>
     </div>
 
-    <!-- VIEW 1: タイピング -->
     <div class="tab-content active" id="viewPlay">
       <div class="diff-group">
         <button class="diff-btn active" id="diffBtn0" onclick="selectDifficulty(0)">クソ簡単</button>
@@ -900,7 +878,6 @@
           <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
         </div>
 
-        <!-- 綱引きメーター（対戦時） -->
         <div class="battle-bar-wrap" id="battleTugBar">
           <div class="battle-names">
             <span id="tugPlayerName">あなた</span>
@@ -915,9 +892,7 @@
           </div>
         </div>
 
-        <!-- 文字を打つ場所（常に黒板・白文字＋道下出現ギミック） -->
         <div class="word-area" id="wordAreaBoard">
-          <!-- 道下出現ポップアップ -->
           <div class="michishita-popup" id="michishitaPopup">
             <div class="michishita-popup-tag">道下参上！</div>
             <img id="popupMichishitaImg" src="m3.jpg" alt="道下君">
@@ -940,7 +915,6 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 道下奪還バトル -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
         <div class="panel-title">⚔️ 友達の対戦コードで道下を奪還</div>
@@ -964,7 +938,6 @@
       </div>
     </div>
 
-    <!-- VIEW 3: 道下ショップ -->
     <div class="tab-content" id="viewShop">
       <div class="shop-grid-clean">
         <div class="shop-card-clean">
@@ -989,7 +962,6 @@
       </div>
     </div>
 
-    <!-- VIEW 4: 道下称号 -->
     <div class="tab-content" id="viewProfile">
       <div class="card-panel">
         <div class="panel-title">🏆 うでまえ進捗（全10段階）</div>
@@ -999,7 +971,6 @@
     </div>
   </div>
 
-  <!-- リザルトモーダル -->
   <div id="reveal-modal">
     <div class="reveal-content">
       <div class="reveal-title" id="resultTitle">🎉 判定結果</div>
@@ -1009,33 +980,23 @@
   </div>
 
   <script>
-    /* =========================================================================
-       ★ 【画像設定エリア】 ここに自由にお好きな画像のURL/ファイル名を入れてください ★
-       ========================================================================= */
     const CUSTOM_IMAGES = {
-      // 1. 文字を打つ場所（お題エリア）の背景画像
-      // （※空欄 "" の場合は、デフォルトのリアル黒板テクスチャ＋木枠になります）
       boardImage: "",
 
-      // 2. 全難易度用の「全体の背景画像」 (0〜6の全難易度それぞれに設定可能)
-      // （※空欄 "" の場合は、それぞれの難易度に応じた美しいグラデーション背景になります）
       globalBackgrounds: {
-        0: "", // クソ簡単 用の全体背景
-        1: "", // 簡単 用の全体背景
-        2: "", // ふつう 用の全体背景
-        3: "", // 難しい 用の全体背景
-        4: "", // 激ムズ 用の全体背景
-        5: "", // 悪夢 用の全体背景
-        6: ""  // 地獄 用の全体背景
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
       },
 
-      // 3. お題に「道下」があるときに出現する道下君の画像
       michishitaCharacter: "m3.jpg"
     };
 
-    /* 1. データ保存 & プロフィール管理 */
     const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
-    const BATTLE_STORAGE_KEY = 'MICHISHITA_4DIGIT_BATTLES';
 
     const RANKS = [
       { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
@@ -1069,14 +1030,12 @@
     };
 
     function applyCustomImages() {
-      // 黒板（文字を打つ場所）の背景
       const boardEl = document.getElementById('wordAreaBoard');
       if (CUSTOM_IMAGES.boardImage) {
         boardEl.style.backgroundImage = `url("${CUSTOM_IMAGES.boardImage}")`;
         boardEl.style.backgroundSize = "cover";
       }
 
-      // 道下君アイコン
       if (CUSTOM_IMAGES.michishitaCharacter) {
         const popupImg = document.getElementById('popupMichishitaImg');
         const tugImg = document.getElementById('tugMichishitaImg');
@@ -1093,13 +1052,11 @@
         document.body.style.backgroundImage = "";
       }
 
-      // クラスリセット
       for (let i = 0; i <= 6; i++) {
         document.body.classList.remove(`theme-diff-${i}`);
       }
       document.body.classList.add(`theme-diff-${diff}`);
 
-      // 濃い背景時のヘッダー色判定
       if (diff >= 2) {
         document.body.classList.add('dark-header');
       } else {
@@ -1185,7 +1142,6 @@
       });
     }
 
-    /* 2. Web Audio API 音声シンセサイザー */
     let audioCtx = null;
     let isSoundOn = true;
 
@@ -1230,7 +1186,6 @@
       document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
     }
 
-    /* 3. お題データ */
     const WORD_DB = {
       0: [
         { k: "道下", r: "mitisita" },
@@ -1275,7 +1230,6 @@
       ]
     };
 
-    /* 4. ゲーム進行エンジン */
     let currentDifficulty = 0;
 
     let gameState = {
@@ -1371,7 +1325,6 @@
       gameState.currentWord = selected;
       gameState.typedIndex = 0;
 
-      // ★ お題に「道下」が含まれていたら道下君を出現させる！ ★
       const popup = document.getElementById('michishitaPopup');
       if (selected.k.includes("道下")) {
         popup.classList.add('active');
@@ -1442,7 +1395,6 @@
       }
     });
 
-    /* 5. 道下の寝返りギミック */
     function checkTugOfWar() {
       const elapsed = 60 - gameState.timeLeft;
       let targetRivalScore = 0;
@@ -1488,7 +1440,6 @@
       }
     }
 
-    /* 6. パワーアップアイテム */
     function usePowerup(type) {
       if (!gameState.isRunning) return;
 
@@ -1547,7 +1498,6 @@
       saveData();
     }
 
-    /* 7. ゲーム終了 & リザルト */
     function endGame() {
       clearInterval(gameState.timerId);
       gameState.timerId = null;
@@ -1589,7 +1539,6 @@
         }
       }
 
-      // 4桁対戦コードの生成
       generate4DigitCode(gameState.score);
       saveData();
 
@@ -1631,11 +1580,8 @@
       document.getElementById('reveal-modal').style.display = 'none';
     }
 
-    /* 8. ★ 4桁対戦コード生成＆読み込みシステム ★ */
-    // 暗号化・ゴースト再現ロジック
     function encode4Digit(score, diff) {
-      // 0〜4095までのスコアを16進数3桁化 + 難易度1文字
-      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // 誤読しやすい0,1,I,Oを除外した32進文字
+      const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
       const s = Math.min(score, 32767);
       const c1 = chars[Math.floor(s / 1024) % 32];
       const c2 = chars[Math.floor(s / 32) % 32];
@@ -1691,7 +1637,6 @@
         return;
       }
 
-      // チェックポイント（ゴーストペース）の生成
       const cp1 = Math.round(decoded.score * 0.25);
       const cp2 = Math.round(decoded.score * 0.55);
       const cp3 = Math.round(decoded.score * 0.85);
@@ -1705,7 +1650,6 @@
       });
     }
 
-    /* 9. タブ切り替え */
     function switchView(view) {
       const views = ['play', 'battle', 'shop', 'profile'];
       views.forEach(v => {
