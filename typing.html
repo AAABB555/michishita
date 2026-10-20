@@ -4,1126 +4,1211 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>道下打 - 道下ファンクラブ公式タイピング</title>
+  <title>道下打 (Michishita-Uchi) - 公式タイピング</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700;800&family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap');
+
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-      background-color: #f4f7f9;
-      color: #333333;
-      padding-bottom: 60px;
-    }
-
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 2000;
-    }
-
-    header {
-      background: #ffffff;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #e1e8ed;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 19px;
-      font-weight: 800;
-      color: #1e293b;
-      letter-spacing: -0.5px;
-      text-decoration: none;
-    }
-
-    .logo-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      font-family: "Impact", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 18px;
-      font-weight: 900;
-      font-style: italic;
-      border-radius: 8px;
-      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
-      letter-spacing: 0.5px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .btn-return {
-      background: #f1f5f9;
-      color: #0284c7;
-      border: 1px solid #cbd5e1;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12.5px;
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      background: #ffffff;
+      font-family: 'M PLUS Rounded 1c', -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 20%, #0f172a 0%, #020617 100%);
+      color: #f8fafc;
       min-height: 100vh;
-      box-shadow: 0 0 15px rgba(0,0,0,0.04);
+      overflow-x: hidden;
     }
 
-    .slider-container {
-      position: relative;
-      width: 100%;
-      height: 220px;
-      background: #000;
-      overflow: hidden;
-    }
-    .slider-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .font-mono-code {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
     }
 
-    .badge-campaign {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-      z-index: 10;
-      pointer-events: none;
-    }
-    .badge-blue {
-      background: #0284c7;
-      color: #ffffff;
-      font-size: 13px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 4px;
-    }
-    .badge-white {
-      background: rgba(255, 255, 255, 0.95);
-      color: #0f172a;
-      font-size: 15px;
-      font-weight: 900;
-      padding: 5px 12px;
-      border-radius: 4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    .font-arcade {
+      font-family: 'Chakra Petch', sans-serif;
     }
 
-    .slider-dots {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin: 16px 0 20px;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #cbd5e1;
-    }
-    .dot.active {
-      background: #0284c7;
-      transform: scale(1.25);
-    }
-
-    .copy-section {
-      text-align: center;
-      padding: 0 20px 20px;
-    }
-    .copy-main {
-      font-size: 27px;
-      font-weight: 900;
-      line-height: 1.35;
-      margin-bottom: 8px;
-      color: #1e293b;
-    }
-    .copy-main .highlight {
-      color: #0284c7;
-    }
-    .copy-sub {
-      font-size: 13.5px;
-      color: #64748b;
-      margin-bottom: 20px;
-      font-weight: 500;
-    }
-
-    .user-profile-bar {
-      margin: 0 20px 20px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .profile-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .player-name-box {
-      font-size: 13px;
-      font-weight: 800;
-      color: #0f172a;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .name-input-inline {
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 3px 6px;
-      font-size: 13px;
-      font-weight: 800;
-      width: 90px;
-      color: #0284c7;
-      background: #ffffff;
-      outline: none;
-    }
-    .badge-rank-chip {
-      background: #e0f2fe;
-      color: #0284c7;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 12px;
-      border: 1px solid #bae6fd;
-    }
-    .profile-stats-inline {
-      font-size: 12px;
-      font-weight: 800;
-      color: #64748b;
-    }
-    .profile-stats-inline b {
-      color: #0284c7;
-    }
-
-    .tab-bar {
-      display: flex;
-      border-bottom: 2px solid #e2e8f0;
-      margin: 0 20px 22px;
-    }
-    .tab-item {
-      flex: 1;
-      text-align: center;
-      padding: 12px 0;
-      font-size: 15px;
-      font-weight: 800;
-      color: #64748b;
-      cursor: pointer;
-      position: relative;
-      transition: color 0.2s;
-    }
-    .tab-item.active {
-      color: #0284c7;
-    }
-    .tab-item.active::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -2px;
-      width: 100%;
-      height: 3px;
-      background: #0284c7;
-      border-radius: 2px;
-    }
-
-    .tab-content {
-      display: none;
-      padding: 0 20px 40px;
-    }
-    .tab-content.active {
-      display: block;
-    }
-
-    .diff-selector {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 4px;
-      margin-bottom: 16px;
-    }
-    .diff-selector::-webkit-scrollbar {
-      display: none;
-    }
-    .diff-chip {
-      flex: 0 0 auto;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      color: #475569;
-      font-size: 11.5px;
-      font-weight: 800;
-      padding: 6px 12px;
-      border-radius: 16px;
-      cursor: pointer;
-    }
-    .diff-chip.active {
-      background: #0284c7;
-      color: #ffffff;
-      border-color: #0284c7;
-    }
-
-    .typing-card-frame {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 20px 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      position: relative;
-    }
-    .typing-status-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      font-weight: 800;
-      color: #64748b;
-      border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 10px;
-      margin-bottom: 16px;
-    }
-    .typing-status-row b {
-      font-size: 16px;
-    }
-    .status-blue {
-      color: #0284c7;
-    }
-    .status-orange {
-      color: #ea580c;
-    }
-
-    .tug-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 8px 10px;
-      margin-bottom: 16px;
-      display: none;
-    }
-    .tug-names {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      font-weight: 800;
-      color: #64748b;
-      margin-bottom: 6px;
-    }
-    .tug-bar {
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 4px;
-      position: relative;
-    }
-    .tug-fill {
-      height: 100%;
-      width: 50%;
-      background: #0284c7;
-      border-radius: 4px;
-      transition: width 0.25s ease;
-    }
-    .tug-face {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid #0284c7;
-      overflow: hidden;
-      background: #ffffff;
-      transition: left 0.25s ease;
-    }
-    .tug-face img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .target-word-container {
-      text-align: center;
-      margin-bottom: 18px;
-      min-height: 64px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .target-kanji {
-      font-size: 21px;
-      font-weight: 900;
-      color: #1e293b;
-      margin-bottom: 4px;
-    }
-    .target-roma {
-      font-family: monospace;
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-    .typed-char {
-      color: #0284c7;
-    }
-    .untyped-char {
-      color: #94a3b8;
-    }
-
-    .typing-input-field {
-      width: 100%;
-      height: 48px;
-      border-radius: 24px;
-      border: 2px solid #0284c7;
-      outline: none;
-      text-align: center;
-      font-family: monospace;
-      font-size: 17px;
-      font-weight: 700;
-      color: #0f172a;
-      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.15);
-      margin-bottom: 14px;
-    }
-    .typing-input-field:disabled {
-      border-color: #cbd5e1;
-      background: #f8fafc;
-      color: #94a3b8;
-      box-shadow: none;
-    }
-
-    .btn-main-action {
-      width: 100%;
-      height: 48px;
-      border-radius: 24px;
-      background: #0284c7;
-      color: #ffffff;
-      font-size: 16px;
-      font-weight: 800;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
-      transition: transform 0.1s, opacity 0.2s;
-    }
-    .btn-main-action:active {
-      transform: scale(0.98);
-      opacity: 0.9;
-    }
-
-    .rotation-area {
-      position: relative;
-      width: 100%;
-      height: 110px;
-      margin-top: 10px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .rotating-michi {
-      width: 85px;
-      height: 85px;
-      background: #ffffff;
-      border-radius: 12px;
-      border: 2px solid #0284c7;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-      overflow: hidden;
-      display: none;
-    }
-    .rotating-michi img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .rotating-michi.active {
-      display: block;
-      animation: swingCorner 1.2s infinite ease-in-out alternate;
-    }
-    .rotating-michi.fast {
-      animation-duration: 0.65s;
-    }
-    @keyframes swingCorner {
+    /* クソうざい道下回転アニメーション (左右の角を軸に45度傾く) */
+    @keyframes michishitaWobble {
       0% {
         transform-origin: bottom left;
-        transform: rotate(-45deg);
+        transform: rotate(0deg);
+      }
+      20% {
+        transform-origin: bottom left;
+        transform: rotate(-45deg) scale(1.08);
+      }
+      40% {
+        transform-origin: bottom left;
+        transform: rotate(0deg);
       }
       50% {
-        transform-origin: bottom center;
+        transform-origin: bottom right;
+        transform: rotate(0deg);
+      }
+      70% {
+        transform-origin: bottom right;
+        transform: rotate(45deg) scale(1.08);
+      }
+      90% {
+        transform-origin: bottom right;
         transform: rotate(0deg);
       }
       100% {
-        transform-origin: bottom right;
-        transform: rotate(45deg);
+        transform-origin: bottom left;
+        transform: rotate(0deg);
       }
     }
 
-    .vs-panel {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    }
-    .vs-panel-title {
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #1e293b;
-      margin-bottom: 6px;
-    }
-    .vs-panel-desc {
-      font-size: 12px;
-      color: #64748b;
-      line-height: 1.45;
-      margin-bottom: 12px;
-    }
-    .vs-input-wrap {
-      display: flex;
-      gap: 8px;
-    }
-    .vs-code-box {
-      flex: 1;
-      height: 42px;
-      border: 1px solid #cbd5e1;
-      border-radius: 21px;
-      padding: 0 14px;
-      font-family: monospace;
-      font-size: 13px;
-      outline: none;
-    }
-    .btn-vs-go {
-      background: #0284c7;
-      color: #ffffff;
-      border: none;
-      padding: 0 16px;
-      border-radius: 21px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .code-display {
-      background: #f8fafc;
-      border: 1px dashed #0284c7;
-      padding: 10px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 12px;
-      word-break: break-all;
-      user-select: all;
+    .annoying-michishita {
+      animation: michishitaWobble 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
     }
 
-    .photo-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px 12px;
-    }
-    .photo-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      overflow: hidden;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-    }
-    .photo-frame {
-      width: 100%;
-      height: 95px;
-      background: #f1f5f9;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .photo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .badge-unlocked {
-      font-size: 10px;
-      font-weight: 800;
-      color: #0284c7;
-      margin-bottom: 2px;
-    }
-    .badge-locked {
-      font-size: 10px;
-      font-weight: 800;
-      color: #94a3b8;
-      margin-bottom: 2px;
-    }
-    .medal-title {
-      font-size: 12.5px;
-      font-weight: 800;
-      color: #1e293b;
-      margin-bottom: 2px;
-    }
-    .medal-req {
-      font-size: 11px;
-      color: #64748b;
-    }
-    .photo-card.is-locked {
-      opacity: 0.55;
-      filter: grayscale(1);
+    .annoying-michishita.fast {
+      animation-duration: 1.4s !important;
     }
 
-    #reveal-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.75);
-      z-index: 1100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+    .annoying-michishita.insane {
+      animation-duration: 0.85s !important;
     }
-    .reveal-content {
-      background: #ffffff;
-      max-width: 380px;
-      width: 100%;
-      border-radius: 20px;
-      padding: 28px 22px;
-      text-align: center;
-      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    .neon-border {
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 15px rgba(56, 189, 248, 0.1);
     }
-    @keyframes pop {
-      0% { transform: scale(0.85); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+
+    .neon-gold {
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.35);
     }
-    .reveal-title {
-      font-size: 21px;
-      font-weight: 900;
-      color: #0284c7;
-      margin-bottom: 10px;
+
+    /* カスタムスクロールバー */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .reveal-desc {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #4b5563;
-      margin-bottom: 20px;
-      word-break: break-all;
-    }
-    .btn-modal-close {
+    ::-webkit-scrollbar-track {
       background: #0f172a;
-      color: #ffffff;
-      padding: 11px 26px;
-      border-radius: 22px;
-      border: none;
-      font-weight: 800;
-      font-size: 13.5px;
-      cursor: pointer;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+
+    /* パルス演出 */
+    @keyframes traitorPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px #ef4444); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 20px #dc2626); }
+    }
+    .traitor-alert {
+      animation: traitorPulse 0.4s ease infinite;
     }
   </style>
 </head>
-<body>
+<body class="p-2 sm:p-4 flex flex-col items-center justify-between min-h-screen">
 
-  <canvas id="confetti-canvas"></canvas>
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[100]"></canvas>
 
-  <div class="container">
-    <header>
-      <a href="index.html" class="header-logo">
-        <span class="logo-badge">MI</span>
-        <span>道下打 公式特設</span>
+  <!-- トップバー (ナビゲーション・音量・ステータス) -->
+  <header class="w-full max-w-4xl flex items-center justify-between bg-slate-900/90 border border-slate-700/80 rounded-2xl px-4 py-2.5 backdrop-blur-md shadow-xl mb-3">
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-sky-400 border border-slate-600 transition">
+        <span>← 本館</span>
       </a>
-      <div class="header-actions">
-        <a href="index.html" class="btn-return">← 本館へ</a>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-red-600 font-extrabold text-white text-sm font-arcade shadow-md shadow-amber-500/20">道</span>
+        <span class="font-extrabold text-lg sm:text-xl tracking-tight text-white hidden sm:inline">道下打 <span class="text-xs text-sky-400 font-arcade">v2.0</span></span>
       </div>
-    </header>
-
-    <div class="slider-container">
-      <div class="badge-campaign">
-        <span class="badge-blue">道下遥人</span>
-        <span class="badge-white">タイピング対戦</span>
-      </div>
-      <img src="m3.jpg" alt="道下打">
     </div>
 
-    <div class="slider-dots">
-      <span class="dot active"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
-
-    <div class="copy-section">
-      <div class="copy-main">
-        未来ある<br>
-        <span class="highlight">道下の一歩</span>に。
+    <!-- プレイヤープロフ情報サマリー -->
+    <div class="flex items-center gap-3 text-xs sm:text-sm">
+      <div class="flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/30 px-2.5 py-1 rounded-xl text-amber-300 font-bold font-arcade">
+        <span>🪙</span>
+        <span id="headerCoins">0</span>
       </div>
-      <p class="copy-sub">道下に出来ることなら誰でも出来る。</p>
+      <div class="flex items-center gap-1.5 bg-sky-950/40 border border-sky-500/30 px-2.5 py-1 rounded-xl text-sky-300 font-bold">
+        <span>🎖️</span>
+        <span id="headerRankTitle" class="truncate max-w-[90px] sm:max-w-none">道下以下</span>
+      </div>
+      <button id="soundToggleBtn" onclick="toggleSound()" class="w-8 h-8 flex items-center justify-center bg-slate-800 border border-slate-700 rounded-xl text-base hover:bg-slate-700 transition">
+        🔊
+      </button>
     </div>
+  </header>
 
-    <div class="user-profile-bar">
-      <div class="profile-info">
-        <div class="player-name-box">
-          <input type="text" id="playerNameInput" class="name-input-inline" value="道下ファン" maxlength="8" onchange="savePlayerName()">
-          <span>殿</span>
+  <!-- メインコンテナ -->
+  <main class="w-full max-w-4xl bg-slate-900/70 border border-slate-800 rounded-3xl p-3 sm:p-6 backdrop-blur-md shadow-2xl flex-grow flex flex-col justify-between relative overflow-hidden">
+
+    <!-- ナビゲーションタブ -->
+    <nav class="flex items-center justify-center gap-2 mb-4 border-b border-slate-800 pb-3">
+      <button onclick="switchView('play')" id="tabPlayBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition bg-sky-500 text-white shadow-lg shadow-sky-500/25">
+        ⌨️ ソロプレイ
+      </button>
+      <button onclick="switchView('battle')" id="tabBattleBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800">
+        ⚔️ 道下奪還バトル
+      </button>
+      <button onclick="switchView('shop')" id="tabShopBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800">
+        🏪 道下ショップ
+      </button>
+      <button onclick="switchView('profile')" id="tabProfileBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800">
+        👤 うでまえ・記録
+      </button>
+    </nav>
+
+    <!-- VIEW 1: ソロプレイ / ゲーム画面 -->
+    <section id="viewPlay" class="flex-grow flex flex-col justify-between">
+      <!-- 難易度選択バー (ゲーム非開始時) -->
+      <div id="difficultySelector" class="grid grid-cols-3 sm:grid-cols-7 gap-1.5 mb-3">
+        <button onclick="selectDifficulty(0)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-sky-500/20 border-sky-400 text-sky-300">クソ簡単</button>
+        <button onclick="selectDifficulty(1)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">簡単</button>
+        <button onclick="selectDifficulty(2)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">ふつう</button>
+        <button onclick="selectDifficulty(3)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">難しい</button>
+        <button onclick="selectDifficulty(4)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">激ムズ</button>
+        <button onclick="selectDifficulty(5)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">悪夢</button>
+        <button onclick="selectDifficulty(6)" id="diffHellBtn" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-500 col-span-3 sm:col-span-1">🔒 地獄</button>
+      </div>
+
+      <!-- 対戦モード専用: 道下綱引きメーター (バトル時のみ表示) -->
+      <div id="battleTugBar" class="hidden mb-3 bg-slate-950/80 border border-slate-800 p-2.5 rounded-2xl">
+        <div class="flex justify-between items-center text-xs font-extrabold mb-1 px-1">
+          <span class="text-sky-400 flex items-center gap-1">👤 <span id="tugPlayerName">あなた</span></span>
+          <span id="traitorStatusText" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-amber-300">均衡状態</span>
+          <span class="text-rose-400 flex items-center gap-1"><span id="tugRivalName">ライバル</span> 👤</span>
         </div>
-        <span class="badge-rank-chip" id="playerRankBadge">道下以下</span>
-      </div>
-      <div class="profile-stats-inline">
-        コイン: <b id="coinCount">0枚</b>
-      </div>
-    </div>
-
-    <div class="tab-bar">
-      <div class="tab-item active" id="tabPlayBtn" onclick="switchTab('play')">道下打</div>
-      <div class="tab-item" id="tabVsBtn" onclick="switchTab('vs')">道下 奪還</div>
-      <div class="tab-item" id="tabRankBtn" onclick="switchTab('rank')">道下 称号</div>
-    </div>
-
-    <div class="tab-content active" id="tabPlay">
-      <div class="diff-selector">
-        <button class="diff-chip active" id="diff0" onclick="setDiff(0)">クソ簡単</button>
-        <button class="diff-chip" id="diff1" onclick="setDiff(1)">簡単</button>
-        <button class="diff-chip" id="diff2" onclick="setDiff(2)">ふつう</button>
-        <button class="diff-chip" id="diff3" onclick="setDiff(3)">難しい</button>
-        <button class="diff-chip" id="diff4" onclick="setDiff(4)">激ムズ</button>
-        <button class="diff-chip" id="diff5" onclick="setDiff(5)">悪夢</button>
-        <button class="diff-chip" id="diff6" onclick="setDiff(6)">地獄</button>
-      </div>
-
-      <div class="typing-card-frame">
-        <div class="typing-status-row">
-          <span>残り時間: <b class="status-blue" id="timerEl">60</b> 秒</span>
-          <span>スコア: <b class="status-orange" id="scoreEl">0</b></span>
-        </div>
-
-        <div class="tug-box" id="tugBox">
-          <div class="tug-names">
-            <span id="playerSideText">あなた</span>
-            <span id="enemySideText">対戦相手</span>
+        <div class="w-full bg-slate-800 h-6 rounded-full relative overflow-hidden flex items-center p-0.5 border border-slate-700">
+          <div id="tugBarProgress" class="h-full bg-gradient-to-r from-sky-500 via-amber-400 to-rose-500 rounded-full transition-all duration-300" style="width: 50%;"></div>
+          <div id="tugMichishitaMarker" class="absolute top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-amber-400 border-2 border-white shadow-lg flex items-center justify-center text-sm transition-all duration-300" style="left: calc(50% - 16px);">
+            道
           </div>
-          <div class="tug-bar">
-            <div class="tug-fill" id="tugFill"></div>
-            <div class="tug-face" id="tugFace">
-              <img src="m3.jpg" alt="道下">
+        </div>
+      </div>
+
+      <!-- アリーナ（お題表示 & タイピング領域） -->
+      <div class="relative bg-slate-950/90 border border-slate-800 rounded-2xl p-4 sm:p-8 flex flex-col items-center justify-center text-center shadow-inner min-h-[280px]">
+
+        <!-- 上部インジケーター (制限時間・スコア・ストリーク) -->
+        <div class="w-full flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4 font-arcade text-sm sm:text-base">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-500 text-xs font-bold">TIME</span>
+            <span id="gameTimer" class="font-extrabold text-2xl text-sky-400">60</span>
+            <span class="text-xs text-slate-500">s</span>
+          </div>
+
+          <div id="activeBuffBadge" class="hidden px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
+            ⚡ 道下代行発動中！
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="text-right">
+              <span class="text-slate-500 text-xs font-bold block">SCORE</span>
+              <span id="gameScore" class="font-extrabold text-xl text-amber-400">0</span>
             </div>
           </div>
         </div>
 
-        <div class="target-word-container">
-          <div class="target-kanji" id="targetKanji">スタートボタンを押してね</div>
-          <div class="target-roma" id="targetRoma">
-            <span class="typed-char" id="typedRoma"></span><span class="untyped-char" id="untypedRoma">press start</span>
+        <!-- お題：漢字 & ローマ字表示 -->
+        <div class="my-auto w-full z-10">
+          <div id="displayKanji" class="text-2xl sm:text-4xl font-black text-white tracking-wide mb-3 min-h-[44px] flex items-center justify-center drop-shadow-md">
+            ゲームスタートを押してね
+          </div>
+
+          <div class="font-mono-code text-lg sm:text-2xl tracking-widest min-h-[36px] flex items-center justify-center bg-slate-900/60 py-2 px-4 rounded-xl border border-slate-800 max-w-2xl mx-auto">
+            <span id="displayTypedRoma" class="text-sky-400 font-extrabold"></span><span id="displayUntypedRoma" class="text-slate-500 font-medium">press start to play</span>
           </div>
         </div>
 
-        <input type="text" id="typingInput" class="typing-input-field" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+        <!-- 見えないタイピング入力 (スマホ・PC両対応) -->
+        <input type="text" id="hiddenTypeInput" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
 
-        <button class="btn-main-action" id="btnAction" onclick="handleStart()">ゲームスタート</button>
+        <!-- スタート / リスタート案内オーバーレイ -->
+        <div id="startOverlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4">
+          <h2 class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-amber-300 mb-2 font-arcade tracking-tight">道下打 (MICHISHITA-UCHI)</h2>
+          <p id="startDesc" class="text-xs sm:text-sm text-slate-400 mb-6 max-w-md">
+            寿司打をリスペクトした道下専用タイピング。道下の視界妨害に耐え、全国の道下ランカーの頂点「革命道下」を目指せ！
+          </p>
 
-        <div class="rotation-area">
-          <div class="rotating-michi" id="rotatingMichi">
-            <img src="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" alt="回転道下">
+          <button id="mainStartBtn" onclick="startGame(false)" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-lg shadow-lg shadow-sky-500/30 hover:scale-105 active:scale-95 transition transform">
+            ⌨️ ゲームスタート (SPACE)
+          </button>
+        </div>
+
+        <!-- ★ クソうざい道下回転アニメーション (アリーナ最前面下部で左右45度傾く) ★ -->
+        <div id="annoyingMichishitaWrapper" class="absolute bottom-[-15px] left-1/2 -translate-x-1/2 pointer-events-none z-10 transition-opacity duration-300 opacity-90">
+          <div id="annoyingMichishita" class="annoying-michishita flex flex-col items-center">
+            <!-- 吹き出し -->
+            <div id="michishitaQuote" class="bg-white/95 text-slate-900 text-[11px] sm:text-xs font-black px-3 py-1 rounded-full shadow-lg border border-slate-300 whitespace-nowrap mb-1">
+              集中できる？笑
+            </div>
+
+            <!-- 道下アバターSVG -->
+            <div class="w-24 sm:w-32 h-24 sm:h-32 bg-amber-400 rounded-3xl border-4 border-slate-900 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
+              <div class="absolute -top-1 w-20 h-8 bg-slate-800 rounded-b-2xl"></div>
+              <!-- 眉毛 & 目 -->
+              <div class="flex gap-4 mt-4">
+                <div class="w-3 h-3 bg-slate-900 rounded-full relative"><div class="w-1 h-1 bg-white rounded-full top-0.5 right-0.5 absolute"></div></div>
+                <div class="w-3 h-3 bg-slate-900 rounded-full relative"><div class="w-1 h-1 bg-white rounded-full top-0.5 right-0.5 absolute"></div></div>
+              </div>
+              <!-- ニヤケ口 -->
+              <div class="w-7 h-3 border-b-4 border-slate-900 rounded-full mt-1.5"></div>
+              <!-- 名札バッジ -->
+              <div class="absolute bottom-1 bg-slate-900 text-white text-[9px] font-bold px-2 py-0.5 rounded-md">
+                道下遥人
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 操作ボタン & パワーアップアイテム枠 -->
+      <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5 text-xs text-slate-400">
+          <span>🎮 入力中: <span id="inputStatusText" class="text-sky-400 font-bold">待機中</span></span>
+          <span class="hidden sm:inline">| Escキーで中断</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- 代行チケットアイテム使用ボタン -->
+          <button id="useAgentBtn" onclick="usePowerup('agent')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold rounded-xl border border-slate-700 flex items-center gap-1 transition disabled:opacity-40" disabled>
+            <span>🤖 道下代行 (<span id="invAgentCount">0</span>)</span>
+          </button>
+          <!-- 目隠しアイテム使用ボタン -->
+          <button id="useBlindBtn" onclick="usePowerup('blind')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs font-bold rounded-xl border border-slate-700 flex items-center gap-1 transition disabled:opacity-40" disabled>
+            <span>🙈 目隠し (<span id="invBlindCount">0</span>)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: 道下奪還バトル (対戦コード生成 & 貼り付け挑戦) -->
+    <section id="viewBattle" class="hidden flex-grow flex flex-col justify-start gap-4">
+      <div class="bg-slate-950/80 border border-slate-800 p-4 sm:p-6 rounded-2xl">
+        <h3 class="text-lg font-black text-amber-300 flex items-center gap-2 mb-2">
+          <span>⚔️</span> 道下奪還バトル（非同期ゴースト対戦）
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">
+          サーバー不要！自分のタイピングスコアを「対戦コード」にして友達に渡すか、友達のコードを入力して勝負！
+          文字を早く打つと、中央の道下があなたに媚びを売って寝返ります。
+        </p>
+
+        <!-- 挑戦状の入力 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 mb-4">
+          <label class="block text-xs font-bold text-slate-300 mb-1.5">友達からもらった対戦コードを入力:</label>
+          <div class="flex gap-2">
+            <input type="text" id="battleCodeInput" placeholder="MICH-xxxx-xxxx..." class="flex-grow bg-slate-950 border border-slate-700 px-3 py-2 rounded-xl text-xs sm:text-sm text-white font-mono-code outline-none focus:border-sky-400">
+            <button onclick="startBattleFromCode()" class="px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-extrabold text-xs sm:text-sm rounded-xl hover:opacity-90 active:scale-95 transition">
+              道下を奪還する！
+            </button>
+          </div>
+        </div>
+
+        <!-- 自分の最新対戦コード -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold text-slate-400 block">あなたの最新挑戦状コード:</span>
+            <span id="myLatestCodeDisplay" class="font-mono-code text-xs text-sky-400 font-bold break-all">まだプレイ記録がありません</span>
+          </div>
+          <button onclick="copyChallengeCode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 transition shrink-0">
+            📋 コードをコピー
+          </button>
+        </div>
+      </div>
+
+      <!-- 対戦戦績サマリー -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
+          <span class="text-slate-400 text-xs block">通算対戦数</span>
+          <span id="battleTotalMatches" class="text-lg font-black text-white font-arcade">0</span>
+        </div>
+        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
+          <span class="text-slate-400 text-xs block">勝利 (奪還成功)</span>
+          <span id="battleWins" class="text-lg font-black text-sky-400 font-arcade">0</span>
+        </div>
+        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
+          <span class="text-slate-400 text-xs block">敗北 (寝返られ)</span>
+          <span id="battleLosses" class="text-lg font-black text-rose-400 font-arcade">0</span>
+        </div>
+        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
+          <span class="text-slate-400 text-xs block">寝返り発生回数</span>
+          <span id="battleBetrayals" class="text-lg font-black text-amber-400 font-arcade">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: 道下ショップ -->
+    <section id="viewShop" class="hidden flex-grow flex flex-col justify-start gap-3">
+      <div class="flex items-center justify-between bg-slate-950/80 border border-slate-800 p-3 rounded-2xl mb-1">
+        <span class="text-xs sm:text-sm font-bold text-slate-300">所持道下コイン:</span>
+        <span class="text-base sm:text-lg font-black text-amber-400 font-arcade flex items-center gap-1">
+          🪙 <span id="shopCoinsVal">0</span>
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- アイテム1: タイピング代行 -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="text-3xl mb-2">🤖</div>
+            <h4 class="font-extrabold text-sm text-white mb-1">道下のタイピング代行</h4>
+            <p class="text-xs text-slate-400 mb-3">使用すると道下が自動で5秒間爆速タイピングを代行してくれます。</p>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+            <span class="text-xs font-bold text-amber-400 font-arcade">🪙 150</span>
+            <button onclick="buyShopItem('agent', 150)" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition">購入</button>
+          </div>
+        </div>
+
+        <!-- アイテム2: 集中力UP (時間+10秒) -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="text-3xl mb-2">⏳</div>
+            <h4 class="font-extrabold text-sm text-white mb-1">道下の集中力 (時間+10秒)</h4>
+            <p class="text-xs text-slate-400 mb-3">次回プレイ時の制限時間が10秒延長されます（自動適用）。</p>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+            <span class="text-xs font-bold text-amber-400 font-arcade">🪙 100</span>
+            <button onclick="buyShopItem('time', 100)" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition">購入</button>
+          </div>
+        </div>
+
+        <!-- アイテム3: 目隠し -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="text-3xl mb-2">🙈</div>
+            <h4 class="font-extrabold text-sm text-white mb-1">道下の目隠し</h4>
+            <p class="text-xs text-slate-400 mb-3">使用すると、下の回転する道下が7秒間画面外へ退散します。</p>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+            <span class="text-xs font-bold text-amber-400 font-arcade">🪙 80</span>
+            <button onclick="buyShopItem('blind', 80)" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition">購入</button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="tab-content" id="tabVs">
-      <div class="vs-panel">
-        <div class="vs-panel-title">対戦コードを入力して道下を奪還</div>
-        <p class="vs-panel-desc">友達から受け取ったコードを貼り付けると、相手の打鍵ゴーストと道下の寝返りバトルが始まります。</p>
-        <div class="vs-input-wrap">
-          <input type="text" id="vsInputCode" class="vs-code-box" placeholder="MICH-XXXXX">
-          <button class="btn-vs-go" onclick="startVsGame()">対戦開始</button>
+    <!-- VIEW 4: プロフィール・称号・10段階進捗 -->
+    <section id="viewProfile" class="hidden flex-grow flex flex-col justify-start gap-4 overflow-y-auto max-h-[480px] pr-1">
+      <!-- ユーザー名変更 -->
+      <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-xl font-black text-white font-arcade shadow-lg">
+            MI
+          </div>
+          <div>
+            <span class="text-[11px] text-slate-400 block font-bold">プレイヤー名 (自動保存):</span>
+            <input type="text" id="profileNameInput" onchange="updatePlayerName(this.value)" class="bg-slate-900 border border-slate-700 px-3 py-1 rounded-lg text-sm font-bold text-white outline-none focus:border-sky-400 max-w-[160px]" maxlength="12">
+          </div>
+        </div>
+
+        <div class="text-center sm:text-right w-full sm:w-auto">
+          <span class="text-[11px] text-slate-400 block font-bold">現在の階級:</span>
+          <span id="profileCurrentRankTitle" class="text-base font-black text-amber-300">道下以下</span>
         </div>
       </div>
 
-      <div class="vs-panel">
-        <div class="vs-panel-title">あなたの挑戦状コード</div>
-        <p class="vs-panel-desc">ゲームプレイ後に自動生成されます。コピーして友達に送りましょう。</p>
-        <div class="code-display" id="myCodeDisplay">（ソロプレイ後に発行されます）</div>
+      <!-- 10段階 うでまえ称号ロードマップ (1週間で到達目標) -->
+      <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl">
+        <h4 class="text-xs font-extrabold text-slate-300 mb-3 flex items-center gap-1.5">
+          <span>🏆</span> うでまえ進捗（全10段階）
+        </h4>
+        <div class="space-y-2" id="rankTierList">
+          <!-- JSで動的生成 -->
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="tab-content" id="tabRank">
-      <div class="photo-grid" id="rankMedalGrid">
+  </main>
+
+  <!-- フッター -->
+  <footer class="w-full max-w-4xl text-center text-[11px] text-slate-500 py-2">
+    道下ファンクラブ公認 タイピングエンジン「道下打」 / ローカル完全セーブ対応
+  </footer>
+
+  <!-- リザルトモーダル -->
+  <div id="resultModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl relative">
+      <div id="resultBadgeIcon" class="text-5xl mb-2">🎉</div>
+      <h3 id="resultTitle" class="text-2xl font-black text-white font-arcade mb-1">RUN COMPLETE</h3>
+      <p id="resultSub" class="text-xs text-slate-400 mb-6">タイピング結果とお知らせ</p>
+
+      <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 space-y-2 mb-6 text-sm">
+        <div class="flex justify-between items-center text-slate-300">
+          <span>最終スコア:</span>
+          <span id="modalScore" class="font-extrabold text-amber-400 font-arcade text-lg">0</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-300">
+          <span>打鍵数 / ミス:</span>
+          <span id="modalStrokes" class="font-bold text-white font-arcade">0 / 0</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-300">
+          <span>獲得道下コイン:</span>
+          <span id="modalCoinsEarned" class="font-extrabold text-amber-300 font-arcade">+0</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-300 pt-2 border-t border-slate-800">
+          <span>うでまえ判定:</span>
+          <span id="modalRankEarned" class="font-black text-sky-400">道下以下</span>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div id="reveal-modal">
-    <div class="reveal-content">
-      <div class="reveal-title" id="revealTitle">🎉 結果発表</div>
-      <div class="reveal-desc" id="revealDesc"></div>
-      <button class="btn-modal-close" onclick="closeModal()">閉じる</button>
+      <div class="flex gap-2">
+        <button onclick="closeResultModal(); startGame(false);" class="flex-1 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-extrabold text-sm transition">
+          もう一度 (SPACE)
+        </button>
+        <button onclick="closeResultModal();" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition">
+          閉じる
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
+    /* =====================================================================
+       1. データ保存 & プロフィール管理 (localStorage - 完全ローカル)
+       ===================================================================== */
+    const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
+
     const RANKS = [
-      "道下以下",
-      "ルーキー道下",
-      "ビギナー級道下",
-      "レギュラー道下",
-      "ベテラン道下",
-      "エキスパート道下",
-      "エリート級道下",
-      "マスター級道下",
-      "レジェンド級道下",
-      "革命道下"
+      { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
+      { id: 1, title: "ルーキー道下", minScore: 120, desc: "キーボードの配置を思い出し始めた道下。" },
+      { id: 2, title: "ビギナー級道下", minScore: 280, desc: "ゆっくりだが確実に打ち込める道下。" },
+      { id: 3, title: "レギュラー道下", minScore: 480, desc: "寿司打の練習を毎日欠かさない道下。" },
+      { id: 4, title: "ベテラン道下", minScore: 720, desc: "休み時間のタイピング対決で一目置かれる存在。" },
+      { id: 5, title: "エキスパート道下", minScore: 1000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
+      { id: 6, title: "エリート級道下", minScore: 1350, desc: "視界妨害を物ともせず打ち続ける鋼の精神。" },
+      { id: 7, title: "マスター級道下", minScore: 1750, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
+      { id: 8, title: "レジェンド級道下", minScore: 2200, desc: "神格化された道下。もはや人間離れしている。" },
+      { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
     ];
 
-    const MEDAL_DATA = [
-      { id: "m0", name: "脱・道下以下", req: "ルーキー道下に到達", img: "m3.jpg" },
-      { id: "m1", name: "常連道下", req: "ベテラン道下に到達", img: "0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" },
-      { id: "m2", name: "マスター道下", req: "マスター級道下に到達", img: "48ac578f-7e9b-458a-a0ba-72f830a9d508.jpg" },
-      { id: "m3", name: "革命道下", req: "最高称号に到達", img: "5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" }
-    ];
-
-    const WORD_LISTS = [
-      [
-        { kanji: "道下", roma: "mitisita" },
-        { kanji: "僕", roma: "boku" },
-        { kanji: "消しゴム", roma: "kesigomu" }
-      ],
-      [
-        { kanji: "あの時の僕", roma: "anotokinoboku" },
-        { kanji: "道下遥人", roma: "mitisitaharuto" },
-        { kanji: "黒板アート", roma: "kokuban-ato" }
-      ],
-      [
-        { kanji: "授業中にちぎった消しゴム", roma: "zyugyoutyuunitigittakesigomu" },
-        { kanji: "公式アクリルスタンド", roma: "kousikiakurirusutando" },
-        { kanji: "未来ある道下の一歩に", roma: "miraiarumitisitanoipponi" }
-      ],
-      [
-        { kanji: "お前の方が借り多いけどありがとう", roma: "omaenohougakarioikedoarigatou" },
-        { kanji: "文化祭が終わってしまい悲しむ道下", roma: "bunkasaigaowattesimaitasikanasimumitisita" }
-      ],
-      [
-        { kanji: "道下に出来ることなら誰でも出来る", roma: "mitisitanidekirukotonaradaredemodekiru" },
-        { kanji: "一週間やりこんで革命道下に到達せよ", roma: "issyuukanyarikondekakumeimitisitanitoutatuseyo" }
-      ],
-      [
-        { kanji: "道下ファンクラブ特設サイト炎上寸前", roma: "mitisitafankurabutokusetusaitoenzousunzen" },
-        { kanji: "左右に傾くうざい道下に惑わされるな", roma: "sayuunikatamukuuzaimitisitanimadowasareruna" }
-      ],
-      [
-        { kanji: "道下打地獄モード完全制覇人類未踏の革命道下覚醒", roma: "mitisitautidigokum-dokanzenseihazinruimitounokakumeimitisitakakusei" }
-      ]
-    ];
-
-    let userState = {
-      name: "道下ファン",
-      rankIdx: 0,
-      coins: 0,
+    let playerData = {
+      name: "名無し道下",
+      coins: 100,
       highScore: 0,
-      unlockedMedals: []
+      rankId: 0,
+      inventory: {
+        agent: 1, // 代行アイテム数
+        blind: 1  // 目隠しアイテム数
+      },
+      bonusTimeNext: 0,
+      stats: {
+        matches: 0,
+        wins: 0,
+        losses: 0,
+        betrayals: 0
+      },
+      latestChallengeCode: ""
     };
 
-    function loadState() {
-      const saved = localStorage.getItem("MICHISHITA_SAVE_V1");
-      if (saved) {
-        try {
-          userState = Object.assign(userState, JSON.parse(saved));
-        } catch (e) {}
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          playerData = Object.assign(playerData, JSON.parse(saved));
+        }
+      } catch (e) {
+        console.error("ローカルストレージの読み込み失敗", e);
       }
-      renderHeaderProfile();
-      renderMedals();
+      updateUI();
     }
 
-    function saveState() {
-      localStorage.setItem("MICHISHITA_SAVE_V1", JSON.stringify(userState));
-      renderHeaderProfile();
-      renderMedals();
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData));
+      } catch (e) {
+        console.error("保存失敗", e);
+      }
+      updateUI();
     }
 
-    function savePlayerName() {
-      const val = document.getElementById("playerNameInput").value.trim();
-      if (val) {
-        userState.name = val;
-        saveState();
+    function updatePlayerName(newName) {
+      if (newName && newName.trim()) {
+        playerData.name = newName.trim().substring(0, 12);
+        saveData();
       }
     }
 
-    function renderHeaderProfile() {
-      document.getElementById("playerNameInput").value = userState.name;
-      document.getElementById("playerRankBadge").innerText = RANKS[userState.rankIdx];
-      document.getElementById("coinCount").innerText = userState.coins + "枚";
+    function updateUI() {
+      document.getElementById('headerCoins').innerText = playerData.coins.toLocaleString();
+      document.getElementById('shopCoinsVal').innerText = playerData.coins.toLocaleString();
+      const currentRank = RANKS[playerData.rankId] || RANKS[0];
+      document.getElementById('headerRankTitle').innerText = currentRank.title;
+      document.getElementById('profileCurrentRankTitle').innerText = currentRank.title;
+      document.getElementById('profileNameInput').value = playerData.name;
+      document.getElementById('tugPlayerName').innerText = playerData.name;
+
+      document.getElementById('invAgentCount').innerText = playerData.inventory.agent;
+      document.getElementById('invBlindCount').innerText = playerData.inventory.blind;
+
+      document.getElementById('useAgentBtn').disabled = playerData.inventory.agent <= 0 || !gameState.isRunning;
+      document.getElementById('useBlindBtn').disabled = playerData.inventory.blind <= 0 || !gameState.isRunning;
+
+      // 戦績
+      document.getElementById('battleTotalMatches').innerText = playerData.stats.matches;
+      document.getElementById('battleWins').innerText = playerData.stats.wins;
+      document.getElementById('battleLosses').innerText = playerData.stats.losses;
+      document.getElementById('battleBetrayals').innerText = playerData.stats.betrayals;
+
+      if (playerData.latestChallengeCode) {
+        document.getElementById('myLatestCodeDisplay').innerText = playerData.latestChallengeCode;
+      }
+
+      // 地獄難易度ロック判定 (エリート級道下以上で解放)
+      const hellBtn = document.getElementById('diffHellBtn');
+      if (playerData.rankId >= 6) {
+        hellBtn.innerText = "🔥 地獄";
+        hellBtn.classList.remove('text-slate-500');
+        hellBtn.classList.add('text-rose-400');
+      } else {
+        hellBtn.innerText = "🔒 地獄";
+      }
+
+      renderRankList();
     }
 
-    function renderMedals() {
-      const grid = document.getElementById("rankMedalGrid");
-      grid.innerHTML = "";
-      MEDAL_DATA.forEach((m, idx) => {
-        const isUnlocked = userState.unlockedMedals.includes(m.id);
-        const card = document.createElement("div");
-        card.className = "photo-card" + (isUnlocked ? "" : " is-locked");
-        card.innerHTML = `
-          <div class="photo-frame">
-            <img src="${m.img}" alt="${m.name}">
+    function renderRankList() {
+      const container = document.getElementById('rankTierList');
+      container.innerHTML = '';
+      RANKS.forEach((r, idx) => {
+        const isCurrent = playerData.rankId === idx;
+        const isUnlocked = playerData.rankId >= idx;
+        const div = document.createElement('div');
+        div.className = `p-2.5 rounded-xl border flex items-center justify-between text-xs transition ${
+          isCurrent 
+            ? 'bg-sky-950/80 border-sky-400 neon-border font-bold' 
+            : isUnlocked 
+              ? 'bg-slate-900 border-slate-700 text-slate-300' 
+              : 'bg-slate-950 border-slate-800 text-slate-600'
+        }`;
+        div.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="w-5 text-center font-arcade font-bold">${idx + 1}</span>
+            <div>
+              <span class="${isCurrent ? 'text-amber-300 font-extrabold' : ''}">${r.title}</span>
+              <span class="block text-[10px] text-slate-400">${r.desc}</span>
+            </div>
           </div>
-          <span class="${isUnlocked ? 'badge-unlocked' : 'badge-locked'}">
-            ${isUnlocked ? '✓ 獲得済み' : '🔒 未獲得'}
-          </span>
-          <div class="medal-title">${m.name}</div>
-          <div class="medal-req">${m.req}</div>
+          <span class="font-arcade text-[11px] shrink-0 font-bold">${r.minScore}pt〜</span>
         `;
-        grid.appendChild(card);
+        container.appendChild(div);
       });
     }
 
-    function switchTab(t) {
-      ['play', 'vs', 'rank'].forEach(tabName => {
-        const btn = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Btn`);
-        const content = document.getElementById(`tab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
-        if (tabName === t) {
-          btn.classList.add("active");
-          content.classList.add("active");
-        } else {
-          btn.classList.remove("active");
-          content.classList.remove("active");
-        }
+    /* =====================================================================
+       2. Web Audio API 音声シンセサイザー (外部URL不要)
+       ===================================================================== */
+    let audioCtx = null;
+    let isSoundOn = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playBeep(freq, type = 'sine', duration = 0.08, vol = 0.1) {
+      if (!isSoundOn) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundType() { playBeep(750, 'triangle', 0.05, 0.08); }
+    function soundCorrect() { playBeep(1200, 'sine', 0.12, 0.12); }
+    function soundMiss() { playBeep(180, 'sawtooth', 0.15, 0.15); }
+    function soundTraitor() {
+      playBeep(260, 'square', 0.2, 0.18);
+      setTimeout(() => playBeep(210, 'square', 0.3, 0.2), 150);
+    }
+    function soundFanfare() {
+      [523, 659, 783, 1046].forEach((f, i) => {
+        setTimeout(() => playBeep(f, 'sine', 0.2, 0.15), i * 120);
       });
     }
 
-    let activeDiff = 0;
-    function setDiff(idx) {
-      activeDiff = idx;
-      for (let i = 0; i < 7; i++) {
-        document.getElementById(`diff${i}`).classList.remove("active");
-      }
-      document.getElementById(`diff${idx}`).classList.add("active");
+    function toggleSound() {
+      isSoundOn = !isSoundOn;
+      document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊' : '🔇';
     }
 
-    let isGameRunning = false;
-    let timerRef = null;
-    let currentSeconds = 60;
-    let currentScore = 0;
-    let targetObj = null;
-    let charProgress = 0;
-    let vsModeActive = false;
-    let ghostEnemy = null;
-    let enemyCurrentScore = 0;
+    /* =====================================================================
+       3. お題データ & 難易度テーブル
+       ===================================================================== */
+    const WORD_DB = {
+      // 0: クソ簡単 (2-4文字)
+      0: [
+        { k: "道下", r: "mitisita" },
+        { k: "僕", r: "boku" },
+        { k: "犬", r: "inu" },
+        { k: "サボり", r: "sabori" },
+        { k: "神", r: "kami" },
+        { k: "黒板", r: "kokuban" },
+        { k: "消しゴム", r: "kesigomu" }
+      ],
+      // 1: 簡単 (5-8文字)
+      1: [
+        { k: "道下遥人", r: "mitisitaharuto" },
+        { k: "あの時の僕", r: "anotokinoboku" },
+        { k: "文化祭開幕", r: "bunkasaikaimaku" },
+        { k: "寿司打で勝負", r: "susiudatesyoubu" },
+        { k: "ちぎり消しゴム", r: "tigirikesigomu" },
+        { k: "昼休みダッシュ", r: "hiruyasumidassyu" }
+      ],
+      // 2: ふつう (寿司打標準)
+      2: [
+        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" },
+        { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
+        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" },
+        { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
+        { k: "黒板アートの完成を喜ぶ", r: "kokuban-atonokanseiwoyorokobu" },
+        { k: "未来ある道下の一歩に", r: "miraiarumitisitanoipponi" }
+      ],
+      // 3: 難しい
+      3: [
+        { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
+        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredmodekiru" },
+        { k: "インフルエンザ大流行による学級閉鎖", r: "infuruenzadairyuukouniyorugakkyuuheisa" },
+        { k: "全国送料無料で手渡し配達対応", r: "zenkokusouryoumuryoudetewatasihaitatutaiou" }
+      ],
+      // 4: 激ムズ
+      4: [
+        { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
+        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" },
+        { k: "寿司打リスペクト道下打タイピング選手権開幕", r: "susiutarisupekutomitisitautitaipinkusensyukenkaimaku" }
+      ],
+      // 5: 悪夢
+      5: [
+        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" },
+        { k: "一週間ぶっ通しで練習して革命道下の座を奪い取れ", r: "issyukanbuttousiderensyuusitekakumeimitisitanozawoubaitore" }
+      ],
+      // 6: 地獄
+      6: [
+        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredmodekirutoomounayokakumeihakokokarahazimaronoda" },
+        { k: "あの時の僕が残した伝説の消しゴムは時空を超えて道下の魂を揺さぶる", r: "anotokinobokuganokosidadensetunokesigomuhazikuuwo-koetemitisitanotamasiiwoyusaburu" }
+      ]
+    };
 
-    function handleStart(vsData = null) {
-      isGameRunning = true;
-      currentSeconds = 60;
-      currentScore = 0;
-      vsModeActive = !!vsData;
-      ghostEnemy = vsData;
-      enemyCurrentScore = 0;
+    /* =====================================================================
+       4. ゲーム進行エンジン & ロジック
+       ===================================================================== */
+    let currentDifficulty = 0;
 
-      document.getElementById("timerEl").innerText = currentSeconds;
-      document.getElementById("scoreEl").innerText = currentScore;
-      document.getElementById("btnAction").style.display = "none";
+    let gameState = {
+      isRunning: false,
+      isBattle: false,
+      timeLeft: 60,
+      timerId: null,
+      score: 0,
+      totalStrokes: 0,
+      missCount: 0,
+      currentWord: null,
+      typedIndex: 0,
+      blindActive: false,
+      agentActive: false,
+      // 対戦用
+      rivalCheckpoints: [], // [ {time, score} ]
+      rivalName: "ライバル",
+      tugBalance: 0 // -50 (ライバル) 〜 +50 (プレイヤー)
+    };
 
-      const tug = document.getElementById("tugBox");
-      if (vsModeActive) {
-        tug.style.display = "block";
-        document.getElementById("playerSideText").innerText = userState.name;
-        document.getElementById("enemySideText").innerText = vsData.name;
-        updateTugVisual();
-      } else {
-        tug.style.display = "none";
-      }
-
-      const rotator = document.getElementById("rotatingMichi");
-      rotator.classList.add("active");
-      if (activeDiff >= 4) {
-        rotator.classList.add("fast");
-      } else {
-        rotator.classList.remove("fast");
-      }
-
-      const input = document.getElementById("typingInput");
-      input.disabled = false;
-      input.value = "";
-      input.focus();
-
-      pullNextWord();
-
-      if (timerRef) clearInterval(timerRef);
-      timerRef = setInterval(() => {
-        currentSeconds--;
-        document.getElementById("timerEl").innerText = currentSeconds;
-
-        if (vsModeActive && ghostEnemy) {
-          const pastSec = 60 - currentSeconds;
-          enemyCurrentScore = ghostEnemy.timeline[pastSec] || ghostEnemy.timeline[ghostEnemy.timeline.length - 1] || 0;
-          updateTugVisual();
-        }
-
-        if (currentSeconds <= 0) {
-          finishGame();
-        }
-      }, 1000);
-    }
-
-    function pullNextWord() {
-      const pool = WORD_LISTS[activeDiff];
-      targetObj = pool[Math.floor(Math.random() * pool.length)];
-      charProgress = 0;
-      refreshWordUI();
-    }
-
-    function refreshWordUI() {
-      document.getElementById("targetKanji").innerText = targetObj.kanji;
-      document.getElementById("typedRoma").innerText = targetObj.roma.substring(0, charProgress);
-      document.getElementById("untypedRoma").innerText = targetObj.roma.substring(charProgress);
-    }
-
-    const typingBox = document.getElementById("typingInput");
-    typingBox.addEventListener("input", () => {
-      if (!isGameRunning || !targetObj) return;
-      const val = typingBox.value.toLowerCase();
-      const nextChar = targetObj.roma[charProgress];
-
-      if (val.endsWith(nextChar)) {
-        charProgress++;
-        currentScore += 10 + activeDiff * 2;
-        document.getElementById("scoreEl").innerText = currentScore;
-        refreshWordUI();
-
-        if (vsModeActive) updateTugVisual();
-
-        if (charProgress >= targetObj.roma.length) {
-          typingBox.value = "";
-          pullNextWord();
-        }
-      } else {
-        typingBox.value = val.slice(0, -1);
-      }
-    });
-
-    function updateTugVisual() {
-      const delta = currentScore - enemyCurrentScore;
-      let posPercent = 50 + (delta / 12);
-      if (posPercent < 5) posPercent = 5;
-      if (posPercent > 95) posPercent = 95;
-
-      document.getElementById("tugFill").style.width = posPercent + "%";
-      document.getElementById("tugFace").style.left = posPercent + "%";
-    }
-
-    function finishGame() {
-      clearInterval(timerRef);
-      timerRef = null;
-      isGameRunning = false;
-
-      document.getElementById("typingInput").disabled = true;
-      document.getElementById("btnAction").style.display = "block";
-      document.getElementById("btnAction").innerText = "もう一度あそぶ";
-      document.getElementById("rotatingMichi").classList.remove("active");
-
-      const earned = Math.floor(currentScore / 10);
-      userState.coins += earned;
-
-      if (currentScore > userState.highScore) {
-        userState.highScore = currentScore;
-      }
-
-      let calculatedRank = Math.min(Math.floor(currentScore / 80), 9);
-      if (calculatedRank > userState.rankIdx) {
-        userState.rankIdx = calculatedRank;
-      }
-
-      if (userState.rankIdx >= 1 && !userState.unlockedMedals.includes("m0")) userState.unlockedMedals.push("m0");
-      if (userState.rankIdx >= 4 && !userState.unlockedMedals.includes("m1")) userState.unlockedMedals.push("m1");
-      if (userState.rankIdx >= 7 && !userState.unlockedMedals.includes("m2")) userState.unlockedMedals.push("m2");
-      if (userState.rankIdx >= 9 && !userState.unlockedMedals.includes("m3")) userState.unlockedMedals.push("m3");
-
-      const timelineArr = [];
-      const rate = currentScore / 60;
-      for (let s = 0; s <= 60; s++) {
-        timelineArr.push(Math.round(rate * s));
-      }
-      const challengePayload = {
-        name: userState.name,
-        diff: activeDiff,
-        finalScore: currentScore,
-        timeline: timelineArr
-      };
-      const generatedCode = "MICH-" + btoa(encodeURIComponent(JSON.stringify(challengePayload)));
-      document.getElementById("myCodeDisplay").innerText = generatedCode;
-
-      let msg = `スコア: <b>${currentScore} 点</b><br>獲得コイン: <b>+${earned} 枚</b><br>うでまえ: <b>${RANKS[userState.rankIdx]}</b>`;
-
-      if (vsModeActive) {
-        if (currentScore >= enemyCurrentScore) {
-          msg = `⚔️ <b>道下奪還成功！（勝利）</b><br><br>` + msg;
-        } else {
-          msg = `💔 <b>道下は相手に寝返りました…（敗北）</b><br><br>` + msg;
-        }
-      } else {
-        msg += `<br><br>対戦コードを生成しました！「道下 奪還」タブから友達に送れます。`;
-      }
-
-      saveState();
-      triggerConfettiModal(msg);
-    }
-
-    function startVsGame() {
-      const raw = document.getElementById("vsInputCode").value.trim();
-      if (!raw.startsWith("MICH-")) {
-        alert("無効な対戦コードです！");
+    function selectDifficulty(diff) {
+      if (gameState.isRunning) return;
+      if (diff === 6 && playerData.rankId < 6) {
+        alert("『地獄』はうでまえ「エリート級道下」以上で解放されます！");
         return;
       }
-      try {
-        const jsonStr = decodeURIComponent(atob(raw.replace("MICH-", "")));
-        const parsed = JSON.parse(jsonStr);
-        switchTab("play");
-        setDiff(parsed.diff || 0);
-        handleStart(parsed);
-      } catch (e) {
-        alert("対戦コードの読み込みに失敗しました。");
+      currentDifficulty = diff;
+      document.querySelectorAll('.diff-btn').forEach((b, idx) => {
+        if (idx === diff) {
+          b.className = "diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-sky-500/20 border-sky-400 text-sky-300";
+        } else {
+          b.className = "diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400";
+        }
+      });
+
+      // 道下の回転速度を難易度で変化
+      const michi = document.getElementById('annoyingMichishita');
+      michi.classList.remove('fast', 'insane');
+      if (diff >= 4) michi.classList.add('fast');
+      if (diff === 6) michi.classList.add('insane');
+    }
+
+    function startGame(isBattle = false, rivalData = null) {
+      if (gameState.isRunning) return;
+
+      gameState.isRunning = true;
+      gameState.isBattle = isBattle;
+      gameState.score = 0;
+      gameState.totalStrokes = 0;
+      gameState.missCount = 0;
+      gameState.typedIndex = 0;
+      gameState.blindActive = false;
+      gameState.agentActive = false;
+      gameState.tugBalance = 0;
+
+      // 時間設定 (ボーナスアイテム適用)
+      let initialTime = 60 + playerData.bonusTimeNext;
+      playerData.bonusTimeNext = 0; // 消費
+      gameState.timeLeft = initialTime;
+
+      document.getElementById('startOverlay').classList.add('hidden');
+      document.getElementById('activeBuffBadge').classList.add('hidden');
+      document.getElementById('inputStatusText').innerText = "タイピング中！";
+
+      // 対戦メーター表示切り替え
+      const tugBar = document.getElementById('battleTugBar');
+      if (isBattle && rivalData) {
+        tugBar.classList.remove('hidden');
+        gameState.rivalName = rivalData.name || "ライバル";
+        gameState.rivalCheckpoints = rivalData.checkpoints || [];
+        document.getElementById('tugRivalName').innerText = gameState.rivalName;
+        updateTugMeter(0);
+      } else {
+        tugBar.classList.add('hidden');
+      }
+
+      const input = document.getElementById('hiddenTypeInput');
+      input.disabled = false;
+      input.value = '';
+      input.focus();
+
+      nextPrompt();
+      updateGameStatsUI();
+
+      if (gameState.timerId) clearInterval(gameState.timerId);
+      gameState.timerId = setInterval(gameTick, 1000);
+      saveData();
+    }
+
+    function gameTick() {
+      gameState.timeLeft--;
+      document.getElementById('gameTimer').innerText = gameState.timeLeft;
+
+      // 対戦時の寝返り判定
+      if (gameState.isBattle) {
+        checkTugOfWar();
+      }
+
+      if (gameState.timeLeft <= 0) {
+        endGame();
       }
     }
 
-    const confettiEl = document.getElementById('confetti-canvas');
-    const myConfettiInstance = confetti.create(confettiEl, {
-      resize: true,
-      useWorker: true
+    function nextPrompt() {
+      const list = WORD_DB[currentDifficulty] || WORD_DB[0];
+      const selected = list[Math.floor(Math.random() * list.length)];
+      gameState.currentWord = selected;
+      gameState.typedIndex = 0;
+      updatePromptDisplay();
+    }
+
+    function updatePromptDisplay() {
+      if (!gameState.currentWord) return;
+      document.getElementById('displayKanji').innerText = gameState.currentWord.k;
+      const full = gameState.currentWord.r;
+      const typed = full.substring(0, gameState.typedIndex);
+      const untyped = full.substring(gameState.typedIndex);
+
+      document.getElementById('displayTypedRoma').innerText = typed;
+      document.getElementById('displayUntypedRoma').innerText = untyped;
+    }
+
+    function updateGameStatsUI() {
+      document.getElementById('gameTimer').innerText = gameState.timeLeft;
+      document.getElementById('gameScore').innerText = gameState.score;
+    }
+
+    // タイピング入力判定 (ローマ字順次解析)
+    const hiddenInput = document.getElementById('hiddenTypeInput');
+    hiddenInput.addEventListener('input', (e) => {
+      if (!gameState.isRunning || !gameState.currentWord) return;
+
+      const inputChar = e.data ? e.data.toLowerCase() : hiddenInput.value.slice(-1).toLowerCase();
+      hiddenInput.value = ''; // 常に空にリセット
+
+      const expectedChar = gameState.currentWord.r[gameState.typedIndex];
+
+      if (inputChar === expectedChar) {
+        // 正解
+        soundType();
+        gameState.typedIndex++;
+        gameState.totalStrokes++;
+        gameState.score += 10;
+
+        if (gameState.typedIndex >= gameState.currentWord.r.length) {
+          // 単語クリアボーナス
+          soundCorrect();
+          const wordBonus = gameState.currentWord.r.length * 5;
+          gameState.score += wordBonus;
+          nextPrompt();
+        } else {
+          updatePromptDisplay();
+        }
+      } else {
+        // ミス
+        soundMiss();
+        gameState.missCount++;
+        gameState.score = Math.max(0, gameState.score - 5);
+      }
+
+      updateGameStatsUI();
     });
 
-    function triggerConfettiModal(txt) {
-      document.getElementById("revealDesc").innerHTML = txt;
-      document.getElementById("revealModal").style.display = "flex";
-      myConfettiInstance({
-        particleCount: 160,
+    // キーボードショートカット (Space: 開始, Esc: 中断)
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !gameState.isRunning) {
+        const modal = document.getElementById('resultModal');
+        if (modal.classList.contains('hidden')) {
+          e.preventDefault();
+          startGame(false);
+        }
+      } else if (e.code === 'Escape' && gameState.isRunning) {
+        endGame();
+      }
+    });
+
+    /* =====================================================================
+       5. 道下の寝返りギミック (Tug-of-War)
+       ===================================================================== */
+    function checkTugOfWar() {
+      // 経過時間 (60秒から減算)
+      const elapsed = 60 - gameState.timeLeft;
+      // ライバルのこの時点での想定スコアを線形補間
+      let targetRivalScore = 0;
+      if (gameState.rivalCheckpoints.length > 0) {
+        const factor = Math.min(1, elapsed / 60);
+        const finalRival = gameState.rivalCheckpoints[gameState.rivalCheckpoints.length - 1];
+        targetRivalScore = Math.round(finalRival * factor);
+      } else {
+        targetRivalScore = elapsed * 15; // デフォルトゴーストペース
+      }
+
+      const diff = gameState.score - targetRivalScore;
+      // -100 〜 +100 を -50% 〜 +50% にマッピング
+      let balance = Math.max(-50, Math.min(50, diff / 4));
+      const oldBalance = gameState.tugBalance;
+      gameState.tugBalance = balance;
+
+      updateTugMeter(balance);
+
+      // 裏切り発生 (プレイヤー劣勢へ転落した瞬間)
+      if (oldBalance >= 0 && balance < -10) {
+        triggerTraitorDefection(false);
+      } else if (oldBalance <= 0 && balance > 10) {
+        triggerTraitorDefection(true);
+      }
+    }
+
+    function updateTugMeter(balance) {
+      // balance: -50 (ライバル完全有利) 〜 +50 (プレイヤー完全有利)
+      const percent = 50 + balance;
+      document.getElementById('tugBarProgress').style.width = `${percent}%`;
+      document.getElementById('tugMichishitaMarker').style.left = `calc(${percent}% - 16px)`;
+    }
+
+    function triggerTraitorDefection(toPlayer) {
+      soundTraitor();
+      playerData.stats.betrayals++;
+      const quote = document.getElementById('michishitaQuote');
+      const traitorText = document.getElementById('traitorStatusText');
+
+      if (toPlayer) {
+        quote.innerText = "さすが！信じてたぞ！";
+        traitorText.innerText = "道下が味方に寝返り！";
+        traitorText.className = "text-xs px-2 py-0.5 rounded-full bg-sky-900 text-sky-300 font-bold traitor-alert";
+      } else {
+        quote.innerText = "やっぱあっちの方が早いわｗ";
+        traitorText.innerText = "裏切り発生！道下が逃亡！";
+        traitorText.className = "text-xs px-2 py-0.5 rounded-full bg-rose-900 text-rose-300 font-bold traitor-alert";
+      }
+
+      setTimeout(() => {
+        traitorText.classList.remove('traitor-alert');
+      }, 1500);
+    }
+
+    /* =====================================================================
+       6. パワーアップアイテム発動 (ショップ購入品)
+       ===================================================================== */
+    function usePowerup(type) {
+      if (!gameState.isRunning) return;
+
+      if (type === 'agent' && playerData.inventory.agent > 0 && !gameState.agentActive) {
+        playerData.inventory.agent--;
+        gameState.agentActive = true;
+        document.getElementById('activeBuffBadge').classList.remove('hidden');
+        document.getElementById('michishitaQuote').innerText = "俺が打ってやるよ！";
+        soundFanfare();
+
+        // 5秒間自動超速タイピング
+        let agentTimer = setInterval(() => {
+          if (!gameState.isRunning || !gameState.agentActive) {
+            clearInterval(agentTimer);
+            return;
+          }
+          gameState.typedIndex++;
+          gameState.totalStrokes++;
+          gameState.score += 15;
+          soundType();
+          if (gameState.typedIndex >= gameState.currentWord.r.length) {
+            soundCorrect();
+            nextPrompt();
+          } else {
+            updatePromptDisplay();
+          }
+          updateGameStatsUI();
+        }, 120);
+
+        setTimeout(() => {
+          clearInterval(agentTimer);
+          gameState.agentActive = false;
+          document.getElementById('activeBuffBadge').classList.add('hidden');
+        }, 5000);
+
+      } else if (type === 'blind' && playerData.inventory.blind > 0 && !gameState.blindActive) {
+        playerData.inventory.blind--;
+        gameState.blindActive = true;
+        const wrapper = document.getElementById('annoyingMichishitaWrapper');
+        wrapper.style.opacity = '0';
+        wrapper.style.pointerEvents = 'none';
+
+        setTimeout(() => {
+          wrapper.style.opacity = '0.9';
+          gameState.blindActive = false;
+        }, 7000);
+      }
+
+      saveData();
+    }
+
+    function buyShopItem(item, price) {
+      if (playerData.coins < price) {
+        alert("道下コインが足りません！タイピングをこなして集めましょう。");
+        return;
+      }
+      playerData.coins -= price;
+
+      if (item === 'agent') {
+        playerData.inventory.agent++;
+      } else if (item === 'time') {
+        playerData.bonusTimeNext += 10;
+        alert("次回プレイ時に制限時間が +10秒 延長されます！");
+      } else if (item === 'blind') {
+        playerData.inventory.blind++;
+      }
+
+      soundCorrect();
+      saveData();
+    }
+
+    /* =====================================================================
+       7. ゲーム終了・報酬・うでまえ判定
+       ===================================================================== */
+    function endGame() {
+      clearInterval(gameState.timerId);
+      gameState.timerId = null;
+      gameState.isRunning = false;
+      document.getElementById('hiddenTypeInput').disabled = true;
+      document.getElementById('inputStatusText').innerText = "終了";
+
+      // コイン計算 (スコア / 15 + ストロークボーナス)
+      const earnedCoins = Math.max(5, Math.floor(gameState.score / 15) + Math.floor(gameState.totalStrokes / 10));
+      playerData.coins += earnedCoins;
+
+      // 最高スコア更新
+      if (gameState.score > playerData.highScore) {
+        playerData.highScore = gameState.score;
+      }
+
+      // 10段階うでまえ判定
+      let earnedRank = RANKS[0];
+      for (let i = RANKS.length - 1; i >= 0; i--) {
+        if (gameState.score >= RANKS[i].minScore) {
+          earnedRank = RANKS[i];
+          break;
+        }
+      }
+
+      // 昇格チェック
+      let rankUp = false;
+      if (earnedRank.id > playerData.rankId) {
+        playerData.rankId = earnedRank.id;
+        rankUp = true;
+      }
+
+      // 対戦モード結果
+      let battleVictory = false;
+      if (gameState.isBattle) {
+        playerData.stats.matches++;
+        if (gameState.tugBalance >= 0) {
+          playerData.stats.wins++;
+          battleVictory = true;
+        } else {
+          playerData.stats.losses++;
+        }
+      }
+
+      // 挑戦状コード生成 (Base64化)
+      generateChallengeCode(gameState.score);
+
+      saveData();
+      showResultModal(earnedCoins, earnedRank, rankUp, battleVictory);
+    }
+
+    function showResultModal(earnedCoins, earnedRank, rankUp, battleVictory) {
+      document.getElementById('modalScore').innerText = gameState.score.toLocaleString();
+      document.getElementById('modalStrokes').innerText = `${gameState.totalStrokes} / ${gameState.missCount}`;
+      document.getElementById('modalCoinsEarned').innerText = `+${earnedCoins} 枚`;
+      document.getElementById('modalRankEarned').innerText = earnedRank.title;
+
+      const titleEl = document.getElementById('resultTitle');
+      const subEl = document.getElementById('resultSub');
+      const iconEl = document.getElementById('resultBadgeIcon');
+
+      if (gameState.isBattle) {
+        if (battleVictory) {
+          iconEl.innerText = "🏆";
+          titleEl.innerText = "道下奪還成功！";
+          subEl.innerText = `${gameState.rivalName} から道下を取り戻しました！`;
+        } else {
+          iconEl.innerText = "💀";
+          titleEl.innerText = "奪還失敗…";
+          subEl.innerText = `道下は ${gameState.rivalName} の側へ完全に寝返りました。`;
+        }
+      } else {
+        if (rankUp) {
+          iconEl.innerText = "🌟";
+          titleEl.innerText = "うでまえ昇格！";
+          subEl.innerText = `おめでとう！新階級【${earnedRank.title}】に到達！`;
+        } else {
+          iconEl.innerText = "🎉";
+          titleEl.innerText = "タイムアップ！";
+          subEl.innerText = "道下打のプレイお疲れ様でした！";
+        }
+      }
+
+      document.getElementById('resultModal').classList.remove('hidden');
+
+      // 紙吹雪演出
+      confetti({
+        particleCount: 150,
         spread: 80,
         origin: { y: 0.6 }
       });
+      soundFanfare();
     }
 
-    function closeModal() {
-      document.getElementById("revealModal").style.display = "none";
+    function closeResultModal() {
+      document.getElementById('resultModal').classList.add('hidden');
+      document.getElementById('startOverlay').classList.remove('hidden');
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      loadState();
-    });
+    /* =====================================================================
+       8. 非同期対戦コード (Base64 暗号化 & 復号)
+       ===================================================================== */
+    function generateChallengeCode(finalScore) {
+      // 簡易ゴースト checkpoints (15秒ごとのスコア)
+      const cp1 = Math.round(finalScore * 0.25);
+      const cp2 = Math.round(finalScore * 0.55);
+      const cp3 = Math.round(finalScore * 0.85);
+      const cp4 = finalScore;
+
+      const payload = {
+        name: playerData.name,
+        score: finalScore,
+        diff: currentDifficulty,
+        cps: [cp1, cp2, cp3, cp4],
+        ts: Date.now()
+      };
+
+      try {
+        const json = JSON.stringify(payload);
+        const encoded = btoa(unescape(encodeURIComponent(json)));
+        playerData.latestChallengeCode = `MICH-${encoded}`;
+        document.getElementById('myLatestCodeDisplay').innerText = playerData.latestChallengeCode;
+      } catch (e) {
+        console.error("コード生成失敗", e);
+      }
+    }
+
+    function copyChallengeCode() {
+      if (!playerData.latestChallengeCode) {
+        alert("まずは1回プレイして対戦コードを発行してください！");
+        return;
+      }
+      // execCommand fallback
+      const temp = document.createElement('textarea');
+      temp.value = playerData.latestChallengeCode;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      alert("挑戦状コードをクリップボードにコピーしました！友達に渡して対戦しましょう。");
+    }
+
+    function startBattleFromCode() {
+      const input = document.getElementById('battleCodeInput').value.trim();
+      if (!input.startsWith('MICH-')) {
+        alert("有効な道下対戦コードではありません。(MICH-から始まるコードを入力してください)");
+        return;
+      }
+
+      try {
+        const raw = input.replace('MICH-', '');
+        const json = decodeURIComponent(escape(atob(raw)));
+        const rival = JSON.parse(json);
+
+        if (!rival.score || !rival.cps) {
+          throw new Error("無効なデータ");
+        }
+
+        switchView('play');
+        selectDifficulty(rival.diff || 2);
+        startGame(true, {
+          name: rival.name,
+          checkpoints: rival.cps
+        });
+
+      } catch (e) {
+        alert("コードの読み込みに失敗しました。壊れているか不正なコードです。");
+      }
+    }
+
+    /* =====================================================================
+       9. タブビュー切り替え
+       ===================================================================== */
+    function switchView(view) {
+      const views = ['play', 'battle', 'shop', 'profile'];
+      views.forEach(v => {
+        const section = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        const tabBtn = document.getElementById(`tab${v.charAt(0).toUpperCase() + v.slice(1)}Btn`);
+        if (v === view) {
+          section.classList.remove('hidden');
+          tabBtn.className = "tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition bg-sky-500 text-white shadow-lg shadow-sky-500/25";
+        } else {
+          section.classList.add('hidden');
+          tabBtn.className = "tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800";
+        }
+      });
+      updateUI();
+    }
+
+    // 初期化ロード
+    window.onload = function() {
+      loadData();
+    };
   </script>
 </body>
 </html>
