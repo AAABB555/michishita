@@ -411,7 +411,7 @@
     .word-area {
       text-align: center;
       margin-bottom: 22px;
-      min-height: 135px;
+      min-height: 145px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -430,7 +430,7 @@
     }
 
     .word-kanji {
-      font-size: 30px;
+      font-size: 26px;
       font-weight: 900;
       color: #ffffff !important;
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.7);
@@ -449,7 +449,7 @@
       display: flex;
       justify-content: center;
       z-index: 5;
-      padding: 4px 0;
+      padding: 4px 10px;
       scroll-behavior: smooth;
     }
     .word-roma-scroll-wrapper::-webkit-scrollbar {
@@ -458,9 +458,9 @@
 
     .word-roma {
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 21px;
+      font-size: 19px;
       font-weight: 800;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
       display: inline-block;
       white-space: nowrap;
     }
@@ -489,8 +489,8 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
       overflow: hidden;
       background: #ffffff;
-      z-index: 1; /* 文字やローマ字より後ろ、背景より前に配置 */
-      opacity: 0.35; /* 文字が見やすくなるよう少し透過 */
+      z-index: 2;
+      opacity: 1; /* 不透明度を100%にくっきり表示に修正 */
       transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
     }
@@ -1125,7 +1125,7 @@
   </div>
 
   <script>
-    // Firebase無料公開テストサーバーの設定
+    // Firebase設定
     const firebaseConfig = {
       databaseURL: "https://michishita-typing-default-rtdb.firebaseio.com/"
     };
@@ -1174,7 +1174,6 @@
 
     let globalRankings = [];
 
-    // Firebaseから全員のランキングをリアルタイム取得
     function initGlobalRankingSync() {
       db.ref('global_rankings').on('value', (snapshot) => {
         const data = snapshot.val() || {};
@@ -1344,29 +1343,42 @@
       document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
     }
 
+    // ★問題数（言葉）を大増量！
     const WORD_DB = {
       0: [
         { k: "道下", r: "mitisita" }, { k: "僕", r: "boku" }, { k: "犬", r: "inu" },
-        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" }
+        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" },
+        { k: "ジャージ", r: "zyaazi" }, { k: "教科書", r: "kyoukasyo" }, { k: "宿題", r: "syukudai" },
+        { k: "弁当", r: "bentou" }, { k: "体育", r: "taiiku" }, { k: "遅刻", r: "tikoku" }
       ],
       1: [
         { k: "道下遥人", r: "mitisitaharuto" }, { k: "あの時の僕", r: "anotokinoboku" },
-        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, { k: "昼休みダッシュ", r: "hiruyasumidassyu" }
+        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, 
+        { k: "昼休みダッシュ", r: "hiruyasumidassyu" }, { k: "寝坊した道下", r: "neboushitamitisita" },
+        { k: "放課後の教室", r: "houkagonokyousitu" }, { k: "数学の小テスト", r: "suugakunokotesuto" }
       ],
       2: [
-        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" }, { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
-        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" }
+        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" }, 
+        { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
+        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, 
+        { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
+        { k: "廊下を走って先生に怒られる", r: "roukawohasittasenseitniokareru" },
+        { k: "体育館の裏でサボる道下", r: "taiikukannouradesaborumitisita" }
       ],
       3: [
         { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
-        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" }
+        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" },
+        { k: "放課後の教室で一人だけ居残る", r: "houkagonokyousitudehitoridakeinokoru" },
+        { k: "忘れ物を友達に全力で借りる", r: "wasuremonowotomodachinizenryokudekariru" }
       ],
       4: [
-        { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
-        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" }
+        { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisakkinen" },
+        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" },
+        { k: "テスト直前に友達のノートを爆速でコピーする", r: "tesutotyokuzanitomodachinootowobakusokudekopisuru" }
       ],
       5: [
-        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" }
+        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" },
+        { k: "誰もいない放課後の音楽室で謎のダンスを踊る", r: "daremoinaihoukagonoongakusitudenazonodansuwoodoru" }
       ],
       6: [
         { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" }
@@ -1538,6 +1550,7 @@
       const container = document.getElementById('displayRomaContainer');
       container.innerHTML = `<span class="typed-char">${typed}</span><span class="untyped-char current-char" id="activeCharElement">${currentChar}</span><span class="untyped-char">${untypedRest}</span>`;
 
+      // フリガナがはみ出さないよう、入力に応じてスムーズに中央へ自動スクロール
       requestAnimationFrame(() => {
         const activeEl = document.getElementById('activeCharElement');
         const wrapper = document.getElementById('romaScrollWrapper');
@@ -1717,9 +1730,6 @@
     }
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
-    /* =========================================================================
-        ★ Firebase クラウド同期による確実対戦エンジン ★
-        ========================================================================= */
     let firebaseRoomRef = null;
     let myPlayerKey = 'p_' + Math.random().toString(36).substring(2, 9);
     let opponentPlayerKey = null;
@@ -1738,17 +1748,14 @@
       firebaseRoomRef = db.ref('typing_rooms/' + code);
       hasStartedFirebaseBattle = false;
 
-      // 自プレイヤー情報を登録
       firebaseRoomRef.child('players/' + myPlayerKey).set({
         name: playerData.name,
         score: 0,
         status: 'waiting'
       });
 
-      // 切断時に自動削除
       firebaseRoomRef.child('players/' + myPlayerKey).onDisconnect().remove();
 
-      // ルーム内のプレイヤー監視
       firebaseRoomRef.child('players').on('value', (snapshot) => {
         const players = snapshot.val() || {};
         const keys = Object.keys(players);
@@ -1761,7 +1768,6 @@
             gameState.rivalName = oppName;
             document.getElementById('firebaseLobbyStatus').innerText = `「${oppName}」と接続完了！`;
 
-            // 相手のスコアをリアルタイム同期監視
             firebaseRoomRef.child('players/' + opponentPlayerKey + '/score').on('value', (scoreSnap) => {
               gameState.opponentScore = scoreSnap.val() || 0;
               if (gameState.isRealtimeBattle) recalculateRealtimeTug();
