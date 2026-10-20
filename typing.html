@@ -6,7 +6,6 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- 安定したP2P接続のためのPeerJS -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * {
@@ -846,7 +845,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(8px);
       z-index: 3000;
       align-items: center;
@@ -1054,7 +1053,7 @@
         <p class="panel-desc">
           お互いに**同じ4桁の部屋コード**（例: `1111`）を入力してください。<br>
           1. 友達のどちらか1人が「<b>① 部屋を作る</b>」を押します。<br>
-          2. もう1人が同じコードを入れて「<b>② 部屋に参加</b>」を押すと即座に接続されます！
+          2. もう1人が同じコードを入れて「<b>② 部屋に参加</b>」を押すと接続され、3秒カウントダウン後にバトルスタート！
         </p>
 
         <div class="input-row" style="margin-top: 14px;">
@@ -1413,6 +1412,33 @@
       }
     }
 
+    function runCountdownAndStart(isRealtime = false) {
+      switchView('play');
+      selectDifficulty(2);
+
+      const overlay = document.getElementById('countdownOverlay');
+      const numEl = document.getElementById('countdownNum');
+      overlay.style.display = 'flex';
+      let count = 3;
+      numEl.innerText = count;
+      playBeep(600, 'sine', 0.15, 0.15);
+
+      const countInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          numEl.innerText = count;
+          playBeep(600, 'sine', 0.15, 0.15);
+        } else if (count === 0) {
+          numEl.innerText = "スタート！";
+          playBeep(900, 'sine', 0.3, 0.2);
+        } else {
+          clearInterval(countInterval);
+          overlay.style.display = 'none';
+          startGame(isRealtime);
+        }
+      }, 1000);
+    }
+
     function startGame(isRealtime = false) {
       if (gameState.isRunning) return;
 
@@ -1697,12 +1723,11 @@
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
     /* =========================================================================
-        ★ 安定性特化型 P2P 対戦エンジン（自動リトライ＆フォールバック付き） ★
+        ★ 接続安定＆3秒カウントダウン対戦エンジン ★
         ========================================================================= */
     let peer = null;
     let peerConn = null;
 
-    // パブリックなフリーSTUNサーバーを設定して確実に接続経路を確保
     const peerOptions = {
       config: {
         'iceServers': [
@@ -1724,7 +1749,7 @@
 
       if (peer) { try { peer.destroy(); } catch (e) {} }
 
-      const hostId = "michishita_v3_" + code + "_host";
+      const hostId = "michishita_v4_" + code + "_host";
       peer = new Peer(hostId, peerOptions);
 
       peer.on('connection', (conn) => {
@@ -1732,7 +1757,6 @@
       });
 
       peer.on('error', (err) => {
-        // すでにホストIDが存在する場合は古いものを破棄して再作成
         if (err.type === 'unavailable-id') {
           peer.destroy();
           setTimeout(() => {
@@ -1753,22 +1777,21 @@
       }
 
       document.getElementById('peerLobbyArea').style.display = 'block';
-      document.getElementById('peerLobbyStatus').innerText = `【${code}】の部屋に接続を試みています...`;
+      document.getElementById('peerLobbyStatus').innerText = `【${code}】の部屋に接続中...`;
 
       if (peer) { try { peer.destroy(); } catch (e) {} }
 
       peer = new Peer(peerOptions);
 
       peer.on('open', (id) => {
-        const hostId = "michishita_v3_" + code + "_host";
+        const hostId = "michishita_v4_" + code + "_host";
         const conn = peer.connect(hostId, { reliable: true });
-        
-        // 接続確立のタイムアウト監視（5秒以上かかったらエラー表示）
+
         const timeout = setTimeout(() => {
           if (!peerConn || !peerConn.open) {
-            document.getElementById('peerLobbyStatus').innerText = `接続タイムアウト。相手が「① 部屋を作る」を押しているか確認してください。`;
+            document.getElementById('peerLobbyStatus').innerText = `タイムアウトしました。ホストが「① 部屋を作る」を押しているか、コードを確認してください。`;
           }
-        }, 6000);
+        }, 8000);
 
         conn.on('open', () => {
           clearTimeout(timeout);
@@ -1787,14 +1810,12 @@
 
     function setupConnection(conn) {
       peerConn = conn;
-      document.getElementById('peerLobbyStatus').innerText = `接続成功！まもなく対戦が始まります...`;
+      document.getElementById('peerLobbyStatus').innerText = `接続成功！対戦準備中...`;
       peerConn.send({ type: 'INIT', name: playerData.name });
 
       setTimeout(() => {
         document.getElementById('peerLobbyArea').style.display = 'none';
-        switchView('play');
-        selectDifficulty(2);
-        startGame(true);
+        runCountdownAndStart(true);
       }, 1000);
 
       peerConn.on('data', (data) => {
