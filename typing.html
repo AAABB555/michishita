@@ -15,38 +15,17 @@
       user-select: none;
     }
 
-    /* 基本背景トランジション */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-      min-height: 100vh;
-      padding-bottom: 60px;
-      transition: background 0.5s ease, color 0.3s ease;
+      background-color: #f0f7ff;
+      background-image: 
+        radial-gradient(#bae6fd 1px, transparent 1px),
+        linear-gradient(180deg, #f8fafc 0%, #e0f2fe 100%);
+      background-size: 24px 24px, 100% 100%;
       background-attachment: fixed;
-    }
-
-    /* --- 難易度ごとの動的背景テーマ --- */
-    /* 1. 草原・青空テーマ（初期 / クソ簡単・簡単） */
-    body.theme-grass {
-      background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 40%, #86efac 75%, #4ade80 100%);
-      color: #1e293b;
-    }
-
-    /* 2. 学校の教室・黒板テーマ（ふつう・難しい） */
-    body.theme-chalkboard {
-      background: radial-gradient(circle at center, #234e3a 0%, #173829 60%, #0d2319 100%);
-      color: #f8fafc;
-    }
-
-    /* 3. 黄昏・夕焼けテーマ（激ムズ・悪夢） */
-    body.theme-sunset {
-      background: linear-gradient(180deg, #4c1d95 0%, #be185d 45%, #ea580c 80%, #fbbf24 100%);
-      color: #ffffff;
-    }
-
-    /* 4. 灼熱・紅蓮の地獄テーマ（地獄） */
-    body.theme-hell {
-      background: radial-gradient(circle at 50% 80%, #dc2626 0%, #7f1d1d 40%, #1c0505 90%);
-      color: #fef2f2;
+      color: #334155;
+      padding-bottom: 60px;
+      min-height: 100vh;
     }
 
     #confetti-canvas {
@@ -67,27 +46,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+      border-bottom: 2px solid #e0f2fe;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      transition: background 0.3s, border-color 0.3s;
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.08);
     }
-    body.theme-chalkboard header,
-    body.theme-sunset header,
-    body.theme-hell header {
-      background: rgba(15, 23, 42, 0.88);
-      border-bottom-color: rgba(255, 255, 255, 0.1);
-    }
-
     .header-logo {
       display: flex;
       align-items: center;
       gap: 10px;
       font-size: 20px;
       font-weight: 900;
-      color: inherit;
+      color: #0f172a;
       letter-spacing: -0.5px;
       text-decoration: none;
     }
@@ -99,12 +70,13 @@
       height: 36px;
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
-      font-family: "Impact", -apple-system, sans-serif;
+      font-family: "Impact", -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 19px;
       font-weight: 900;
       font-style: italic;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+      letter-spacing: 0.5px;
     }
     .header-actions {
       display: flex;
@@ -112,7 +84,7 @@
       gap: 12px;
     }
     .sound-btn {
-      background: rgba(255, 255, 255, 0.9);
+      background: #ffffff;
       border: 1.5px solid #bae6fd;
       border-radius: 20px;
       padding: 6px 14px;
@@ -120,18 +92,14 @@
       cursor: pointer;
       color: #0284c7;
       font-weight: 800;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.1);
       transition: all 0.15s;
     }
-    body.theme-chalkboard .sound-btn,
-    body.theme-sunset .sound-btn,
-    body.theme-hell .sound-btn {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: #475569;
-      color: #38bdf8;
+    .sound-btn:hover {
+      background: #f0f9ff;
     }
     .btn-return-home {
-      background: rgba(255, 255, 255, 0.9);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       color: #0284c7;
       border: 1.5px solid #cbd5e1;
       padding: 6px 16px;
@@ -142,15 +110,11 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       transition: all 0.15s;
     }
-    body.theme-chalkboard .btn-return-home,
-    body.theme-sunset .btn-return-home,
-    body.theme-hell .btn-return-home {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: #475569;
-      color: #f8fafc;
+    .btn-return-home:hover {
+      background: #ffffff;
     }
 
     /* メインコンテナ */
@@ -162,24 +126,16 @@
 
     /* プレイヤー情報バー */
     .profile-bar {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 2px solid #bae6fd;
+      border-radius: 16px;
       padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.1);
       margin-bottom: 20px;
-      transition: all 0.3s;
-    }
-    body.theme-chalkboard .profile-bar,
-    body.theme-sunset .profile-bar,
-    body.theme-hell .profile-bar {
-      background: rgba(15, 23, 42, 0.85);
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
     }
     .profile-left {
       display: flex;
@@ -187,6 +143,7 @@
       gap: 8px;
       font-size: 14px;
       font-weight: 800;
+      color: #0f172a;
     }
     .profile-name-input {
       border: 2px solid #bae6fd;
@@ -213,47 +170,40 @@
       padding: 4px 12px;
       border-radius: 14px;
       box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+      letter-spacing: 0.3px;
     }
     .coin-chip {
       font-size: 14px;
       font-weight: 900;
+      color: #475569;
       display: flex;
       align-items: center;
       gap: 4px;
     }
     .coin-chip b {
-      color: #f59e0b;
+      color: #d97706;
       font-size: 16px;
     }
 
     /* 4連タブバー */
     .tab-bar {
       display: flex;
+      border-bottom: 2px solid #bae6fd;
       margin-bottom: 24px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 6px 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-      border: 1.5px solid rgba(255, 255, 255, 0.6);
-      transition: all 0.3s;
-    }
-    body.theme-chalkboard .tab-bar,
-    body.theme-sunset .tab-bar,
-    body.theme-hell .tab-bar {
-      background: rgba(15, 23, 42, 0.85);
-      border-color: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px 16px 0 0;
+      padding: 4px 12px 0;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.06);
     }
     .tab-item {
       flex: 1;
       text-align: center;
-      padding: 12px 0;
+      padding: 13px 0;
       font-size: 14.5px;
       font-weight: 800;
       color: #64748b;
       cursor: pointer;
       position: relative;
-      border-radius: 12px;
       transition: all 0.2s;
     }
     .tab-item:hover {
@@ -261,14 +211,17 @@
     }
     .tab-item.active {
       color: #0284c7;
-      background: rgba(2, 132, 199, 0.12);
-      font-weight: 900;
     }
-    body.theme-chalkboard .tab-item.active,
-    body.theme-sunset .tab-item.active,
-    body.theme-hell .tab-item.active {
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.16);
+    .tab-item.active::after {
+      content: "";
+      position: absolute;
+      left: 15%;
+      bottom: -2px;
+      width: 70%;
+      height: 3.5px;
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+      border-radius: 3px;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
     }
 
     .tab-content {
@@ -292,75 +245,55 @@
     }
     .diff-btn {
       flex: 1;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
       color: #475569;
       font-size: 13px;
       font-weight: 800;
-      padding: 9px 14px;
+      padding: 8px 14px;
       border-radius: 20px;
       cursor: pointer;
       white-space: nowrap;
       text-align: center;
-      transition: all 0.2s;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
-    body.theme-chalkboard .diff-btn,
-    body.theme-sunset .diff-btn,
-    body.theme-hell .diff-btn {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #cbd5e1;
+      transition: all 0.15s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
     }
     .diff-btn:hover {
-      transform: translateY(-1px);
+      border-color: #38bdf8;
+      background: #f0f9ff;
     }
     .diff-btn.active {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff !important;
+      color: #ffffff;
       border-color: #0284c7;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
-      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      transform: translateY(-1px);
     }
 
-    /* タイピングカード */
+    /* タイピングカード（ちょいリッチ化） */
     .typing-card {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(14px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 24px;
+      background: #ffffff;
+      border: 2px solid #e0f2fe;
+      border-radius: 22px;
       padding: 32px 28px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08), 0 1px 3px rgba(0,0,0,0.02);
       position: relative;
-      transition: all 0.3s;
     }
-    body.theme-chalkboard .typing-card,
-    body.theme-sunset .typing-card,
-    body.theme-hell .typing-card {
-      background: rgba(15, 23, 42, 0.88);
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-    }
-
     .typing-status {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 800;
+      color: #64748b;
       padding-bottom: 14px;
       margin-bottom: 24px;
-      border-bottom: 2px dashed rgba(148, 163, 184, 0.3);
+      border-bottom: 2px dashed #e2e8f0;
     }
     .color-blue {
       color: #0284c7;
       font-size: 22px;
       font-weight: 900;
-    }
-    body.theme-chalkboard .color-blue,
-    body.theme-sunset .color-blue,
-    body.theme-hell .color-blue {
-      color: #38bdf8;
     }
     .color-orange {
       color: #ea580c;
@@ -370,29 +303,25 @@
 
     /* 綱引きメーター（対戦時） */
     .battle-bar-wrap {
-      background: rgba(241, 245, 249, 0.8);
+      background: #f8fafc;
       border: 2px solid #bae6fd;
       border-radius: 14px;
       padding: 10px 14px;
       margin-bottom: 20px;
       display: none;
-    }
-    body.theme-chalkboard .battle-bar-wrap,
-    body.theme-sunset .battle-bar-wrap,
-    body.theme-hell .battle-bar-wrap {
-      background: rgba(30, 41, 59, 0.8);
-      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
     }
     .battle-names {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
       font-weight: 900;
+      color: #475569;
       margin-bottom: 8px;
     }
     .battle-track {
       height: 12px;
-      background: #cbd5e1;
+      background: #e2e8f0;
       border-radius: 6px;
       position: relative;
     }
@@ -414,7 +343,7 @@
       border: 2px solid #0284c7;
       overflow: hidden;
       background: #ffffff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
       transition: left 0.25s ease;
     }
     .battle-marker img {
@@ -423,61 +352,21 @@
       object-fit: cover;
     }
 
-    /* お題テキストフレーム（背景に応じて黒板・溶岩・草原風に変化） */
+    /* お題テキスト */
     .word-area {
       text-align: center;
       margin-bottom: 26px;
-      min-height: 110px;
+      min-height: 105px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      border-radius: 18px;
-      padding: 18px 24px;
-      transition: all 0.4s ease;
       background: #f8fafc;
-      border: 2px solid #e2e8f0;
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+      border-radius: 16px;
+      padding: 16px 20px;
+      border: 1px solid #e2e8f0;
     }
-    /* 草原・青空時 */
-    body.theme-grass .word-area {
-      background: #ffffff;
-      border-color: #bae6fd;
-      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.08);
-    }
-    /* 黒板モード時（チョーク風） */
-    body.theme-chalkboard .word-area {
-      background: #1e3a2b;
-      border: 4px solid #b45309; /* 木枠 */
-      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-    body.theme-chalkboard .word-kanji {
-      color: #fef08a !important; /* 黄色チョーク */
-      text-shadow: 0 0 6px rgba(254, 240, 138, 0.4);
-    }
-    /* 夕焼け時 */
-    body.theme-sunset .word-area {
-      background: rgba(30, 27, 75, 0.85);
-      border: 2px solid #f472b6;
-      box-shadow: 0 0 20px rgba(236, 72, 153, 0.25);
-    }
-    /* 地獄モード時（燃える溶岩） */
-    body.theme-hell .word-area {
-      background: #180505;
-      border: 2px solid #ef4444;
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.5), inset 0 0 15px rgba(239, 68, 68, 0.3);
-      animation: hellPulse 2s infinite alternate;
-    }
-    @keyframes hellPulse {
-      0% { border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
-      100% { border-color: #f97316; box-shadow: 0 0 35px rgba(249, 115, 22, 0.7); }
-    }
-    body.theme-hell .word-kanji {
-      color: #ffedd5 !important;
-      text-shadow: 0 0 10px #f97316;
-    }
-
     .word-kanji {
-      font-size: 29px;
+      font-size: 28px;
       font-weight: 900;
       color: #0f172a;
       margin-bottom: 8px;
@@ -486,21 +375,13 @@
     }
     .word-roma {
       font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 800;
       letter-spacing: 2px;
     }
     .typed-char {
       color: #0284c7;
-      text-shadow: 0 0 12px rgba(2, 132, 199, 0.35);
-    }
-    body.theme-chalkboard .typed-char {
-      color: #38bdf8;
-      text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
-    }
-    body.theme-hell .typed-char {
-      color: #f97316;
-      text-shadow: 0 0 12px rgba(249, 115, 22, 0.8);
+      text-shadow: 0 0 12px rgba(2, 132, 199, 0.25);
     }
     .untyped-char {
       color: #94a3b8;
@@ -518,7 +399,7 @@
       font-size: 19px;
       font-weight: 800;
       color: #0f172a;
-      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.2);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
       margin-bottom: 16px;
       transition: all 0.15s;
     }
@@ -528,19 +409,12 @@
     }
     .typing-input:disabled {
       border-color: #cbd5e1;
-      background: rgba(241, 245, 249, 0.8);
+      background: #f8fafc;
       color: #94a3b8;
       box-shadow: none;
     }
-    body.theme-chalkboard .typing-input,
-    body.theme-sunset .typing-input,
-    body.theme-hell .typing-input {
-      background: #0f172a;
-      color: #ffffff;
-      border-color: #38bdf8;
-    }
 
-    /* ボタンスタイル */
+    /* ボタンスタイル（立体押し込み） */
     .btn-clean {
       width: 100%;
       height: 52px;
@@ -551,19 +425,16 @@
       font-weight: 900;
       border: none;
       cursor: pointer;
-      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4), 0 2px 4px rgba(0,0,0,0.06);
       transition: transform 0.1s, box-shadow 0.1s;
       letter-spacing: 0.5px;
     }
-    body.theme-hell .btn-clean {
-      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
-    }
     .btn-clean:hover {
-      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.55);
+      box-shadow: 0 8px 22px rgba(2, 132, 199, 0.5);
     }
     .btn-clean:active {
       transform: scale(0.98) translateY(2px);
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
     }
 
     /* アイテム使用枠 */
@@ -574,57 +445,47 @@
     }
     .powerup-btn {
       flex: 1;
-      background: rgba(255, 255, 255, 0.95);
+      background: #ffffff;
       border: 1.5px solid #bae6fd;
       color: #0369a1;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 900;
       padding: 10px 8px;
       border-radius: 12px;
       cursor: pointer;
       transition: all 0.15s;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
     }
-    body.theme-chalkboard .powerup-btn,
-    body.theme-sunset .powerup-btn,
-    body.theme-hell .powerup-btn {
-      background: rgba(30, 41, 59, 0.9);
-      border-color: #475569;
-      color: #38bdf8;
-    }
     .powerup-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+      background: #f0f9ff;
+      border-color: #0284c7;
+      transform: translateY(-1px);
     }
     .powerup-btn:disabled {
       opacity: 0.45;
       cursor: not-allowed;
+      border-color: #e2e8f0;
+      color: #94a3b8;
       box-shadow: none;
     }
 
     /* 対戦セクション */
     .card-panel {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
-    body.theme-chalkboard .card-panel,
-    body.theme-sunset .card-panel,
-    body.theme-hell .card-panel {
-      background: rgba(15, 23, 42, 0.88);
-      border-color: rgba(255, 255, 255, 0.15);
+      background: #ffffff;
+      border: 2px solid #e0f2fe;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.05);
     }
     .panel-title {
-      font-size: 16.5px;
+      font-size: 16px;
       font-weight: 900;
+      color: #0f172a;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
@@ -632,9 +493,9 @@
     }
     .panel-desc {
       font-size: 13px;
+      color: #64748b;
       line-height: 1.55;
       margin-bottom: 14px;
-      opacity: 0.85;
     }
     .input-row {
       display: flex;
@@ -653,12 +514,10 @@
       background: #f8fafc;
       transition: all 0.15s;
     }
-    body.theme-chalkboard .code-input-clean,
-    body.theme-sunset .code-input-clean,
-    body.theme-hell .code-input-clean {
-      background: #0f172a;
-      color: #ffffff;
-      border-color: #475569;
+    .code-input-clean:focus {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
     }
     .btn-half-clean {
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
@@ -672,8 +531,11 @@
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
       transition: all 0.1s;
     }
+    .btn-half-clean:active {
+      transform: scale(0.97);
+    }
     .code-box-display {
-      background: rgba(248, 250, 252, 0.9);
+      background: #f8fafc;
       border: 1.5px dashed #0284c7;
       padding: 14px;
       border-radius: 12px;
@@ -681,8 +543,8 @@
       font-size: 13px;
       word-break: break-all;
       user-select: all;
-      font-weight: 700;
       color: #0f172a;
+      font-weight: 700;
     }
 
     /* ショップカード */
@@ -697,24 +559,18 @@
       }
     }
     .shop-card-clean {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.8);
+      background: #ffffff;
+      border: 2px solid #e0f2fe;
       border-radius: 18px;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.05);
       transition: transform 0.15s;
-    }
-    body.theme-chalkboard .shop-card-clean,
-    body.theme-sunset .shop-card-clean,
-    body.theme-hell .shop-card-clean {
-      background: rgba(15, 23, 42, 0.88);
-      border-color: rgba(255, 255, 255, 0.15);
     }
     .shop-card-clean:hover {
       transform: translateY(-2px);
+      border-color: #bae6fd;
     }
     .shop-card-icon {
       font-size: 38px;
@@ -724,26 +580,27 @@
     .shop-card-title {
       font-size: 15px;
       font-weight: 900;
+      color: #0f172a;
       margin-bottom: 6px;
     }
     .shop-card-desc {
       font-size: 12px;
+      color: #64748b;
       margin-bottom: 16px;
       line-height: 1.5;
       flex-grow: 1;
-      opacity: 0.85;
     }
     .shop-card-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1.5px dashed rgba(148, 163, 184, 0.3);
+      border-top: 1.5px dashed #e2e8f0;
       padding-top: 12px;
     }
     .shop-card-price {
       font-size: 16px;
       font-weight: 900;
-      color: #f59e0b;
+      color: #d97706;
       display: flex;
       align-items: center;
       gap: 4px;
@@ -758,6 +615,10 @@
       font-weight: 900;
       cursor: pointer;
       box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
+      transition: all 0.1s;
+    }
+    .btn-buy-chip:active {
+      transform: scale(0.96);
     }
 
     /* 称号リスト */
@@ -767,26 +628,20 @@
       gap: 10px;
     }
     .tier-item {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
       border-radius: 14px;
       padding: 12px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 13.5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    }
-    body.theme-chalkboard .tier-item,
-    body.theme-sunset .tier-item,
-    body.theme-hell .tier-item {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 255, 255, 0.12);
+      transition: all 0.15s;
     }
     .tier-item.is-current {
       border: 2px solid #0284c7;
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15) 0%, rgba(56, 189, 248, 0.25) 100%);
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
       font-weight: 800;
     }
     .tier-left {
@@ -800,24 +655,13 @@
       width: 22px;
       font-size: 16px;
     }
-    body.theme-chalkboard .tier-num,
-    body.theme-sunset .tier-num,
-    body.theme-hell .tier-num {
-      color: #38bdf8;
-    }
     .tier-pts {
       font-size: 12.5px;
+      color: #0369a1;
       font-weight: 800;
-      background: rgba(2, 132, 199, 0.12);
-      color: #0284c7;
+      background: #e0f2fe;
       padding: 4px 10px;
       border-radius: 10px;
-    }
-    body.theme-chalkboard .tier-pts,
-    body.theme-sunset .tier-pts,
-    body.theme-hell .tier-pts {
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
     }
 
     /* リザルトモーダル */
@@ -828,7 +672,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.65);
       backdrop-filter: blur(6px);
       z-index: 2100;
       align-items: center;
@@ -837,14 +681,13 @@
     }
     .reveal-content {
       background: #ffffff;
-      color: #0f172a;
       max-width: 420px;
       width: 100%;
       border-radius: 24px;
       padding: 32px 26px;
       text-align: center;
       animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       border: 2px solid #e0f2fe;
     }
     @keyframes pop {
@@ -873,10 +716,15 @@
       font-weight: 900;
       font-size: 14px;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+      transition: all 0.1s;
+    }
+    .btn-modal-close:active {
+      transform: scale(0.96);
     }
   </style>
 </head>
-<body class="theme-grass">
+<body>
 
   <canvas id="confetti-canvas"></canvas>
 
@@ -917,13 +765,13 @@
     <!-- VIEW 1: タイピング -->
     <div class="tab-content active" id="viewPlay">
       <div class="diff-group">
-        <button class="diff-btn active" id="diffBtn0" onclick="selectDifficulty(0)">クソ簡単 (草原)</button>
-        <button class="diff-btn" id="diffBtn1" onclick="selectDifficulty(1)">簡単 (草原)</button>
-        <button class="diff-btn" id="diffBtn2" onclick="selectDifficulty(2)">ふつう (黒板)</button>
-        <button class="diff-btn" id="diffBtn3" onclick="selectDifficulty(3)">難しい (黒板)</button>
-        <button class="diff-btn" id="diffBtn4" onclick="selectDifficulty(4)">激ムズ (夕焼け)</button>
-        <button class="diff-btn" id="diffBtn5" onclick="selectDifficulty(5)">悪夢 (夕焼け)</button>
-        <button class="diff-btn" id="diffHellBtn" onclick="selectDifficulty(6)">🔒 地獄 (灼熱)</button>
+        <button class="diff-btn active" id="diffBtn0" onclick="selectDifficulty(0)">クソ簡単</button>
+        <button class="diff-btn" id="diffBtn1" onclick="selectDifficulty(1)">簡単</button>
+        <button class="diff-btn" id="diffBtn2" onclick="selectDifficulty(2)">ふつう</button>
+        <button class="diff-btn" id="diffBtn3" onclick="selectDifficulty(3)">難しい</button>
+        <button class="diff-btn" id="diffBtn4" onclick="selectDifficulty(4)">激ムズ</button>
+        <button class="diff-btn" id="diffBtn5" onclick="selectDifficulty(5)">悪夢</button>
+        <button class="diff-btn" id="diffHellBtn" onclick="selectDifficulty(6)">🔒 地獄</button>
       </div>
 
       <div class="typing-card">
@@ -1117,9 +965,9 @@
 
       const hellBtn = document.getElementById('diffHellBtn');
       if (playerData.rankId >= 6) {
-        hellBtn.innerText = "地獄 (灼熱)";
+        hellBtn.innerText = "地獄";
       } else {
-        hellBtn.innerText = "🔒 地獄 (灼熱)";
+        hellBtn.innerText = "🔒 地獄";
       }
 
       renderRankList();
@@ -1136,8 +984,8 @@
           <div class="tier-left">
             <span class="tier-num">${idx + 1}</span>
             <div>
-              <div style="font-weight: 900;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
-              <div style="font-size: 11.5px; opacity: 0.8; margin-top: 2px;">${r.desc}</div>
+              <div style="font-weight: 900; color: #0f172a;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
+              <div style="font-size: 11.5px; color: #64748b; margin-top: 2px;">${r.desc}</div>
             </div>
           </div>
           <span class="tier-pts">${r.minScore}pt〜</span>
@@ -1236,7 +1084,7 @@
       ]
     };
 
-    /* 4. ゲーム進行エンジン & 背景切り替え */
+    /* 4. ゲーム進行エンジン */
     let currentDifficulty = 0;
 
     let gameState = {
@@ -1255,19 +1103,6 @@
       tugBalance: 0
     };
 
-    function applyThemeByDiff(diff) {
-      document.body.classList.remove('theme-grass', 'theme-chalkboard', 'theme-sunset', 'theme-hell');
-      if (diff === 0 || diff === 1) {
-        document.body.classList.add('theme-grass');
-      } else if (diff === 2 || diff === 3) {
-        document.body.classList.add('theme-chalkboard');
-      } else if (diff === 4 || diff === 5) {
-        document.body.classList.add('theme-sunset');
-      } else if (diff === 6) {
-        document.body.classList.add('theme-hell');
-      }
-    }
-
     function selectDifficulty(diff) {
       if (gameState.isRunning) return;
       if (diff === 6 && playerData.rankId < 6) {
@@ -1275,8 +1110,6 @@
         return;
       }
       currentDifficulty = diff;
-      applyThemeByDiff(diff);
-
       for (let i = 0; i <= 6; i++) {
         const btn = document.getElementById(i === 6 ? 'diffHellBtn' : `diffBtn${i}`);
         if (i === diff) {
@@ -1678,7 +1511,6 @@
 
     window.onload = function() {
       loadData();
-      applyThemeByDiff(0);
     };
   </script>
 </body>
