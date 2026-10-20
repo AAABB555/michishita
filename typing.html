@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- PeerJSの読み込み（サーバー不要の完全無料P2Pリアルタイム通信用） -->
+  <!-- 安定したP2P接続のためのPeerJS -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * {
@@ -1053,8 +1053,8 @@
         <div class="panel-title">⚔️ P2P リアルタイム1v1道下奪還バトル</div>
         <p class="panel-desc">
           お互いに**同じ4桁の部屋コード**（例: `1111`）を入力してください。<br>
-          ・先に1人が「<b>① 部屋を作る(ホスト)</b>」を押して待機します。<br>
-          ・もう1人は「<b>② 部屋に参加(ゲスト)</b>」を押すと自動で接続され対戦が始まります！
+          1. 友達のどちらか1人が「<b>① 部屋を作る</b>」を押します。<br>
+          2. もう1人が同じコードを入れて「<b>② 部屋に参加</b>」を押すと即座に接続されます！
         </p>
 
         <div class="input-row" style="margin-top: 14px;">
@@ -1697,10 +1697,20 @@
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
     /* =========================================================================
-        ★ 確実につながる P2P ホスト／ゲスト対戦エンジン ★
+        ★ 安定性特化型 P2P 対戦エンジン（自動リトライ＆フォールバック付き） ★
         ========================================================================= */
     let peer = null;
     let peerConn = null;
+
+    // パブリックなフリーSTUNサーバーを設定して確実に接続経路を確保
+    const peerOptions = {
+      config: {
+        'iceServers': [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:global.stun.twilio.com:3478' }
+        ]
+      }
+    };
 
     function startAsHost() {
       const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
@@ -1710,25 +1720,28 @@
       }
 
       document.getElementById('peerLobbyArea').style.display = 'block';
-      document.getElementById('peerLobbyStatus').innerText = `【${code}】部屋を作成しました。相手の参加を待っています...`;
+      document.getElementById('peerLobbyStatus').innerText = `【${code}】部屋を作成しました。参加者を待っています...`;
 
       if (peer) { try { peer.destroy(); } catch (e) {} }
 
-      // ホスト側の専用ID
-      const hostId = "michishita_host_" + code;
-      peer = new Peer(hostId);
-
-      peer.on('open', (id) => {
-        // ホストとして待機
-      });
+      const hostId = "michishita_v3_" + code + "_host";
+      peer = new Peer(hostId, peerOptions);
 
       peer.on('connection', (conn) => {
         setupConnection(conn);
       });
 
       peer.on('error', (err) => {
-        alert("この部屋コードはすでに使われているかエラーが発生しました。別のコードを試してください。");
-        document.getElementById('peerLobbyArea').style.display = 'none';
+        // すでにホストIDが存在する場合は古いものを破棄して再作成
+        if (err.type === 'unavailable-id') {
+          peer.destroy();
+          setTimeout(() => {
+            peer = new Peer(hostId, peerOptions);
+            peer.on('connection', (conn) => { setupConnection(conn); });
+          }, 500);
+        } else {
+          document.getElementById('peerLobbyStatus').innerText = `接続エラー: ${err.type}`;
+        }
       });
     }
 
@@ -1740,38 +1753,49 @@
       }
 
       document.getElementById('peerLobbyArea').style.display = 'block';
-      document.getElementById('peerLobbyStatus').innerText = `【${code}】の部屋に接続中...`;
+      document.getElementById('peerLobbyStatus').innerText = `【${code}】の部屋に接続を試みています...`;
 
       if (peer) { try { peer.destroy(); } catch (e) {} }
 
-      // ゲストとしてランダムIDで参加
-      peer = new Peer();
+      peer = new Peer(peerOptions);
 
       peer.on('open', (id) => {
-        const hostId = "michishita_host_" + code;
-        const conn = peer.connect(hostId);
-        setupConnection(conn);
+        const hostId = "michishita_v3_" + code + "_host";
+        const conn = peer.connect(hostId, { reliable: true });
+        
+        // 接続確立のタイムアウト監視（5秒以上かかったらエラー表示）
+        const timeout = setTimeout(() => {
+          if (!peerConn || !peerConn.open) {
+            document.getElementById('peerLobbyStatus').innerText = `接続タイムアウト。相手が「① 部屋を作る」を押しているか確認してください。`;
+          }
+        }, 6000);
+
+        conn.on('open', () => {
+          clearTimeout(timeout);
+          setupConnection(conn);
+        });
+
+        conn.on('error', (e) => {
+          document.getElementById('peerLobbyStatus').innerText = `接続失敗。部屋が存在するか確認してください。`;
+        });
       });
 
       peer.on('error', (err) => {
-        alert("ホストが見つかりませんでした。先に相手が「部屋を作る」を押しているか確認してください。");
-        document.getElementById('peerLobbyArea').style.display = 'none';
+        document.getElementById('peerLobbyStatus').innerText = `ネットワーク接続エラー`;
       });
     }
 
     function setupConnection(conn) {
       peerConn = conn;
-      peerConn.on('open', () => {
-        document.getElementById('peerLobbyStatus').innerText = `接続成功！まもなく対戦が始まります...`;
-        peerConn.send({ type: 'INIT', name: playerData.name });
+      document.getElementById('peerLobbyStatus').innerText = `接続成功！まもなく対戦が始まります...`;
+      peerConn.send({ type: 'INIT', name: playerData.name });
 
-        setTimeout(() => {
-          document.getElementById('peerLobbyArea').style.display = 'none';
-          switchView('play');
-          selectDifficulty(2);
-          startGame(true);
-        }, 1200);
-      });
+      setTimeout(() => {
+        document.getElementById('peerLobbyArea').style.display = 'none';
+        switchView('play');
+        selectDifficulty(2);
+        startGame(true);
+      }, 1000);
 
       peerConn.on('data', (data) => {
         if (data.type === 'INIT') {
