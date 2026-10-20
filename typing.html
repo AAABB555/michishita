@@ -249,6 +249,7 @@
       color: #38bdf8;
       background: rgba(56, 189, 248, 0.18);
     }
+    /* ロックされたタブの見た目 */
     .tab-item.locked {
       opacity: 0.5;
       cursor: not-allowed;
@@ -360,6 +361,58 @@
       background: #fecaca;
     }
 
+    .battle-bar-wrap {
+      background: rgba(241, 245, 249, 0.85);
+      border: 2px solid #bae6fd;
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .dark-header .battle-bar-wrap {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .battle-names {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .battle-track {
+      height: 12px;
+      background: #cbd5e1;
+      border-radius: 6px;
+      position: relative;
+    }
+    .battle-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+      border-radius: 6px;
+      transition: width 0.25s ease;
+    }
+    .battle-marker {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #0284c7;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      transition: left 0.25s ease;
+    }
+    .battle-marker img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .word-area {
       text-align: center;
       margin-bottom: 22px;
@@ -430,7 +483,7 @@
       text-underline-offset: 4px;
     }
 
-    /* 主役の道下（くっきりはっきり表示） */
+    /* 主役の道下をくっきり表示（不透明度1） */
     .michishita-popup {
       position: absolute;
       right: 14px;
@@ -443,7 +496,7 @@
       overflow: hidden;
       background: #ffffff;
       z-index: 1; 
-      opacity: 1; /* 主役なので完全にくっきり表示 */
+      opacity: 1; /* 主役らしくしっかりくっきり表示 */
       transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
     }
@@ -880,7 +933,7 @@
 
     <div class="tab-bar">
       <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
-      <div class="tab-item locked" id="tabBattleBtn" onclick="switchView('battle')">🔒 対戦</div>
+      <div class="tab-item locked" id="tabBattleBtn" onclick="alert('🔒 対戦機能は現在準備中です！お楽しみに！')">🔒 対戦</div>
       <div class="tab-item" id="tabLeaderboardBtn" onclick="switchView('leaderboard')">👑 ランキング</div>
       <div class="tab-item" id="tabShopBtn" onclick="switchView('shop')">ショップ</div>
       <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">称号</div>
@@ -907,8 +960,22 @@
           <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
         </div>
 
+        <div class="battle-bar-wrap" id="battleTugBar">
+          <div class="battle-names">
+            <span id="tugPlayerName">あなた</span>
+            <span id="traitorStatusText" style="color: #0284c7;">均衡状態</span>
+            <span id="tugRivalName">対戦相手</span>
+          </div>
+          <div class="battle-track">
+            <div class="battle-fill" id="tugBarProgress"></div>
+            <div class="battle-marker" id="tugMichishitaMarker">
+              <img id="tugMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下">
+            </div>
+          </div>
+        </div>
+
         <div class="word-area" id="wordAreaBoard">
-          <!-- 主役の道下（くっきり表示） -->
+          <!-- 主役の道下（くっきり表示・文字の後ろ、背景の前） -->
           <div class="michishita-popup" id="michishitaPopup">
             <div class="michishita-popup-tag">道下参上！</div>
             <img id="popupMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下君">
@@ -925,7 +992,7 @@
 
         <input type="text" id="hiddenTypeInput" class="typing-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
 
-        <button class="btn-clean" id="mainStartBtn" onclick="runCountdownAndStart()">ゲームスタート (SPACE)</button>
+        <button class="btn-clean" id="mainStartBtn" onclick="runCountdownAndStart(false)">ゲームスタート (SPACE)</button>
 
         <div class="powerup-strip">
           <button id="useAgentBtn" onclick="usePowerup('agent')" class="powerup-btn" disabled>🤖 道下代行 (<span id="invAgentCount">0</span>)</button>
@@ -979,8 +1046,8 @@
     <!-- VIEW 5: 道下称号 -->
     <div class="tab-content" id="viewProfile">
       <div class="card-panel">
-        <div class="panel-title">🏆 うでまえ進捗（全10段階 ※難易度3倍）</div>
-        <p class="panel-desc">最高到達点「革命道下」を目指せ！スコアを更新するごとに自動で昇格します。</p>
+        <div class="panel-title">🏆 うでまえ進捗（全10段階）</div>
+        <p class="panel-desc">1週間やり込んで最高到達点「革命道下」を目指せ！スコアを更新するごとに自動で昇格します。</p>
         <div class="rank-tier-list" id="rankTierList"></div>
       </div>
     </div>
@@ -1020,18 +1087,17 @@
 
     const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
 
-    // 階級・難易度を3倍に強化
     const RANKS = [
       { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
-      { id: 1, title: "ルーキー道下", minScore: 360, desc: "キーボードの配置を思い出し始めた道下。" },
-      { id: 2, title: "ビギナー級道下", minScore: 840, desc: "ゆっくりだが確実に打ち込める道下。" },
-      { id: 3, title: "レギュラー道下", minScore: 1440, desc: "日々の練習を欠かさない道下。" },
-      { id: 4, title: "ベテラン道下", minScore: 2160, desc: "休み時間のタイピング対決で一目置かれる存在。" },
-      { id: 5, title: "エキスパート道下", minScore: 3000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
-      { id: 6, title: "エリート級道下", minScore: 4050, desc: "鋼の精神で打ち続ける選ばれし道下。" },
-      { id: 7, title: "マスター級道下", minScore: 5250, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
-      { id: 8, title: "レジェンド級道下", minScore: 6600, desc: "神格化された道下。もはや人間離れしている。" },
-      { id: 9, title: "革命道下", minScore: 8400, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
+      { id: 1, title: "ルーキー道下", minScore: 120, desc: "キーボードの配置を思い出し始めた道下。" },
+      { id: 2, title: "ビギナー級道下", minScore: 280, desc: "ゆっくりだが確実に打ち込める道下。" },
+      { id: 3, title: "レギュラー道下", minScore: 480, desc: "日々の練習を欠かさない道下。" },
+      { id: 4, title: "ベテラン道下", minScore: 720, desc: "休み時間のタイピング対決で一目置かれる存在。" },
+      { id: 5, title: "エキスパート道下", minScore: 1000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
+      { id: 6, title: "エリート級道下", minScore: 1350, desc: "鋼の精神で打ち続ける選ばれし道下。" },
+      { id: 7, title: "マスター級道下", minScore: 1750, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
+      { id: 8, title: "レジェンド級道下", minScore: 2200, desc: "神格化された道下。もはや人間離れしている。" },
+      { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
     ];
 
     let playerData = {
@@ -1045,6 +1111,7 @@
 
     let globalRankings = [];
 
+    // Firebaseから全員のランキングをリアルタイム取得
     function initGlobalRankingSync() {
       db.ref('global_rankings').on('value', (snapshot) => {
         const data = snapshot.val() || {};
@@ -1121,10 +1188,12 @@
       document.getElementById('playerCoinsText').innerText = playerData.coins.toLocaleString() + "枚";
       const currentRank = RANKS[playerData.rankId] || RANKS[0];
       document.getElementById('playerRankBadge').innerText = currentRank.title;
+      document.getElementById('tugPlayerName').innerText = playerData.name;
       document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
       document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
       document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
       document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
+      document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
       const hellBtn = document.getElementById('diffHellBtn');
       hellBtn.innerText = playerData.rankId >= 6 ? "地獄" : "🔒 地獄";
       renderRankList();
