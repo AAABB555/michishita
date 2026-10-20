@@ -249,6 +249,10 @@
       color: #38bdf8;
       background: rgba(56, 189, 248, 0.18);
     }
+    .tab-item.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
     .tab-content {
       display: none;
@@ -356,58 +360,6 @@
       background: #fecaca;
     }
 
-    .battle-bar-wrap {
-      background: rgba(241, 245, 249, 0.85);
-      border: 2px solid #bae6fd;
-      border-radius: 14px;
-      padding: 10px 14px;
-      margin-bottom: 18px;
-      display: none;
-    }
-    .dark-header .battle-bar-wrap {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-    .battle-names {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-    .battle-track {
-      height: 12px;
-      background: #cbd5e1;
-      border-radius: 6px;
-      position: relative;
-    }
-    .battle-fill {
-      height: 100%;
-      width: 50%;
-      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
-      border-radius: 6px;
-      transition: width 0.25s ease;
-    }
-    .battle-marker {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 2px solid #0284c7;
-      overflow: hidden;
-      background: #ffffff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-      transition: left 0.25s ease;
-    }
-    .battle-marker img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
     .word-area {
       text-align: center;
       margin-bottom: 22px;
@@ -478,6 +430,7 @@
       text-underline-offset: 4px;
     }
 
+    /* 主役の道下（くっきりはっきり表示） */
     .michishita-popup {
       position: absolute;
       right: 14px;
@@ -489,8 +442,8 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
       overflow: hidden;
       background: #ffffff;
-      z-index: 1; /* 文字やローマ字より後ろ、背景より前に配置 */
-      opacity: 0.35; /* 文字が見やすくなるよう少し透過 */
+      z-index: 1; 
+      opacity: 1; /* 主役なので完全にくっきり表示 */
       transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
     }
@@ -627,43 +580,6 @@
       line-height: 1.55;
       margin-bottom: 14px;
       opacity: 0.85;
-    }
-    .input-row {
-      display: flex;
-      gap: 10px;
-    }
-    .code-input-clean {
-      flex: 1;
-      height: 46px;
-      border: 2px solid #bae6fd;
-      border-radius: 23px;
-      padding: 0 18px;
-      font-family: ui-monospace, monospace;
-      font-size: 17px;
-      letter-spacing: 2px;
-      outline: none;
-      font-weight: 900;
-      text-transform: uppercase;
-      background: #f8fafc;
-      transition: all 0.15s;
-    }
-    .dark-header .code-input-clean {
-      background: #0f172a;
-      color: #ffffff;
-      border-color: #475569;
-    }
-    .btn-half-clean {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: #ffffff;
-      border: none;
-      padding: 0 20px;
-      border-radius: 23px;
-      font-size: 13.5px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
-      transition: all 0.1s;
-      white-space: nowrap;
     }
 
     .shop-grid-clean {
@@ -875,24 +791,6 @@
       letter-spacing: 2px;
     }
 
-    .lobby-box {
-      background: rgba(2, 132, 199, 0.08);
-      border: 2px dashed #0284c7;
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      margin-top: 14px;
-    }
-    .lobby-status {
-      font-size: 14px;
-      font-weight: 800;
-      color: #0369a1;
-      margin-bottom: 12px;
-    }
-    .dark-header .lobby-status {
-      color: #38bdf8;
-    }
-
     #reveal-modal {
       display: none;
       position: fixed;
@@ -982,7 +880,7 @@
 
     <div class="tab-bar">
       <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
-      <div class="tab-item" id="tabBattleBtn" onclick="switchView('battle')">🔒 対戦</div>
+      <div class="tab-item locked" id="tabBattleBtn" onclick="switchView('battle')">🔒 対戦</div>
       <div class="tab-item" id="tabLeaderboardBtn" onclick="switchView('leaderboard')">👑 ランキング</div>
       <div class="tab-item" id="tabShopBtn" onclick="switchView('shop')">ショップ</div>
       <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">称号</div>
@@ -1009,21 +907,8 @@
           <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
         </div>
 
-        <div class="battle-bar-wrap" id="battleTugBar">
-          <div class="battle-names">
-            <span id="tugPlayerName">あなた</span>
-            <span id="traitorStatusText" style="color: #0284c7;">均衡状態</span>
-            <span id="tugRivalName">対戦相手</span>
-          </div>
-          <div class="battle-track">
-            <div class="battle-fill" id="tugBarProgress"></div>
-            <div class="battle-marker" id="tugMichishitaMarker">
-              <img id="tugMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下">
-            </div>
-          </div>
-        </div>
-
         <div class="word-area" id="wordAreaBoard">
+          <!-- 主役の道下（くっきり表示） -->
           <div class="michishita-popup" id="michishitaPopup">
             <div class="michishita-popup-tag">道下参上！</div>
             <img id="popupMichishitaImg" src="5853a5e2-b83c-4b83-982f-9c342a2d45c7.jpg" alt="道下君">
@@ -1040,7 +925,7 @@
 
         <input type="text" id="hiddenTypeInput" class="typing-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
 
-        <button class="btn-clean" id="mainStartBtn" onclick="runCountdownAndStart(false)">ゲームスタート (SPACE)</button>
+        <button class="btn-clean" id="mainStartBtn" onclick="runCountdownAndStart()">ゲームスタート (SPACE)</button>
 
         <div class="powerup-strip">
           <button id="useAgentBtn" onclick="usePowerup('agent')" class="powerup-btn" disabled>🤖 道下代行 (<span id="invAgentCount">0</span>)</button>
@@ -1049,26 +934,11 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 🔒 対戦 -->
+    <!-- VIEW 2: 🔒 対戦（ロック中） -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
-        <div class="panel-title">⚔️ 🔒 クラウドリアルタイム対戦</div>
-        <p class="panel-desc">お互いに「🔒 対戦」タブを開き、**同じ4桁の部屋コード**（例: `1111`）を入力して「ルームに入る」を押してください。2人揃うと自動でマッチングし、3秒のカウントダウンを経てリアルタイム綱引きバトルが始まります！</p>
-
-        <div class="input-row" style="margin-bottom: 14px;">
-          <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: 1111)" maxlength="4">
-          <button class="btn-half-clean" onclick="joinFirebaseRoom()">ルームに入る</button>
-        </div>
-
-        <div class="lobby-box" id="firebaseLobbyArea" style="display: none;">
-          <div class="lobby-status" id="firebaseLobbyStatus">ルーム接続中...</div>
-          <button class="btn-half-clean" style="background: #ef4444;" onclick="leaveFirebaseRoom()">部屋を出る・キャンセル</button>
-        </div>
-      </div>
-
-      <div class="card-panel">
-        <div class="panel-title">📊 通算対戦戦績</div>
-        <p class="panel-desc" id="battleStatsSummary" style="font-weight: 800; color: #0284c7; font-size: 14px;">0試合 0勝 0敗 (寝返り発生: 0回)</p>
+        <div class="panel-title">🔒 メンテナンス中</div>
+        <p class="panel-desc">対戦機能は現在ロックされています。</p>
       </div>
     </div>
 
@@ -1109,8 +979,8 @@
     <!-- VIEW 5: 道下称号 -->
     <div class="tab-content" id="viewProfile">
       <div class="card-panel">
-        <div class="panel-title">🏆 うでまえ進捗（全10段階）</div>
-        <p class="panel-desc">1週間やり込んで最高到達点「革命道下」を目指せ！スコアを更新するごとに自動で昇格します。</p>
+        <div class="panel-title">🏆 うでまえ進捗（全10段階 ※難易度3倍）</div>
+        <p class="panel-desc">最高到達点「革命道下」を目指せ！スコアを更新するごとに自動で昇格します。</p>
         <div class="rank-tier-list" id="rankTierList"></div>
       </div>
     </div>
@@ -1150,17 +1020,18 @@
 
     const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
 
+    // 階級・難易度を3倍に強化
     const RANKS = [
       { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
-      { id: 1, title: "ルーキー道下", minScore: 120, desc: "キーボードの配置を思い出し始めた道下。" },
-      { id: 2, title: "ビギナー級道下", minScore: 280, desc: "ゆっくりだが確実に打ち込める道下。" },
-      { id: 3, title: "レギュラー道下", minScore: 480, desc: "日々の練習を欠かさない道下。" },
-      { id: 4, title: "ベテラン道下", minScore: 720, desc: "休み時間のタイピング対決で一目置かれる存在。" },
-      { id: 5, title: "エキスパート道下", minScore: 1000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
-      { id: 6, title: "エリート級道下", minScore: 1350, desc: "鋼の精神で打ち続ける選ばれし道下。" },
-      { id: 7, title: "マスター級道下", minScore: 1750, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
-      { id: 8, title: "レジェンド級道下", minScore: 2200, desc: "神格化された道下。もはや人間離れしている。" },
-      { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
+      { id: 1, title: "ルーキー道下", minScore: 360, desc: "キーボードの配置を思い出し始めた道下。" },
+      { id: 2, title: "ビギナー級道下", minScore: 840, desc: "ゆっくりだが確実に打ち込める道下。" },
+      { id: 3, title: "レギュラー道下", minScore: 1440, desc: "日々の練習を欠かさない道下。" },
+      { id: 4, title: "ベテラン道下", minScore: 2160, desc: "休み時間のタイピング対決で一目置かれる存在。" },
+      { id: 5, title: "エキスパート道下", minScore: 3000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
+      { id: 6, title: "エリート級道下", minScore: 4050, desc: "鋼の精神で打ち続ける選ばれし道下。" },
+      { id: 7, title: "マスター級道下", minScore: 5250, desc: "学校でも指折りの速さ。道下も嫉妬する。" },
+      { id: 8, title: "レジェンド級道下", minScore: 6600, desc: "神格化された道下。もはや人間離れしている。" },
+      { id: 9, title: "革命道下", minScore: 8400, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
     ];
 
     let playerData = {
@@ -1174,7 +1045,6 @@
 
     let globalRankings = [];
 
-    // Firebaseから全員のランキングをリアルタイム取得
     function initGlobalRankingSync() {
       db.ref('global_rankings').on('value', (snapshot) => {
         const data = snapshot.val() || {};
@@ -1251,12 +1121,10 @@
       document.getElementById('playerCoinsText').innerText = playerData.coins.toLocaleString() + "枚";
       const currentRank = RANKS[playerData.rankId] || RANKS[0];
       document.getElementById('playerRankBadge').innerText = currentRank.title;
-      document.getElementById('tugPlayerName').innerText = playerData.name;
       document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
       document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
       document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
       document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
-      document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
       const hellBtn = document.getElementById('diffHellBtn');
       hellBtn.innerText = playerData.rankId >= 6 ? "地獄" : "🔒 地獄";
       renderRankList();
@@ -1331,10 +1199,6 @@
     function soundType() { playBeep(750, 'triangle', 0.05, 0.08); }
     function soundCorrect() { playBeep(1200, 'sine', 0.12, 0.12); }
     function soundMiss() { playBeep(180, 'sawtooth', 0.15, 0.15); }
-    function soundTraitor() {
-      playBeep(260, 'square', 0.2, 0.18);
-      setTimeout(() => playBeep(210, 'square', 0.3, 0.2), 150);
-    }
     function soundFanfare() {
       [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playBeep(f, 'sine', 0.2, 0.15), i * 120));
     }
@@ -1347,47 +1211,50 @@
     const WORD_DB = {
       0: [
         { k: "道下", r: "mitisita" }, { k: "僕", r: "boku" }, { k: "犬", r: "inu" },
-        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" }
+        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" },
+        { k: "道下ファン", r: "mitisitafan" }, { k: "天才道下", r: "tensaimitisita" }
       ],
       1: [
         { k: "道下遥人", r: "mitisitaharuto" }, { k: "あの時の僕", r: "anotokinoboku" },
-        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, { k: "昼休みダッシュ", r: "hiruyasumidassyu" }
+        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, { k: "昼休みダッシュ", r: "hiruyasumidassyu" },
+        { k: "道下の休日", r: "mitisitanokyuzitu" }, { k: "伝説の道下", r: "densetunomitisita" }
       ],
       2: [
         { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" }, { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
-        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" }
+        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
+        { k: "主役の道下参上", r: "syuyakunomitisitasanzyo" }, { k: "道下は今日も元気です", r: "mitisitahakyoumogenkidesu" }
       ],
       3: [
         { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
-        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" }
+        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" },
+        { k: "誰もが羨む道下の圧倒的才能", r: "daremogauyaramumitisitanoattoutekisainou" }
       ],
       4: [
         { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
-        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" }
+        { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" },
+        { k: "主役である道下様の華麗なるタイピング", r: "syuyakudearumitisitasamanokareinarutaipinku" }
       ],
       5: [
-        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" }
+        { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" },
+        { k: "主役道下のオーラは教室中を包み込んでいる", r: "syuyakumitisitanoorawahakyousitutyuuwotsutsumikondeiru" }
       ],
       6: [
-        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" }
+        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" },
+        { k: "世界を揺るがす奇跡の男道下遥人の伝説を見逃すな", r: "sekaiwoyurugasukisekinootokomitisitaharutonodensetuwotinogasukuna" }
       ]
     };
 
     let currentDifficulty = 2;
     let gameState = {
       isRunning: false,
-      isRealtimeBattle: false,
       timeLeft: 60,
       timerId: null,
       score: 0,
-      opponentScore: 0,
       totalStrokes: 0,
       missCount: 0,
       currentWord: null,
       typedIndex: 0,
-      agentActive: false,
-      rivalName: "対戦相手",
-      tugBalance: 0
+      agentActive: false
     };
 
     function selectDifficulty(diff) {
@@ -1407,7 +1274,7 @@
       }
     }
 
-    function runCountdownAndStart(isRealtime = false) {
+    function runCountdownAndStart() {
       switchView('play');
       selectDifficulty(currentDifficulty);
 
@@ -1429,36 +1296,24 @@
         } else {
           clearInterval(countInterval);
           overlay.style.display = 'none';
-          startGame(isRealtime);
+          startGame();
         }
       }, 1000);
     }
 
-    function startGame(isRealtime = false) {
+    function startGame() {
       if (gameState.isRunning) return;
 
       gameState.isRunning = true;
-      gameState.isRealtimeBattle = isRealtime;
       gameState.score = 0;
-      gameState.opponentScore = 0;
       gameState.totalStrokes = 0;
       gameState.missCount = 0;
       gameState.typedIndex = 0;
       gameState.agentActive = false;
-      gameState.tugBalance = 0;
       gameState.timeLeft = 60;
 
       document.getElementById('mainStartBtn').style.display = 'none';
       document.getElementById('btnQuitGame').style.display = 'inline-block';
-
-      const tugBar = document.getElementById('battleTugBar');
-      if (isRealtime) {
-        tugBar.style.display = 'block';
-        document.getElementById('tugRivalName').innerText = gameState.rivalName;
-        updateTugMeter(0);
-      } else {
-        tugBar.style.display = 'none';
-      }
 
       const input = document.getElementById('hiddenTypeInput');
       input.disabled = false;
@@ -1479,9 +1334,6 @@
         clearInterval(gameState.timerId);
         gameState.timerId = null;
         gameState.isRunning = false;
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/status').set('quit');
-        }
         resetPlayUI();
       }
     }
@@ -1498,17 +1350,11 @@
       document.getElementById('romaScrollWrapper').scrollLeft = 0;
       document.getElementById('gameTimer').innerText = '60';
       document.getElementById('gameScore').innerText = '0';
-      document.getElementById('battleTugBar').style.display = 'none';
     }
 
     function gameTick() {
       gameState.timeLeft--;
       document.getElementById('gameTimer').innerText = gameState.timeLeft;
-
-      if (gameState.isRealtimeBattle && firebaseRoomRef) {
-        firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-      }
-
       if (gameState.timeLeft <= 0) {
         endGame();
       }
@@ -1565,15 +1411,9 @@
         gameState.typedIndex++;
         gameState.totalStrokes++;
         gameState.score += 10;
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-        }
         if (gameState.typedIndex >= gameState.currentWord.r.length) {
           soundCorrect();
           gameState.score += gameState.currentWord.r.length * 5;
-          if (gameState.isRealtimeBattle && firebaseRoomRef) {
-            firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-          }
           nextPrompt();
         } else {
           updatePromptDisplay();
@@ -1582,9 +1422,6 @@
         soundMiss();
         gameState.missCount++;
         gameState.score = Math.max(0, gameState.score - 5);
-        if (gameState.isRealtimeBattle && firebaseRoomRef) {
-          firebaseRoomRef.child('players/' + myPlayerKey + '/score').set(gameState.score);
-        }
       }
       updateGameStatsUI();
     });
@@ -1594,42 +1431,12 @@
         const modal = document.getElementById('reveal-modal');
         if (!gameState.isRunning && modal.style.display !== 'flex') {
           e.preventDefault();
-          runCountdownAndStart(false);
+          runCountdownAndStart();
         }
       } else if (e.code === 'Escape' && gameState.isRunning) {
         quitCurrentGame();
       }
     });
-
-    function recalculateRealtimeTug() {
-      const diff = gameState.score - gameState.opponentScore;
-      let balance = Math.max(-50, Math.min(50, diff / 4));
-      const oldBalance = gameState.tugBalance;
-      gameState.tugBalance = balance;
-      updateTugMeter(balance);
-
-      if (oldBalance >= 0 && balance < -10) triggerTraitorDefection(false);
-      else if (oldBalance <= 0 && balance > 10) triggerTraitorDefection(true);
-    }
-
-    function updateTugMeter(balance) {
-      const percent = 50 + balance;
-      document.getElementById('tugBarProgress').style.width = `${percent}%`;
-      document.getElementById('tugMichishitaMarker').style.left = `${percent}%`;
-    }
-
-    function triggerTraitorDefection(toPlayer) {
-      soundTraitor();
-      playerData.stats.betrayals++;
-      const traitorText = document.getElementById('traitorStatusText');
-      if (toPlayer) {
-        traitorText.innerText = "道下が味方に寝返り！";
-        traitorText.style.color = "#0284c7";
-      } else {
-        traitorText.innerText = "裏切り発生！逃亡中！";
-        traitorText.style.color = "#ef4444";
-      }
-    }
 
     function usePowerup(type) {
       if (!gameState.isRunning) return;
@@ -1688,21 +1495,9 @@
       if (earnedRank.id > playerData.rankId) playerData.rankId = earnedRank.id;
 
       recordGlobalScore(playerData.name, gameState.score, earnedRank.title);
-
-      let battleVictory = false;
-      if (gameState.isRealtimeBattle) {
-        playerData.stats.matches++;
-        if (gameState.score >= gameState.opponentScore) { playerData.stats.wins++; battleVictory = true; }
-        else playerData.stats.losses++;
-      }
       saveData();
 
       let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
-      if (gameState.isRealtimeBattle) {
-        msg = `相手スコア: <b>${gameState.opponentScore} 点</b><br><br>` + msg;
-        if (battleVictory) msg = `⚔️ <b>対戦勝利！（あなたの勝ち）</b><br><br>` + msg;
-        else msg = `💔 <b>対戦敗北…（相手の勝ち）</b><br><br>` + msg;
-      }
       showResultModal(msg);
     }
 
@@ -1717,75 +1512,140 @@
     }
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
-    /* =========================================================================
-        ★ Firebase クラウド同期による確実対戦エンジン ★
-        ========================================================================= */
-    let firebaseRoomRef = null;
-    let myPlayerKey = 'p_' + Math.random().toString(36).substring(2, 9);
-    let opponentPlayerKey = null;
-    let hasStartedFirebaseBattle = false;
+    let globalRankings = [];
 
-    function joinFirebaseRoom() {
-      const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
-      if (!code || code.length !== 4) {
-        alert("4桁の部屋コード（例: 1111）を入力してください！");
-        return;
-      }
-
-      document.getElementById('firebaseLobbyArea').style.display = 'block';
-      document.getElementById('firebaseLobbyStatus').innerText = `【${code}】の部屋に入室中... 相手を待っています`;
-
-      firebaseRoomRef = db.ref('typing_rooms/' + code);
-      hasStartedFirebaseBattle = false;
-
-      // 自プレイヤー情報を登録
-      firebaseRoomRef.child('players/' + myPlayerKey).set({
-        name: playerData.name,
-        score: 0,
-        status: 'waiting'
-      });
-
-      // 切断時に自動削除
-      firebaseRoomRef.child('players/' + myPlayerKey).onDisconnect().remove();
-
-      // ルーム内のプレイヤー監視
-      firebaseRoomRef.child('players').on('value', (snapshot) => {
-        const players = snapshot.val() || {};
-        const keys = Object.keys(players);
-
-        if (keys.length >= 2 && !hasStartedFirebaseBattle) {
-          opponentPlayerKey = keys.find(k => k !== myPlayerKey);
-          if (opponentPlayerKey) {
-            hasStartedFirebaseBattle = true;
-            const oppName = players[opponentPlayerKey].name || "対戦相手";
-            gameState.rivalName = oppName;
-            document.getElementById('firebaseLobbyStatus').innerText = `「${oppName}」と接続完了！`;
-
-            // 相手のスコアをリアルタイム同期監視
-            firebaseRoomRef.child('players/' + opponentPlayerKey + '/score').on('value', (scoreSnap) => {
-              gameState.opponentScore = scoreSnap.val() || 0;
-              if (gameState.isRealtimeBattle) recalculateRealtimeTug();
-            });
-
-            setTimeout(() => {
-              document.getElementById('firebaseLobbyArea').style.display = 'none';
-              runCountdownAndStart(true);
-            }, 1000);
-          }
-        }
+    function initGlobalRankingSync() {
+      db.ref('global_rankings').on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        globalRankings = Object.values(data);
+        globalRankings.sort((a, b) => b.score - a.score);
+        globalRankings = globalRankings.slice(0, 10);
+        renderLeaderboard();
       });
     }
 
-    function leaveFirebaseRoom() {
-      if (firebaseRoomRef) {
-        firebaseRoomRef.child('players/' + myPlayerKey).remove();
-        firebaseRoomRef = null;
+    function recordGlobalScore(name, score, rankTitle) {
+      if (score <= 0) return;
+      const ref = db.ref('global_rankings').push();
+      ref.set({
+        name: name || "名無し道下",
+        score: score,
+        rank: rankTitle,
+        date: new Date().toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      });
+    }
+
+    function applyCustomImages() {
+      const boardEl = document.getElementById('wordAreaBoard');
+      if (CUSTOM_IMAGES.boardImage) {
+        boardEl.style.backgroundImage = `url("${CUSTOM_IMAGES.boardImage}")`;
+        boardEl.style.backgroundSize = "100% 100%";
       }
-      document.getElementById('firebaseLobbyArea').style.display = 'none';
-      alert("部屋を出ました。");
+      if (CUSTOM_IMAGES.michishitaCharacter) {
+        const popupImg = document.getElementById('popupMichishitaImg');
+        const tugImg = document.getElementById('tugMichishitaImg');
+        if (popupImg) popupImg.src = CUSTOM_IMAGES.michishitaCharacter;
+        if (tugImg) tugImg.src = CUSTOM_IMAGES.michishitaCharacter;
+      }
+    }
+
+    function applyBackgroundTheme(diff) {
+      const bgImg = CUSTOM_IMAGES.globalBackgrounds[diff];
+      if (bgImg) {
+        document.body.style.backgroundImage = `url("${bgImg}")`;
+        document.body.style.backgroundSize = "100% 100%";
+      } else {
+        document.body.style.backgroundImage = "";
+      }
+      for (let i = 0; i <= 6; i++) {
+        document.body.classList.remove(`theme-diff-${i}`);
+      }
+      document.body.classList.add(`theme-diff-${diff}`);
+      if (diff >= 2) document.body.classList.add('dark-header');
+      else document.body.classList.remove('dark-header');
+    }
+
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) playerData = Object.assign(playerData, JSON.parse(saved));
+      } catch (e) {}
+      updateUI();
+    }
+
+    function saveData() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData)); } catch (e) {}
+      updateUI();
+    }
+
+    function updatePlayerName(newName) {
+      if (newName && newName.trim()) {
+        playerData.name = newName.trim().substring(0, 10);
+        saveData();
+      }
+    }
+
+    function updateUI() {
+      document.getElementById('playerNameInput').value = playerData.name;
+      document.getElementById('playerCoinsText').innerText = playerData.coins.toLocaleString() + "枚";
+      const currentRank = RANKS[playerData.rankId] || RANKS[0];
+      document.getElementById('playerRankBadge').innerText = currentRank.title;
+      document.getElementById('invAgentCount').innerText = playerData.inventory.agent || 0;
+      document.getElementById('invTimeCount').innerText = playerData.inventory.time || 0;
+      document.getElementById('useAgentBtn').disabled = (playerData.inventory.agent || 0) <= 0 || !gameState.isRunning;
+      document.getElementById('useTimeBtn').disabled = (playerData.inventory.time || 0) <= 0 || !gameState.isRunning;
+      const hellBtn = document.getElementById('diffHellBtn');
+      hellBtn.innerText = playerData.rankId >= 6 ? "地獄" : "🔒 地獄";
+      renderRankList();
+      renderLeaderboard();
+    }
+
+    function renderRankList() {
+      const container = document.getElementById('rankTierList');
+      container.innerHTML = '';
+      RANKS.forEach((r, idx) => {
+        const isCurrent = playerData.rankId === idx;
+        const div = document.createElement('div');
+        div.className = `tier-item ${isCurrent ? 'is-current' : ''}`;
+        div.innerHTML = `
+          <div class="tier-left">
+            <span class="tier-num">${idx + 1}</span>
+            <div>
+              <div style="font-weight: 900;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
+              <div style="font-size: 11.5px; opacity: 0.8; margin-top: 2px;">${r.desc}</div>
+            </div>
+          </div>
+          <span class="tier-pts">${r.minScore}pt〜</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderLeaderboard() {
+      const container = document.getElementById('rankingTableBody');
+      if (!container) return;
+      container.innerHTML = '';
+      if (globalRankings.length === 0) {
+        container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ誰も記録を残していません。<br>タイピングをプレイしてランキングに載せよう！</td></tr>`;
+        return;
+      }
+      globalRankings.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const pos = index + 1;
+        let medal = pos === 1 ? "🥇" : pos === 2 ? "🥈" : pos === 3 ? "🥉" : pos;
+        let rowClass = `ranking-row top-${pos <= 3 ? pos : 'other'}`;
+        if (item.name === playerData.name) rowClass += " is-player";
+        tr.className = rowClass;
+        tr.innerHTML = `<td>${medal}</td><td><div style="font-weight: 900;">${item.name}</div><div style="font-size: 11px; opacity: 0.75;">${item.rank} (${item.date || ''})</div></td><td>${item.score.toLocaleString()} pt</td>`;
+        container.appendChild(tr);
+      });
     }
 
     function switchView(view) {
+      if (view === 'battle') {
+        alert("🔒 対戦機能は現在準備中です！");
+        return;
+      }
       const views = ['play', 'battle', 'leaderboard', 'shop', 'profile'];
       views.forEach(v => {
         const section = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
