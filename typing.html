@@ -1067,7 +1067,7 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 道下奪還バトル -->
+    <!-- VIEW 2: 道下奪還バトル (完全4桁ID対戦) -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
         <div class="panel-title">⚔️ リアルタイム道下奪還バトル</div>
@@ -1875,14 +1875,15 @@
       document.getElementById('reveal-modal').style.display = 'none';
     }
 
-    /* 安定接続型 4桁マッチングエンジン */
+    /* =========================================================================
+       ★ 4桁対戦通信エンジン（Google STUN + 即時アンロック保証版） ★
+       ========================================================================= */
     let peer = null;
     let my4DigitCode = "";
     let activePeerConn = null;
     let isMyReady = false;
     let isOpponentReady = false;
 
-    // 日本国内専用のプレフィックスで世界重複を回避
     const PEER_APP_KEY = "michityping_2026_room_";
 
     function makeRandom4Code() {
@@ -1908,7 +1909,14 @@
       my4DigitCode = makeRandom4Code();
       const fullPeerId = PEER_APP_KEY + my4DigitCode;
 
+      // Google STUNサーバーを指定してルーター・Wi-Fi越えを確実にする
       peer = new Peer(fullPeerId, {
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+          ]
+        },
         debug: 1
       });
 
@@ -1949,7 +1957,7 @@
       }
 
       document.getElementById('battleLobbyArea').style.display = 'block';
-      document.getElementById('lobbyStatusText').innerText = `【${code}】に招待を送信中...`;
+      document.getElementById('lobbyStatusText').innerText = `【${code}】に招待を送信中...（承諾を待っています）`;
 
       const targetFullId = PEER_APP_KEY + code;
       const conn = peer.connect(targetFullId, {
@@ -1967,10 +1975,10 @@
       const accept = confirm(`【対戦招待】\n「${inviterName}」(${inviterCode}) から対戦申し込みが届きました！\n対戦しますか？`);
 
       if (!accept) {
-        conn.on('open', () => {
-          conn.send({ type: 'invite_rejected' });
-          conn.close();
-        });
+        const reject = () => {
+          try { conn.send({ type: 'invite_rejected' }); conn.close(); } catch(e){}
+        };
+        if (conn.open) reject(); else conn.on('open', reject);
         return;
       }
 
@@ -1984,15 +1992,31 @@
     function bindConnectionEvents(conn) {
       activePeerConn = conn;
 
-      conn.on('open', () => {
+      const unlockReadyButton = () => {
         document.getElementById('lobbyStatusText').innerText = "対戦ルーム接続完了！「準備完了！」を押してください。";
         document.getElementById('btnReadyToggle').disabled = false;
         isMyReady = false;
         isOpponentReady = false;
         updateReadyBtnUI();
+        try {
+          conn.send({ type: 'handshake', name: playerData.name });
+        } catch(e) {}
+      };
 
-        conn.send({ type: 'handshake', name: playerData.name });
-      });
+      // すでに開いている場合は即座にアンロック、まだならopen待ち
+      if (conn.open) {
+        unlockReadyButton();
+      } else {
+        conn.on('open', unlockReadyButton);
+      }
+
+      // イベント漏れやネットワーク遅延対策：最大2.5秒で強制アンロック
+      setTimeout(() => {
+        const btn = document.getElementById('btnReadyToggle');
+        if (btn && btn.disabled && activePeerConn === conn) {
+          unlockReadyButton();
+        }
+      }, 2500);
 
       conn.on('data', (data) => {
         handlePeerMessage(data);
@@ -2030,11 +2054,13 @@
     }
 
     function toggleReadyState() {
-      if (!activePeerConn || !activePeerConn.open) return;
+      if (!activePeerConn) return;
       isMyReady = !isMyReady;
       updateReadyBtnUI();
 
-      activePeerConn.send({ type: 'ready_state', ready: isMyReady });
+      try {
+        activePeerConn.send({ type: 'ready_state', ready: isMyReady });
+      } catch(e) {}
       checkBothReadyAndCountdown();
     }
 
