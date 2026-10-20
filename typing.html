@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Firebase SDKの読み込み（絶対に失敗しない安定のリアルタイム同期用） -->
+  <!-- Firebase SDKの読み込み（ご家庭の環境でも絶対に弾かれない安定のリアルタイム同期用） -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
@@ -1052,7 +1052,7 @@
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
         <div class="panel-title">⚔️ クラウドリアルタイム道下奪還バトル</div>
-        <p class="panel-desc">お互いに「道下 奪還」タブを開き、**同じ4桁の部屋コード**（例: `1111`）を決めて入力し、「ルームに入る」を押してください。同じ部屋に入ると自動でマッチングし、3秒カウントダウン後にリアルタイム綱引きバトルが始まります！</p>
+        <p class="panel-desc">お互いに「道下 奪還」タブを開き、**同じ4桁の部屋コード**（例: `1111`）を入力して「ルームに入る」を押してください。2人揃うと自動でマッチングし、3秒のカウントダウンを経てリアルタイム綱引きバトルが始まります！</p>
 
         <div class="input-row" style="margin-bottom: 14px;">
           <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: 1111)" maxlength="4">
@@ -1729,7 +1729,7 @@
     function closeResultModal() { document.getElementById('reveal-modal').style.display = 'none'; }
 
     /* =========================================================================
-        ★ Firebase 確実接続・3秒カウントダウン対戦エンジン ★
+        ★ Firebase クラウド同期による確実対戦エンジン ★
         ========================================================================= */
     let firebaseRoomRef = null;
     let myPlayerKey = 'p_' + Math.random().toString(36).substring(2, 9);
