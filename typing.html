@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Firebase SDKの読み込み（ご家庭の環境でも絶対に弾かれない安定のリアルタイム同期用） -->
+  <!-- Firebase SDKの読み込み（リアルタイム同期・全員のランキング共有用） -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
@@ -953,7 +953,7 @@
 
   <div id="countdownOverlay">
     <div class="countdown-number" id="countdownNum">3</div>
-    <div class="countdown-label">道下奪還バトル 開始まで</div>
+    <div class="countdown-label">対戦 開始まで</div>
   </div>
 
   <header>
@@ -981,7 +981,7 @@
 
     <div class="tab-bar">
       <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
-      <div class="tab-item" id="tabBattleBtn" onclick="switchView('battle')">道下 奪還</div>
+      <div class="tab-item" id="tabBattleBtn" onclick="switchView('battle')">🔒 対戦</div>
       <div class="tab-item" id="tabLeaderboardBtn" onclick="switchView('leaderboard')">👑 ランキング</div>
       <div class="tab-item" id="tabShopBtn" onclick="switchView('shop')">ショップ</div>
       <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">称号</div>
@@ -1048,11 +1048,11 @@
       </div>
     </div>
 
-    <!-- VIEW 2: Firebaseクラウドリアルタイム対戦 -->
+    <!-- VIEW 2: 🔒 対戦 -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
-        <div class="panel-title">⚔️ クラウドリアルタイム道下奪還バトル</div>
-        <p class="panel-desc">お互いに「道下 奪還」タブを開き、**同じ4桁の部屋コード**（例: `1111`）を入力して「ルームに入る」を押してください。2人揃うと自動でマッチングし、3秒のカウントダウンを経てリアルタイム綱引きバトルが始まります！</p>
+        <div class="panel-title">⚔️ 🔒 クラウドリアルタイム対戦</div>
+        <p class="panel-desc">お互いに「🔒 対戦」タブを開き、**同じ4桁の部屋コード**（例: `1111`）を入力して「ルームに入る」を押してください。2人揃うと自動でマッチングし、3秒のカウントダウンを経てリアルタイム綱引きバトルが始まります！</p>
 
         <div class="input-row" style="margin-bottom: 14px;">
           <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: 1111)" maxlength="4">
@@ -1071,13 +1071,12 @@
       </div>
     </div>
 
-    <!-- VIEW 3: 本物のランキング -->
+    <!-- VIEW 3: 全員共通オンラインランキング -->
     <div class="tab-content" id="viewLeaderboard">
       <div class="card-panel">
-        <div class="panel-title">👑 道下タイピング 歴代ハイスコアランキング</div>
-        <p class="panel-desc">この端末で実際にプレイして記録された本物のランキングです（上位10件を自動保存）。</p>
+        <div class="panel-title">👑 全員参加！オンライン ハイスコアランキング</div>
+        <p class="panel-desc">世界中でプレイされたスコアがリアルタイムで共有される公式ランキングです（上位10名）。</p>
         <table class="ranking-table" id="rankingTableBody"></table>
-        <button class="btn-clean" style="margin-top: 14px; height: 40px; font-size: 13px; background: #94a3b8;" onclick="resetRealRanking()">ランキング記録を初期化</button>
       </div>
     </div>
 
@@ -1149,7 +1148,6 @@
     };
 
     const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
-    const REAL_RANKING_STORAGE_KEY = 'MICHISHITA_REAL_RANKING_LIST';
 
     const RANKS = [
       { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
@@ -1173,37 +1171,28 @@
       stats: { matches: 0, wins: 0, losses: 0, betrayals: 0 }
     };
 
-    let realRankings = [];
+    let globalRankings = [];
 
-    function loadRealRankings() {
-      try {
-        const raw = localStorage.getItem(REAL_RANKING_STORAGE_KEY);
-        if (raw) realRankings = JSON.parse(raw);
-        else realRankings = [];
-      } catch (e) { realRankings = []; }
+    // Firebaseから全員のランキングをリアルタイム取得
+    function initGlobalRankingSync() {
+      db.ref('global_rankings').on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        globalRankings = Object.values(data);
+        globalRankings.sort((a, b) => b.score - a.score);
+        globalRankings = globalRankings.slice(0, 10);
+        renderLeaderboard();
+      });
     }
 
-    function recordRealScore(name, score, rankTitle) {
+    function recordGlobalScore(name, score, rankTitle) {
       if (score <= 0) return;
-      loadRealRankings();
-      realRankings.push({
+      const ref = db.ref('global_rankings').push();
+      ref.set({
         name: name || "名無し道下",
         score: score,
         rank: rankTitle,
         date: new Date().toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
       });
-      realRankings.sort((a, b) => b.score - a.score);
-      realRankings = realRankings.slice(0, 10);
-      try { localStorage.setItem(REAL_RANKING_STORAGE_KEY, JSON.stringify(realRankings)); } catch (e) {}
-      renderLeaderboard();
-    }
-
-    function resetRealRanking() {
-      if (confirm("ランキングの記録を初期化しますか？")) {
-        realRankings = [];
-        localStorage.removeItem(REAL_RANKING_STORAGE_KEY);
-        renderLeaderboard();
-      }
     }
 
     function applyCustomImages() {
@@ -1241,7 +1230,6 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) playerData = Object.assign(playerData, JSON.parse(saved));
       } catch (e) {}
-      loadRealRankings();
       updateUI();
     }
 
@@ -1299,11 +1287,11 @@
       const container = document.getElementById('rankingTableBody');
       if (!container) return;
       container.innerHTML = '';
-      if (realRankings.length === 0) {
-        container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ記録がありません。<br>タイピングをプレイして記録を残しましょう！</td></tr>`;
+      if (globalRankings.length === 0) {
+        container.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 24px; color: #64748b; font-weight: 800;">まだ誰も記録を残していません。<br>タイピングをプレイしてランキングに載せよう！</td></tr>`;
         return;
       }
-      realRankings.forEach((item, index) => {
+      globalRankings.forEach((item, index) => {
         const tr = document.createElement('tr');
         const pos = index + 1;
         let medal = pos === 1 ? "🥇" : pos === 2 ? "🥈" : pos === 3 ? "🥉" : pos;
@@ -1698,7 +1686,7 @@
       }
       if (earnedRank.id > playerData.rankId) playerData.rankId = earnedRank.id;
 
-      recordRealScore(playerData.name, gameState.score, earnedRank.title);
+      recordGlobalScore(playerData.name, gameState.score, earnedRank.title);
 
       let battleVictory = false;
       if (gameState.isRealtimeBattle) {
@@ -1711,8 +1699,8 @@
       let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
       if (gameState.isRealtimeBattle) {
         msg = `相手スコア: <b>${gameState.opponentScore} 点</b><br><br>` + msg;
-        if (battleVictory) msg = `⚔️ <b>道下奪還成功！（あなたの勝利）</b><br><br>` + msg;
-        else msg = `💔 <b>道下は寝返りました…（敗北）</b><br><br>` + msg;
+        if (battleVictory) msg = `⚔️ <b>対戦勝利！（あなたの勝ち）</b><br><br>` + msg;
+        else msg = `💔 <b>対戦敗北…（相手の勝ち）</b><br><br>` + msg;
       }
       showResultModal(msg);
     }
@@ -1816,6 +1804,7 @@
       applyCustomImages();
       loadData();
       applyBackgroundTheme(0);
+      initGlobalRankingSync();
     };
   </script>
 </body>
