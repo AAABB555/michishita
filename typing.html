@@ -430,7 +430,7 @@
       text-underline-offset: 4px;
     }
 
-    /* 主役の道下（くっきりはっきり表示） */
+    /* 主役の道下（くっきり表示） */
     .michishita-popup {
       position: absolute;
       right: 14px;
@@ -443,7 +443,7 @@
       overflow: hidden;
       background: #ffffff;
       z-index: 1; 
-      opacity: 1; /* 主役なので完全にくっきり表示 */
+      opacity: 1;
       transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
     }
@@ -1208,21 +1208,46 @@
       document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
     }
 
+    // 登録された通りのローマ字で厳密に判定されるワードデータベース
     const WORD_DB = {
       0: [
-        { k: "道下", r: "mitisita" }, { k: "僕", r: "boku" }, { k: "犬", r: "inu" },
-        { k: "サボり", r: "sabori" }, { k: "黒板", r: "kokuban" }, { k: "消しゴム", r: "kesigomu" },
-        { k: "道下ファン", r: "mitisitafan" }, { k: "天才道下", r: "tensaimitisita" }
+        { k: "道下", r: "mitisita", showMichishita: true },
+        { k: "僕", r: "boku" },
+        { k: "犬", r: "inu" },
+        { k: "サボる", r: "saboru", showMichishita: true },
+        { k: "肉", r: "niku" },
+        { k: "遅刻", r: "tikoku", showMichishita: true },
+        { k: "革命", r: "kakumei" },
+        { k: "伝説", r: "dennsetu" },
+        { k: "ゲーム", r: "ge-mu", showMichishita: true },
+        { k: "帰る", r: "kaeru", showMichishita: true },
+        { k: "ご飯", r: "gohan" },
+        { k: "睡眠", r: "suimin" },
+        { k: "猫", r: "neko" },
+        { k: "寿司", r: "susi" },
+        { k: "ペン", r: "pen" },
+        { k: "皿", r: "sara" },
+        { k: "黒板", r: "kokuban" },
+        { k: "昼寝", r: "hirune" },
+        { k: "寝坊", r: "nebou", showMichishita: true },
+        { k: "天才", r: "tensai" }
       ],
       1: [
-        { k: "道下遥人", r: "mitisitaharuto" }, { k: "あの時の僕", r: "anotokinoboku" },
-        { k: "文化祭開幕", r: "bunkasaikaimaku" }, { k: "ちぎり消しゴム", r: "tigirikesigomu" }, { k: "昼休みダッシュ", r: "hiruyasumidassyu" },
-        { k: "道下の休日", r: "mitisitanokyuzitu" }, { k: "伝説の道下", r: "densetunomitisita" }
+        { k: "道下遥人", r: "mitisitaharuto", showMichishita: true },
+        { k: "", r: "" },
+        { k: "文化祭", r: "bunnkasai" },
+        { k: "ちぎり消しゴム", r: "tigirikesigomu" },
+        { k: "昼休みダッシュ", r: "hiruyasumidassyu" },
+        { k: "道下の休日", r: "mitisitanokyuzitu" },
+        { k: "伝説の道下", r: "densetunomitisita" }
       ],
       2: [
-        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" }, { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
-        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" }, { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
-        { k: "主役の道下参上", r: "syuyakunomitisitasanzyo" }, { k: "道下は今日も元気です", r: "mitisitahakyoumogenkidesu" }
+        { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" },
+        { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
+        { k: "公式道下アクリルスタンド", r: "kousikimitisitaakurirusutando" },
+        { k: "授業中にちぎった消しゴム", r: "zyugyoutyuunitigittakesigomu" },
+        { k: "主役の道下参上", r: "syuyakunomitisitasanzyo" },
+        { k: "道下は今日も元気です", r: "mitisitahakyoumogenkidesu" }
       ],
       3: [
         { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
@@ -1399,6 +1424,7 @@
       document.getElementById('gameScore').innerText = gameState.score;
     }
 
+    // 厳密な文字一致判定（nが1個か2個かなどを確実に区別する）
     const hiddenInput = document.getElementById('hiddenTypeInput');
     hiddenInput.addEventListener('input', (e) => {
       if (!gameState.isRunning || !gameState.currentWord) return;
