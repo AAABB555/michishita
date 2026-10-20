@@ -665,12 +665,6 @@
       transition: all 0.1s;
       white-space: nowrap;
     }
-    .btn-half-clean:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      background: #94a3b8;
-      box-shadow: none;
-    }
 
     .shop-grid-clean {
       display: grid;
@@ -1063,7 +1057,7 @@
 
         <div class="input-row" style="margin-bottom: 14px;">
           <input type="text" id="roomCodeInput" class="code-input-clean" placeholder="4桁の部屋コード (例: 1111)" maxlength="4">
-          <button class="btn-half-clean" id="joinRoomBtn" onclick="joinFirebaseRoom()">ルームに入る</button>
+          <button class="btn-half-clean" onclick="joinFirebaseRoom()">ルームに入る</button>
         </div>
 
         <div class="lobby-box" id="firebaseLobbyArea" style="display: none;">
@@ -1349,6 +1343,7 @@
       document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
     }
 
+    // ★ 難易度0：30個、難易度1：30個、難易度2〜6：各25個ずつに大増量！
     const WORD_DB = {
       0: [
         { k: "道下", r: "mitisita" }, { k: "僕", r: "boku" }, { k: "犬", r: "inu" },
@@ -1412,7 +1407,7 @@
         { k: "忘れ物を友達に全力で借りる", r: "wasuremonowotomodachinizenryokudekariru" },
         { k: "放課後のチャイムが鳴るまでに帰る", r: "houkagonotyaimugararumadenikaeru" },
         { k: "黒板の文字が絶妙に見えない指定席", r: "kokubannomozigazetumyounimienasiteiseki" },
-        { k: "提出期限の直전에本気出すスタイル", r: "teisyutukigennnotyokuzunihonkidasusutairu" },
+        { k: "提出期限の直前に本気出すスタイル", r: "teisyutukigennnotyokuzunihonkidasusutairu" },
         { k: "伝説のサボり王道下遥人の伝説の足跡", r: "densetunosaborioumitisitaharutonodensetuunowasiato" },
         { k: "先生の目を完全に盗んでスマホをいじる技", r: "sensenometowokanzeninusundesumahowoiijiruwaza" },
         { k: "終わらない宿題の山に涙を流す真夜中", r: "owaranasisyukudainoyaminamidaownagasumayonaka" },
@@ -1496,7 +1491,7 @@
         { k: "これぞ人類の到達点にして道下信仰の最終形態である伝説のタイピング神話", r: "korezojinruinoutoutatutenisitemitisitashinkounosaijuukeitaiarudensetunotaipingsinwa" },
         { k: "どんな困難が立ち塞がろうとも道下と一緒に明日への扉をこじ開けるのだ", r: "donnkonnaningatatisugaroutomomitisitatoissyoniasiaetnotobirawohoziakerunoda" },
         { k: "世界の真理を解き明かす鍵はすべて道下遥人のポケットの中に隠されている", r: "sekainisinriwotokiamasukagiwasubetemitisitaharutonopokettinonokusakareteiru" },
-        { k: "沈黙を破り立ち上がった道下ファンたちが起こす歴史 যেদিন的大革命の幕開け", r: "tinmokuwoyaburitatiagattamitisitafantatigiokosurekisekitidaiakakumenomakuake" },
+        { k: "沈黙を破り立ち上がった道下ファンたちが起こす歴史的大革命の幕開け", r: "tinmokuwoyaburitatiagattamitisitafantatigiokosurekisekitidaiakakumenomakuake" },
         { k: "予測不能の未来に向かって光の速さで駆け抜ける最強無敵の道下伝説", r: "yosokuhunounomiraimunikattehikarinosauadodekakenuerusaikyoumutekinomitisitadensetu" },
         { k: "絶望の淵から這い上がってきた者だけが見ることのできる頂の絶景", r: "zetubounohutigarahaiagattatamonodakegamirukotonodekiruitadakinosekkei" },
         { k: "すべての常識をひっくり返し新しい時代の扉をこじ開ける最強の挑戦者", r: "subetenojoushikiwohikkurikaesiatarusiijidainotobirawohoziakerusaikyounotysensya" },
@@ -1840,13 +1835,6 @@
       }
       saveData();
 
-      // 対戦終了後は入室ボタンを再度有効化
-      const joinBtn = document.getElementById('joinRoomBtn');
-      if (joinBtn) {
-        joinBtn.disabled = false;
-        joinBtn.innerText = 'ルームに入る';
-      }
-
       let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
       if (gameState.isRealtimeBattle) {
         msg = `相手スコア: <b>${gameState.opponentScore} 点</b><br><br>` + msg;
@@ -1878,11 +1866,6 @@
         alert("4桁の部屋コード（例: 1111）を入力してください！");
         return;
       }
-
-      // ★ボタンを「準備中・入室中」にして連打できないようにロックする
-      const joinBtn = document.getElementById('joinRoomBtn');
-      joinBtn.disabled = true;
-      joinBtn.innerText = '準備中...';
 
       document.getElementById('firebaseLobbyArea').style.display = 'block';
       document.getElementById('firebaseLobbyStatus').innerText = `【${code}】の部屋に入室中... 相手を待っています`;
@@ -1930,12 +1913,6 @@
         firebaseRoomRef = null;
       }
       document.getElementById('firebaseLobbyArea').style.display = 'none';
-
-      // キャンセル時はボタンを元に戻して再度押せるようにする
-      const joinBtn = document.getElementById('joinRoomBtn');
-      joinBtn.disabled = false;
-      joinBtn.innerText = 'ルームに入る';
-
       alert("部屋を出ました。");
     }
 
