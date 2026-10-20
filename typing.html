@@ -6,6 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- リアルタイムP2P通信用ライブラリ (サーバー不要・無料) -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -852,6 +854,73 @@
       background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(56, 189, 248, 0.2) 100%);
     }
 
+    /* カウントダウンオーバーレイ */
+    #countdownOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .countdown-number {
+      font-size: 120px;
+      font-weight: 900;
+      color: #38bdf8;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.8);
+      animation: popCount 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popCount {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .countdown-label {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-top: 16px;
+      letter-spacing: 2px;
+    }
+
+    /* 対戦ロビーボックス */
+    .lobby-box {
+      background: rgba(2, 132, 199, 0.08);
+      border: 2px dashed #0284c7;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 14px;
+    }
+    .lobby-status {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 12px;
+    }
+    .dark-header .lobby-status {
+      color: #38bdf8;
+    }
+    .btn-ready {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transition: all 0.15s;
+    }
+    .btn-ready.ready-active {
+      background: #059669;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+    }
+
     #reveal-modal {
       display: none;
       position: fixed;
@@ -911,6 +980,12 @@
 
   <canvas id="confetti-canvas"></canvas>
 
+  <!-- 3秒カウントダウンオーバーレイ -->
+  <div id="countdownOverlay">
+    <div class="countdown-number" id="countdownNum">3</div>
+    <div class="countdown-label">道下奪還バトル 開始まで</div>
+  </div>
+
   <header>
     <a href="index.html" class="header-logo">
       <span class="logo-badge">MI</span>
@@ -960,7 +1035,6 @@
         <div class="typing-status">
           <div class="status-left">
             <span>⏳ 残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
-            <!-- プレイ中のみ表示される中断ボタン -->
             <button class="btn-quit" id="btnQuitGame" onclick="quitCurrentGame()">✖ 辞める</button>
           </div>
           <span>⚡ スコア: <b class="color-orange" id="gameScore">0</b></span>
@@ -970,7 +1044,7 @@
           <div class="battle-names">
             <span id="tugPlayerName">あなた</span>
             <span id="traitorStatusText" style="color: #0284c7;">均衡状態</span>
-            <span id="tugRivalName">ライバル</span>
+            <span id="tugRivalName">対戦相手</span>
           </div>
           <div class="battle-track">
             <div class="battle-fill" id="tugBarProgress"></div>
@@ -1003,22 +1077,35 @@
       </div>
     </div>
 
-    <!-- VIEW 2: 道下奪還バトル -->
+    <!-- VIEW 2: 道下奪還バトル (リアルタイム通信招待対応) -->
     <div class="tab-content" id="viewBattle">
       <div class="card-panel">
-        <div class="panel-title">⚔️ 友達の対戦コードで道下を奪還</div>
-        <p class="panel-desc">友達から教えてもらった4桁のコードを入力して勝負！打鍵ペースが上回ると道下がこちらにすり寄り、ミスで遅れると相手に寝返ります。</p>
-        <div class="input-row">
-          <input type="text" id="battleCodeInput" class="code-input-clean" placeholder="例: 7K9X" maxlength="4">
-          <button class="btn-half-clean" onclick="startBattleFromCode()">対戦開始</button>
-        </div>
-      </div>
+        <div class="panel-title">⚔️ リアルタイム道下奪還バトル</div>
+        <p class="panel-desc">お互いにサイトを開き、相手の対戦IDを入力して招待！承諾後、お互いが「準備OK」を押すと3秒後に同時にバトルが始まります。</p>
 
-      <div class="card-panel">
-        <div class="panel-title">📜 あなたの最新4桁対戦コード</div>
-        <p class="panel-desc">ソロプレイ終了後に自動発行されます。友達にこの4文字を教えて勝負しましょう！</p>
-        <div class="code-box-display" id="myLatestCodeDisplay">----</div>
-        <button class="btn-clean" style="margin-top: 14px; height: 44px; font-size: 14px;" onclick="copyChallengeCode()">📋 4桁コードをコピー</button>
+        <!-- 自分の対戦ID -->
+        <div style="background: rgba(2, 132, 199, 0.06); padding: 12px 16px; border-radius: 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 11px; font-weight: 800; color: #64748b;">あなたの対戦ID (友達に教えて招待してもらう):</div>
+            <div style="font-size: 20px; font-weight: 900; letter-spacing: 2px; color: #0284c7;" id="myPeerIdText">接続中...</div>
+          </div>
+          <button class="btn-half-clean" style="padding: 6px 14px; font-size: 12px;" onclick="copyMyPeerId()">IDコピー</button>
+        </div>
+
+        <!-- 相手を招待 -->
+        <div class="input-row">
+          <input type="text" id="targetPeerIdInput" class="code-input-clean" placeholder="相手の対戦IDを入力">
+          <button class="btn-half-clean" onclick="sendBattleInvite()">対戦を申し込む</button>
+        </div>
+
+        <!-- マッチング待機・ロビー -->
+        <div class="lobby-box" id="battleLobbyArea" style="display: none;">
+          <div class="lobby-status" id="lobbyStatusText">相手の承諾を待っています...</div>
+          <div style="display: flex; justify-content: center; gap: 12px;">
+            <button class="btn-ready" id="btnReadyToggle" onclick="toggleReadyState()" disabled>準備完了！</button>
+            <button class="btn-half-clean" style="background: #64748b;" onclick="cancelBattleRoom()">切断・キャンセル</button>
+          </div>
+        </div>
       </div>
 
       <div class="card-panel">
@@ -1027,14 +1114,12 @@
       </div>
     </div>
 
-    <!-- VIEW 3: 総合ランキング (新設) -->
+    <!-- VIEW 3: 総合ランキング -->
     <div class="tab-content" id="viewLeaderboard">
       <div class="card-panel">
         <div class="panel-title">👑 道下タイピング 総合ランキング</div>
         <p class="panel-desc">全国の歴代道下ランカーの記録です。あなたの最高スコアも自動で反映されます！</p>
-        <table class="ranking-table" id="rankingTableBody">
-          <!-- JSで自動描画 -->
-        </table>
+        <table class="ranking-table" id="rankingTableBody"></table>
       </div>
     </div>
 
@@ -1116,7 +1201,6 @@
       { id: 9, title: "革命道下", minScore: 2800, desc: "最高到達点。1週間の鍛錬の果てに秩序を破壊した覇者。" }
     ];
 
-    /* 総合ランキングの初期デフォルトランカー */
     const DEFAULT_LEADERBOARD = [
       { name: "道下遥人(本人)", rank: "革命道下", score: 3240 },
       { name: "伝説の消しゴム使い", rank: "レジェンド級道下", score: 2480 },
@@ -1140,8 +1224,7 @@
         wins: 0,
         losses: 0,
         betrayals: 0
-      },
-      latestChallengeCode: ""
+      }
     };
 
     function applyCustomImages() {
@@ -1189,9 +1272,6 @@
           if (!playerData.inventory.time && parsed.inventory && parsed.inventory.blind) {
             playerData.inventory.time = parsed.inventory.blind;
           }
-          if (playerData.latestChallengeCode && playerData.latestChallengeCode.length > 4) {
-            playerData.latestChallengeCode = "";
-          }
         }
       } catch (e) {}
       updateUI();
@@ -1226,10 +1306,6 @@
 
       document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
 
-      if (playerData.latestChallengeCode && playerData.latestChallengeCode.length === 4) {
-        document.getElementById('myLatestCodeDisplay').innerText = playerData.latestChallengeCode;
-      }
-
       const hellBtn = document.getElementById('diffHellBtn');
       if (playerData.rankId >= 6) {
         hellBtn.innerText = "地獄";
@@ -1262,7 +1338,6 @@
       });
     }
 
-    /* 総合ランキングの描画（プレイヤーのハイスコアも組み込み） */
     function renderLeaderboard() {
       const container = document.getElementById('rankingTableBody');
       if (!container) return;
@@ -1279,7 +1354,6 @@
         });
       }
 
-      // スコア降順ソート
       list.sort((a, b) => b.score - a.score);
 
       list.forEach((item, index) => {
@@ -1398,16 +1472,16 @@
 
     let gameState = {
       isRunning: false,
-      isBattle: false,
+      isRealtimeBattle: false,
       timeLeft: 60,
       timerId: null,
       score: 0,
+      opponentScore: 0,
       totalStrokes: 0,
       missCount: 0,
       currentWord: null,
       typedIndex: 0,
       agentActive: false,
-      rivalCheckpoints: [],
       rivalName: "ライバル",
       tugBalance: 0
     };
@@ -1431,12 +1505,14 @@
       }
     }
 
-    function startGame(isBattle = false, rivalData = null) {
+    /* ゲーム開始（ソロ or リアルタイム対戦） */
+    function startGame(isRealtime = false) {
       if (gameState.isRunning) return;
 
       gameState.isRunning = true;
-      gameState.isBattle = isBattle;
+      gameState.isRealtimeBattle = isRealtime;
       gameState.score = 0;
+      gameState.opponentScore = 0;
       gameState.totalStrokes = 0;
       gameState.missCount = 0;
       gameState.typedIndex = 0;
@@ -1445,13 +1521,11 @@
       gameState.timeLeft = 60;
 
       document.getElementById('mainStartBtn').style.display = 'none';
-      document.getElementById('btnQuitGame').style.display = 'inline-block'; // 辞めるボタンを表示
+      document.getElementById('btnQuitGame').style.display = 'inline-block';
 
       const tugBar = document.getElementById('battleTugBar');
-      if (isBattle && rivalData) {
+      if (isRealtime) {
         tugBar.style.display = 'block';
-        gameState.rivalName = rivalData.name || "ライバル";
-        gameState.rivalCheckpoints = rivalData.checkpoints || [];
         document.getElementById('tugRivalName').innerText = gameState.rivalName;
         updateTugMeter(0);
       } else {
@@ -1471,7 +1545,7 @@
       saveData();
     }
 
-    /* 途中リタイア（辞める）関数 */
+    /* 途中リタイア（辞める） */
     function quitCurrentGame() {
       if (!gameState.isRunning) return;
       if (confirm("タイピングを中断して辞めますか？（現在のスコアは破棄されます）")) {
@@ -1479,29 +1553,33 @@
         gameState.timerId = null;
         gameState.isRunning = false;
 
-        document.getElementById('hiddenTypeInput').disabled = true;
-        document.getElementById('hiddenTypeInput').value = '';
-        document.getElementById('mainStartBtn').style.display = 'block';
-        document.getElementById('mainStartBtn').innerText = 'ゲームスタート (SPACE)';
-        document.getElementById('btnQuitGame').style.display = 'none';
-        document.getElementById('michishitaPopup').classList.remove('active');
+        if (gameState.isRealtimeBattle && activePeerConn && activePeerConn.open) {
+          activePeerConn.send({ type: 'opponent_quit' });
+        }
 
-        document.getElementById('displayKanji').innerText = 'スタートボタンを押してね';
-        document.getElementById('displayTypedRoma').innerText = '';
-        document.getElementById('displayUntypedRoma').innerText = 'press start to play';
-        document.getElementById('gameTimer').innerText = '60';
-        document.getElementById('gameScore').innerText = '0';
-        document.getElementById('battleTugBar').style.display = 'none';
+        resetPlayUI();
       }
+    }
+
+    function resetPlayUI() {
+      document.getElementById('hiddenTypeInput').disabled = true;
+      document.getElementById('hiddenTypeInput').value = '';
+      document.getElementById('mainStartBtn').style.display = 'block';
+      document.getElementById('mainStartBtn').innerText = 'ゲームスタート (SPACE)';
+      document.getElementById('btnQuitGame').style.display = 'none';
+      document.getElementById('michishitaPopup').classList.remove('active');
+
+      document.getElementById('displayKanji').innerText = 'スタートボタンを押してね';
+      document.getElementById('displayTypedRoma').innerText = '';
+      document.getElementById('displayUntypedRoma').innerText = 'press start to play';
+      document.getElementById('gameTimer').innerText = '60';
+      document.getElementById('gameScore').innerText = '0';
+      document.getElementById('battleTugBar').style.display = 'none';
     }
 
     function gameTick() {
       gameState.timeLeft--;
       document.getElementById('gameTimer').innerText = gameState.timeLeft;
-
-      if (gameState.isBattle) {
-        checkTugOfWar();
-      }
 
       if (gameState.timeLeft <= 0) {
         endGame();
@@ -1555,10 +1633,17 @@
         gameState.totalStrokes++;
         gameState.score += 10;
 
+        if (gameState.isRealtimeBattle && activePeerConn && activePeerConn.open) {
+          activePeerConn.send({ type: 'score_update', score: gameState.score });
+        }
+
         if (gameState.typedIndex >= gameState.currentWord.r.length) {
           soundCorrect();
           const wordBonus = gameState.currentWord.r.length * 5;
           gameState.score += wordBonus;
+          if (gameState.isRealtimeBattle && activePeerConn && activePeerConn.open) {
+            activePeerConn.send({ type: 'score_update', score: gameState.score });
+          }
           nextPrompt();
         } else {
           updatePromptDisplay();
@@ -1567,9 +1652,13 @@
         soundMiss();
         gameState.missCount++;
         gameState.score = Math.max(0, gameState.score - 5);
+        if (gameState.isRealtimeBattle && activePeerConn && activePeerConn.open) {
+          activePeerConn.send({ type: 'score_update', score: gameState.score });
+        }
       }
 
       updateGameStatsUI();
+      if (gameState.isRealtimeBattle) recalculateRealtimeTug();
     });
 
     window.addEventListener('keydown', (e) => {
@@ -1584,18 +1673,9 @@
       }
     });
 
-    function checkTugOfWar() {
-      const elapsed = 60 - gameState.timeLeft;
-      let targetRivalScore = 0;
-      if (gameState.rivalCheckpoints.length > 0) {
-        const factor = Math.min(1, elapsed / 60);
-        const finalRival = gameState.rivalCheckpoints[gameState.rivalCheckpoints.length - 1];
-        targetRivalScore = Math.round(finalRival * factor);
-      } else {
-        targetRivalScore = elapsed * 15;
-      }
-
-      const diff = gameState.score - targetRivalScore;
+    /* リアルタイム綱引き計算 */
+    function recalculateRealtimeTug() {
+      const diff = gameState.score - gameState.opponentScore;
       let balance = Math.max(-50, Math.min(50, diff / 4));
       const oldBalance = gameState.tugBalance;
       gameState.tugBalance = balance;
@@ -1646,6 +1726,9 @@
           gameState.totalStrokes++;
           gameState.score += 15;
           soundType();
+          if (gameState.isRealtimeBattle && activePeerConn && activePeerConn.open) {
+            activePeerConn.send({ type: 'score_update', score: gameState.score });
+          }
           if (gameState.typedIndex >= gameState.currentWord.r.length) {
             soundCorrect();
             nextPrompt();
@@ -1653,6 +1736,7 @@
             updatePromptDisplay();
           }
           updateGameStatsUI();
+          if (gameState.isRealtimeBattle) recalculateRealtimeTug();
         }, 120);
 
         setTimeout(() => {
@@ -1691,6 +1775,7 @@
       clearInterval(gameState.timerId);
       gameState.timerId = null;
       gameState.isRunning = false;
+
       document.getElementById('hiddenTypeInput').disabled = true;
       document.getElementById('mainStartBtn').style.display = 'block';
       document.getElementById('mainStartBtn').innerText = 'もう一度あそぶ (SPACE)';
@@ -1719,9 +1804,9 @@
       }
 
       let battleVictory = false;
-      if (gameState.isBattle) {
+      if (gameState.isRealtimeBattle) {
         playerData.stats.matches++;
-        if (gameState.tugBalance >= 0) {
+        if (gameState.score >= gameState.opponentScore) {
           playerData.stats.wins++;
           battleVictory = true;
         } else {
@@ -1729,16 +1814,16 @@
         }
       }
 
-      generate4DigitCode(gameState.score);
       saveData();
 
-      let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b><br><br>あなたの対戦コード: <b style="color: #0284c7; font-size: 18px; letter-spacing: 2px;">${playerData.latestChallengeCode}</b>`;
+      let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
 
-      if (gameState.isBattle) {
+      if (gameState.isRealtimeBattle) {
+        msg = `相手スコア: <b>${gameState.opponentScore} 点</b><br><br>` + msg;
         if (battleVictory) {
-          msg = `⚔️ <b>道下奪還成功！（あなたの勝利）</b><br>${gameState.rivalName} から道下を取り戻しました！<br><br>` + msg;
+          msg = `⚔️ <b>道下奪還成功！（あなたの勝利！）</b><br>${gameState.rivalName} から道下を取り戻しました！<br><br>` + msg;
         } else {
-          msg = `💔 <b>道下は寝返りました…（敗北）</b><br>道下は ${gameState.rivalName} の側へつきました。<br><br>` + msg;
+          msg = `💔 <b>道下は寝返りました…（あなたの敗北）</b><br>道下は ${gameState.rivalName} の側へつきました。<br><br>` + msg;
         }
       } else {
         if (rankUp) {
@@ -1770,6 +1855,233 @@
       document.getElementById('reveal-modal').style.display = 'none';
     }
 
-    function encode4Digit(score, diff) {
+    /* =========================================================================
+       ★ リアルタイム通信対戦エンジン (PeerJS P2P) ★
+       ========================================================================= */
+    let peer = null;
+    let myPeerId = "";
+    let activePeerConn = null;
+    let isMyReady = false;
+    let isOpponentReady = false;
+
+    function generateShortId() {
       const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-      const s = Math.min(Math.max(0, score),
+      let res = "";
+      for (let i = 0; i < 4; i++) {
+        res += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return res;
+    }
+
+    function initPeerNetwork() {
+      const customShort = "MICH-" + generateShortId();
+      peer = new Peer(customShort, {
+        debug: 1
+      });
+
+      peer.on('open', (id) => {
+        myPeerId = id;
+        const displayEl = document.getElementById('myPeerIdText');
+        if (displayEl) displayEl.innerText = id;
+      });
+
+      peer.on('error', (err) => {
+        // 重複等で失敗した場合は再生成
+        if (err.type === 'unavailable-id') {
+          initPeerNetwork();
+        }
+      });
+
+      // 相手からの接続・招待を受信
+      peer.on('connection', (conn) => {
+        setupIncomingConnection(conn);
+      });
+    }
+
+    function copyMyPeerId() {
+      if (!myPeerId) return;
+      navigator.clipboard.writeText(myPeerId).then(() => {
+        alert("あなたの対戦ID【 " + myPeerId + " 】をコピーしました！友達に教えてください。");
+      });
+    }
+
+    /* 招待を送る側 */
+    function sendBattleInvite() {
+      const targetId = document.getElementById('targetPeerIdInput').value.trim().toUpperCase();
+      if (!targetId) {
+        alert("相手の対戦IDを入力してください。");
+        return;
+      }
+      if (targetId === myPeerId) {
+        alert("自分自身を招待することはできません！");
+        return;
+      }
+
+      document.getElementById('battleLobbyArea').style.display = 'block';
+      document.getElementById('lobbyStatusText').innerText = `${targetId} に招待を送信中...`;
+
+      const conn = peer.connect(targetId, {
+        metadata: { senderName: playerData.name }
+      });
+
+      bindConnectionEvents(conn);
+    }
+
+    /* 招待を受け取る側 */
+    function setupIncomingConnection(conn) {
+      const inviter = conn.metadata && conn.metadata.senderName ? conn.metadata.senderName : "誰か";
+      const accept = confirm(`【対戦招待】\n「${inviter}」から道下タイピングの対戦申し込みが届きました！\n対戦を承諾しますか？`);
+
+      if (!accept) {
+        conn.on('open', () => {
+          conn.send({ type: 'invite_rejected' });
+          conn.close();
+        });
+        return;
+      }
+
+      switchView('battle');
+      document.getElementById('battleLobbyArea').style.display = 'block';
+      document.getElementById('lobbyStatusText').innerText = `「${inviter}」と接続中...`;
+
+      bindConnectionEvents(conn);
+    }
+
+    function bindConnectionEvents(conn) {
+      activePeerConn = conn;
+
+      conn.on('open', () => {
+        document.getElementById('lobbyStatusText').innerText = "対戦ルーム接続完了！準備OKを押してください。";
+        document.getElementById('btnReadyToggle').disabled = false;
+        isMyReady = false;
+        isOpponentReady = false;
+        updateReadyBtnUI();
+
+        // 接続完了通知とお互いの名前を送信
+        conn.send({ type: 'handshake', name: playerData.name });
+      });
+
+      conn.on('data', (data) => {
+        handlePeerMessage(data);
+      });
+
+      conn.on('close', () => {
+        alert("相手との対戦接続が切れました。");
+        cancelBattleRoom();
+      });
+    }
+
+    function handlePeerMessage(data) {
+      if (data.type === 'invite_rejected') {
+        alert("相手に対戦招待を断られました。");
+        cancelBattleRoom();
+      } else if (data.type === 'handshake') {
+        gameState.rivalName = data.name || "ライバル";
+      } else if (data.type === 'ready_state') {
+        isOpponentReady = data.ready;
+        if (isOpponentReady) {
+          document.getElementById('lobbyStatusText').innerText = `相手が準備完了しました！あなたも準備OKを押してください。`;
+        } else {
+          document.getElementById('lobbyStatusText').innerText = `対戦相手が準備を解除しました。`;
+        }
+        checkBothReadyAndCountdown();
+      } else if (data.type === 'score_update') {
+        gameState.opponentScore = data.score;
+        if (gameState.isRealtimeBattle) {
+          recalculateRealtimeTug();
+        }
+      } else if (data.type === 'opponent_quit') {
+        alert("対戦相手が途中でリタイアしました！あなたの不戦勝です。");
+        endGame();
+      }
+    }
+
+    function toggleReadyState() {
+      if (!activePeerConn || !activePeerConn.open) return;
+      isMyReady = !isMyReady;
+      updateReadyBtnUI();
+
+      activePeerConn.send({ type: 'ready_state', ready: isMyReady });
+      checkBothReadyAndCountdown();
+    }
+
+    function updateReadyBtnUI() {
+      const btn = document.getElementById('btnReadyToggle');
+      if (isMyReady) {
+        btn.innerText = "準備完了！(待機中)";
+        btn.classList.add('ready-active');
+      } else {
+        btn.innerText = "準備完了！";
+        btn.classList.remove('ready-active');
+      }
+    }
+
+    function checkBothReadyAndCountdown() {
+      if (isMyReady && isOpponentReady) {
+        document.getElementById('lobbyStatusText').innerText = "お互い準備完了！まもなく開始します！";
+        startCountdown();
+      }
+    }
+
+    /* 3秒カウントダウン後にゲームスタート */
+    function startCountdown() {
+      const overlay = document.getElementById('countdownOverlay');
+      const numEl = document.getElementById('countdownNum');
+      overlay.style.display = 'flex';
+
+      let count = 3;
+      numEl.innerText = count;
+      soundFanfare();
+
+      const timer = setInterval(() => {
+        count--;
+        if (count > 0) {
+          numEl.innerText = count;
+          soundType();
+        } else {
+          clearInterval(timer);
+          overlay.style.display = 'none';
+          switchView('play');
+          selectDifficulty(2); // 対戦は公平な「ふつう」に自動設定
+          startGame(true);
+        }
+      }, 1000);
+    }
+
+    function cancelBattleRoom() {
+      if (activePeerConn) {
+        try { activePeerConn.close(); } catch (e) {}
+        activePeerConn = null;
+      }
+      isMyReady = false;
+      isOpponentReady = false;
+      document.getElementById('battleLobbyArea').style.display = 'none';
+      document.getElementById('btnReadyToggle').disabled = true;
+      updateReadyBtnUI();
+    }
+
+    function switchView(view) {
+      const views = ['play', 'battle', 'leaderboard', 'shop', 'profile'];
+      views.forEach(v => {
+        const section = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        const tabBtn = document.getElementById(`tab${v.charAt(0).toUpperCase() + v.slice(1)}Btn`);
+        if (v === view) {
+          section.classList.add('active');
+          tabBtn.classList.add('active');
+        } else {
+          section.classList.remove('active');
+          tabBtn.classList.remove('active');
+        }
+      });
+      updateUI();
+    }
+
+    window.onload = function() {
+      applyCustomImages();
+      loadData();
+      applyBackgroundTheme(0);
+      initPeerNetwork();
+    };
+  </script>
+</body>
+</html>
