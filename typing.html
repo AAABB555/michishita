@@ -4,36 +4,499 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>道下打 (Michishita-Uchi) - 公式タイピング</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>道下タイピング - 道下ファンクラブ公式特設</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700;800&family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap');
-
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
 
     body {
-      font-family: 'M PLUS Rounded 1c', -apple-system, sans-serif;
-      background: radial-gradient(circle at 50% 20%, #0f172a 0%, #020617 100%);
-      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      background-color: #f4f7f9;
+      color: #333333;
+      padding-bottom: 60px;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    .font-mono-code {
-      font-family: 'JetBrains Mono', 'Courier New', monospace;
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2000;
     }
 
-    .font-arcade {
-      font-family: 'Chakra Petch', sans-serif;
+    /* ヘッダー */
+    header {
+      background: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e1e8ed;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      font-weight: 800;
+      color: #1e293b;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-family: "Impact", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      font-style: italic;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.35);
+      letter-spacing: 0.5px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sound-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #475569;
+      font-weight: 700;
+    }
+    .btn-return-home {
+      background: #f1f5f9;
+      color: #0284c7;
+      border: 1px solid #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    /* クソうざい道下回転アニメーション (左右の角を軸に45度傾く) */
-    @keyframes michishitaWobble {
+    /* メインコンテナ */
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 15px rgba(0,0,0,0.04);
+    }
+
+    /* ヒーローバナー */
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: #000;
+      overflow: hidden;
+    }
+    .slider-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .badge-campaign {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .badge-blue {
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .badge-white {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      font-size: 15px;
+      font-weight: 900;
+      padding: 5px 12px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+
+    /* キャッチコピー */
+    .copy-section {
+      text-align: center;
+      padding: 20px 20px 14px;
+    }
+    .copy-main {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 6px;
+      color: #1e293b;
+    }
+    .copy-main .highlight {
+      color: #0284c7;
+    }
+    .copy-sub {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    /* プレイヤー情報バー */
+    .profile-bar {
+      margin: 0 20px 18px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .profile-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+    .profile-name-input {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 13px;
+      font-weight: 800;
+      width: 95px;
+      color: #0284c7;
+      background: #ffffff;
+      outline: none;
+    }
+    .rank-chip {
+      background: #e0f2fe;
+      color: #0284c7;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+    .coin-chip {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #64748b;
+    }
+    .coin-chip b {
+      color: #0284c7;
+    }
+
+    /* 4連タブバー */
+    .tab-bar {
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+      margin: 0 20px 20px;
+    }
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #64748b;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .tab-item.active {
+      color: #0284c7;
+    }
+    .tab-item.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 3px;
+      background: #0284c7;
+      border-radius: 2px;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 0 20px 40px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* 難易度ピル */
+    .diff-group {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 14px;
+      padding-bottom: 4px;
+    }
+    .diff-group::-webkit-scrollbar {
+      display: none;
+    }
+    .diff-btn {
+      flex: 0 0 auto;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+    .diff-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+    }
+
+    /* タイピングカード */
+    .typing-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+      position: relative;
+    }
+    .typing-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #64748b;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .color-blue {
+      color: #0284c7;
+      font-size: 16px;
+    }
+    .color-orange {
+      color: #ea580c;
+      font-size: 16px;
+    }
+
+    /* 綱引きメーター（対戦時） */
+    .battle-bar-wrap {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .battle-names {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .battle-track {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      position: relative;
+    }
+    .battle-fill {
+      height: 100%;
+      width: 50%;
+      background: #0284c7;
+      border-radius: 4px;
+      transition: width 0.25s ease;
+    }
+    .battle-marker {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #0284c7;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: left 0.25s ease;
+    }
+    .battle-marker img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* お題テキスト */
+    .word-area {
+      text-align: center;
+      margin-bottom: 16px;
+      min-height: 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .word-kanji {
+      font-size: 20px;
+      font-weight: 900;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .word-roma {
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .typed-char {
+      color: #0284c7;
+    }
+    .untyped-char {
+      color: #94a3b8;
+    }
+
+    /* 入力フィールド */
+    .typing-input {
+      width: 100%;
+      height: 46px;
+      border-radius: 23px;
+      border: 2px solid #0284c7;
+      outline: none;
+      text-align: center;
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      box-shadow: 0 3px 8px rgba(2, 132, 199, 0.15);
+      margin-bottom: 12px;
+    }
+    .typing-input:disabled {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      color: #94a3b8;
+      box-shadow: none;
+    }
+
+    /* ボタン類 */
+    .btn-clean {
+      width: 100%;
+      height: 46px;
+      border-radius: 23px;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn-clean:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
+    /* アイテム使用枠 */
+    .powerup-strip {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .powerup-btn {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 7px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .powerup-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* クソうざい道下回転アニメーション (左右下角を軸に45度傾く) */
+    .obstacle-zone {
+      position: relative;
+      width: 100%;
+      height: 110px;
+      margin-top: 10px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .wobble-michishita {
+      width: 85px;
+      height: 85px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 2px solid #0284c7;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: none;
+    }
+    .wobble-michishita img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .wobble-michishita.active {
+      display: block;
+      animation: cornerWobble 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    }
+    .wobble-michishita.fast {
+      animation-duration: 1.4s !important;
+    }
+    .wobble-michishita.insane {
+      animation-duration: 0.85s !important;
+    }
+    @keyframes cornerWobble {
       0% {
         transform-origin: bottom left;
         transform: rotate(0deg);
@@ -64,417 +527,423 @@
       }
     }
 
-    .annoying-michishita {
-      animation: michishitaWobble 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    .taunt-bubble {
+      position: absolute;
+      top: 4px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      color: #0f172a;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      display: none;
     }
 
-    .annoying-michishita.fast {
-      animation-duration: 1.4s !important;
+    /* 対戦セクション */
+    .card-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .panel-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+    .panel-desc {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .code-input-clean {
+      flex: 1;
+      height: 40px;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 0 14px;
+      font-family: monospace;
+      font-size: 13px;
+      outline: none;
+    }
+    .btn-half-clean {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 0 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .code-box-display {
+      background: #f8fafc;
+      border: 1px dashed #0284c7;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      user-select: all;
     }
 
-    .annoying-michishita.insane {
-      animation-duration: 0.85s !important;
+    /* ショップカード（本館スタイル） */
+    .shop-grid-clean {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 10px;
+    }
+    .shop-card-clean {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .shop-card-icon {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .shop-card-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .shop-card-desc {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 10px;
+      line-height: 1.35;
+      flex-grow: 1;
+    }
+    .shop-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+    }
+    .shop-card-price {
+      font-size: 13px;
+      font-weight: 900;
+      color: #0284c7;
+    }
+    .btn-buy-chip {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
     }
 
-    .neon-border {
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 15px rgba(56, 189, 248, 0.1);
+    /* 称号リスト */
+    .rank-tier-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tier-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+    }
+    .tier-item.is-current {
+      border-color: #0284c7;
+      background: #e0f2fe;
+      font-weight: 800;
+    }
+    .tier-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tier-num {
+      font-weight: 900;
+      color: #0284c7;
+      width: 18px;
+    }
+    .tier-pts {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 700;
     }
 
-    .neon-gold {
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.35);
+    /* モーダル */
+    #reveal-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-
-    /* カスタムスクロールバー */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    .reveal-content {
+      background: #ffffff;
+      max-width: 380px;
+      width: 100%;
+      border-radius: 20px;
+      padding: 28px 22px;
+      text-align: center;
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    ::-webkit-scrollbar-track {
+    @keyframes pop {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .reveal-title {
+      font-size: 21px;
+      font-weight: 900;
+      color: #0284c7;
+      margin-bottom: 10px;
+    }
+    .reveal-desc {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #475569;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+    .btn-modal-close {
       background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 3px;
-    }
-
-    /* パルス演出 */
-    @keyframes traitorPulse {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px #ef4444); }
-      50% { transform: scale(1.15); filter: drop-shadow(0 0 20px #dc2626); }
-    }
-    .traitor-alert {
-      animation: traitorPulse 0.4s ease infinite;
+      color: #ffffff;
+      padding: 11px 26px;
+      border-radius: 22px;
+      border: none;
+      font-weight: 800;
+      font-size: 13.5px;
+      cursor: pointer;
     }
   </style>
 </head>
-<body class="p-2 sm:p-4 flex flex-col items-center justify-between min-h-screen">
+<body>
 
-  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[100]"></canvas>
+  <canvas id="confetti-canvas"></canvas>
 
-  <!-- トップバー (ナビゲーション・音量・ステータス) -->
-  <header class="w-full max-w-4xl flex items-center justify-between bg-slate-900/90 border border-slate-700/80 rounded-2xl px-4 py-2.5 backdrop-blur-md shadow-xl mb-3">
-    <div class="flex items-center gap-3">
-      <a href="index.html" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-sky-400 border border-slate-600 transition">
-        <span>← 本館</span>
+  <div class="container">
+    <!-- ヘッダー -->
+    <header>
+      <a href="index.html" class="header-logo">
+        <span class="logo-badge">MI</span>
+        <span>道下ファンクラブ</span>
       </a>
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-red-600 font-extrabold text-white text-sm font-arcade shadow-md shadow-amber-500/20">道</span>
-        <span class="font-extrabold text-lg sm:text-xl tracking-tight text-white hidden sm:inline">道下打 <span class="text-xs text-sky-400 font-arcade">v2.0</span></span>
+      <div class="header-actions">
+        <button id="soundToggleBtn" onclick="toggleSound()" class="sound-btn">🔊 音声</button>
+        <a href="index.html" class="btn-return-home">← 本館</a>
+      </div>
+    </header>
+
+    <!-- ヒーローバナー -->
+    <div class="slider-container">
+      <div class="badge-campaign">
+        <span class="badge-blue">道下遥人</span>
+        <span class="badge-white">道下タイピング</span>
+      </div>
+      <img src="m3.jpg" alt="道下タイピング">
+    </div>
+
+    <!-- キャッチコピー -->
+    <div class="copy-section">
+      <div class="copy-main">
+        未来ある<br>
+        <span class="highlight">道下の一歩</span>に。
+      </div>
+      <p class="copy-sub">道下に出来ることなら誰でも出来る。</p>
+    </div>
+
+    <!-- プロフィールバー -->
+    <div class="profile-bar">
+      <div class="profile-left">
+        <span>名義:</span>
+        <input type="text" id="playerNameInput" class="profile-name-input" value="道下ファン" maxlength="10" onchange="updatePlayerName(this.value)">
+        <span>殿</span>
+        <span class="rank-chip" id="playerRankBadge">道下以下</span>
+      </div>
+      <div class="coin-chip">
+        所持: <b id="playerCoinsText">0枚</b>
       </div>
     </div>
 
-    <!-- プレイヤープロフ情報サマリー -->
-    <div class="flex items-center gap-3 text-xs sm:text-sm">
-      <div class="flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/30 px-2.5 py-1 rounded-xl text-amber-300 font-bold font-arcade">
-        <span>🪙</span>
-        <span id="headerCoins">0</span>
-      </div>
-      <div class="flex items-center gap-1.5 bg-sky-950/40 border border-sky-500/30 px-2.5 py-1 rounded-xl text-sky-300 font-bold">
-        <span>🎖️</span>
-        <span id="headerRankTitle" class="truncate max-w-[90px] sm:max-w-none">道下以下</span>
-      </div>
-      <button id="soundToggleBtn" onclick="toggleSound()" class="w-8 h-8 flex items-center justify-center bg-slate-800 border border-slate-700 rounded-xl text-base hover:bg-slate-700 transition">
-        🔊
-      </button>
+    <!-- 4連タブバー -->
+    <div class="tab-bar">
+      <div class="tab-item active" id="tabPlayBtn" onclick="switchView('play')">タイピング</div>
+      <div class="tab-item" id="tabBattleBtn" onclick="switchView('battle')">道下 奪還</div>
+      <div class="tab-item" id="tabShopBtn" onclick="switchView('shop')">道下 ショップ</div>
+      <div class="tab-item" id="tabProfileBtn" onclick="switchView('profile')">道下 称号</div>
     </div>
-  </header>
 
-  <!-- メインコンテナ -->
-  <main class="w-full max-w-4xl bg-slate-900/70 border border-slate-800 rounded-3xl p-3 sm:p-6 backdrop-blur-md shadow-2xl flex-grow flex flex-col justify-between relative overflow-hidden">
-
-    <!-- ナビゲーションタブ -->
-    <nav class="flex items-center justify-center gap-2 mb-4 border-b border-slate-800 pb-3">
-      <button onclick="switchView('play')" id="tabPlayBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition bg-sky-500 text-white shadow-lg shadow-sky-500/25">
-        ⌨️ ソロプレイ
-      </button>
-      <button onclick="switchView('battle')" id="tabBattleBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800">
-        ⚔️ 道下奪還バトル
-      </button>
-      <button onclick="switchView('shop')" id="tabShopBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800">
-        🏪 道下ショップ
-      </button>
-      <button onclick="switchView('profile')" id="tabProfileBtn" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800">
-        👤 うでまえ・記録
-      </button>
-    </nav>
-
-    <!-- VIEW 1: ソロプレイ / ゲーム画面 -->
-    <section id="viewPlay" class="flex-grow flex flex-col justify-between">
-      <!-- 難易度選択バー (ゲーム非開始時) -->
-      <div id="difficultySelector" class="grid grid-cols-3 sm:grid-cols-7 gap-1.5 mb-3">
-        <button onclick="selectDifficulty(0)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-sky-500/20 border-sky-400 text-sky-300">クソ簡単</button>
-        <button onclick="selectDifficulty(1)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">簡単</button>
-        <button onclick="selectDifficulty(2)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">ふつう</button>
-        <button onclick="selectDifficulty(3)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">難しい</button>
-        <button onclick="selectDifficulty(4)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">激ムズ</button>
-        <button onclick="selectDifficulty(5)" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400">悪夢</button>
-        <button onclick="selectDifficulty(6)" id="diffHellBtn" class="diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-500 col-span-3 sm:col-span-1">🔒 地獄</button>
+    <!-- VIEW 1: タイピング -->
+    <div class="tab-content active" id="viewPlay">
+      <div class="diff-group">
+        <button class="diff-btn active" id="diffBtn0" onclick="selectDifficulty(0)">クソ簡単</button>
+        <button class="diff-btn" id="diffBtn1" onclick="selectDifficulty(1)">簡単</button>
+        <button class="diff-btn" id="diffBtn2" onclick="selectDifficulty(2)">ふつう</button>
+        <button class="diff-btn" id="diffBtn3" onclick="selectDifficulty(3)">難しい</button>
+        <button class="diff-btn" id="diffBtn4" onclick="selectDifficulty(4)">激ムズ</button>
+        <button class="diff-btn" id="diffBtn5" onclick="selectDifficulty(5)">悪夢</button>
+        <button class="diff-btn" id="diffHellBtn" onclick="selectDifficulty(6)">🔒 地獄</button>
       </div>
 
-      <!-- 対戦モード専用: 道下綱引きメーター (バトル時のみ表示) -->
-      <div id="battleTugBar" class="hidden mb-3 bg-slate-950/80 border border-slate-800 p-2.5 rounded-2xl">
-        <div class="flex justify-between items-center text-xs font-extrabold mb-1 px-1">
-          <span class="text-sky-400 flex items-center gap-1">👤 <span id="tugPlayerName">あなた</span></span>
-          <span id="traitorStatusText" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-amber-300">均衡状態</span>
-          <span class="text-rose-400 flex items-center gap-1"><span id="tugRivalName">ライバル</span> 👤</span>
+      <div class="typing-card">
+        <div class="typing-status">
+          <span>残り時間: <b class="color-blue" id="gameTimer">60</b> 秒</span>
+          <span>スコア: <b class="color-orange" id="gameScore">0</b></span>
         </div>
-        <div class="w-full bg-slate-800 h-6 rounded-full relative overflow-hidden flex items-center p-0.5 border border-slate-700">
-          <div id="tugBarProgress" class="h-full bg-gradient-to-r from-sky-500 via-amber-400 to-rose-500 rounded-full transition-all duration-300" style="width: 50%;"></div>
-          <div id="tugMichishitaMarker" class="absolute top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-amber-400 border-2 border-white shadow-lg flex items-center justify-center text-sm transition-all duration-300" style="left: calc(50% - 16px);">
-            道
+
+        <!-- 綱引きメーター（対戦時） -->
+        <div class="battle-bar-wrap" id="battleTugBar">
+          <div class="battle-names">
+            <span id="tugPlayerName">あなた</span>
+            <span id="traitorStatusText" style="color: #0284c7;">均衡状態</span>
+            <span id="tugRivalName">ライバル</span>
           </div>
-        </div>
-      </div>
-
-      <!-- アリーナ（お題表示 & タイピング領域） -->
-      <div class="relative bg-slate-950/90 border border-slate-800 rounded-2xl p-4 sm:p-8 flex flex-col items-center justify-center text-center shadow-inner min-h-[280px]">
-
-        <!-- 上部インジケーター (制限時間・スコア・ストリーク) -->
-        <div class="w-full flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4 font-arcade text-sm sm:text-base">
-          <div class="flex items-center gap-2">
-            <span class="text-slate-500 text-xs font-bold">TIME</span>
-            <span id="gameTimer" class="font-extrabold text-2xl text-sky-400">60</span>
-            <span class="text-xs text-slate-500">s</span>
-          </div>
-
-          <div id="activeBuffBadge" class="hidden px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
-            ⚡ 道下代行発動中！
-          </div>
-
-          <div class="flex items-center gap-4">
-            <div class="text-right">
-              <span class="text-slate-500 text-xs font-bold block">SCORE</span>
-              <span id="gameScore" class="font-extrabold text-xl text-amber-400">0</span>
+          <div class="battle-track">
+            <div class="battle-fill" id="tugBarProgress"></div>
+            <div class="battle-marker" id="tugMichishitaMarker">
+              <img src="m3.jpg" alt="道下">
             </div>
           </div>
         </div>
 
-        <!-- お題：漢字 & ローマ字表示 -->
-        <div class="my-auto w-full z-10">
-          <div id="displayKanji" class="text-2xl sm:text-4xl font-black text-white tracking-wide mb-3 min-h-[44px] flex items-center justify-center drop-shadow-md">
-            ゲームスタートを押してね
-          </div>
-
-          <div class="font-mono-code text-lg sm:text-2xl tracking-widest min-h-[36px] flex items-center justify-center bg-slate-900/60 py-2 px-4 rounded-xl border border-slate-800 max-w-2xl mx-auto">
-            <span id="displayTypedRoma" class="text-sky-400 font-extrabold"></span><span id="displayUntypedRoma" class="text-slate-500 font-medium">press start to play</span>
+        <div class="word-area">
+          <div class="word-kanji" id="displayKanji">スタートボタンを押してね</div>
+          <div class="word-roma">
+            <span class="typed-char" id="displayTypedRoma"></span><span class="untyped-char" id="displayUntypedRoma">press start to play</span>
           </div>
         </div>
 
-        <!-- 見えないタイピング入力 (スマホ・PC両対応) -->
-        <input type="text" id="hiddenTypeInput" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+        <input type="text" id="hiddenTypeInput" class="typing-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
 
-        <!-- スタート / リスタート案内オーバーレイ -->
-        <div id="startOverlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-4">
-          <h2 class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-amber-300 mb-2 font-arcade tracking-tight">道下打 (MICHISHITA-UCHI)</h2>
-          <p id="startDesc" class="text-xs sm:text-sm text-slate-400 mb-6 max-w-md">
-            寿司打をリスペクトした道下専用タイピング。道下の視界妨害に耐え、全国の道下ランカーの頂点「革命道下」を目指せ！
-          </p>
+        <button class="btn-clean" id="mainStartBtn" onclick="startGame(false)">ゲームスタート (SPACE)</button>
 
-          <button id="mainStartBtn" onclick="startGame(false)" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-lg shadow-lg shadow-sky-500/30 hover:scale-105 active:scale-95 transition transform">
-            ⌨️ ゲームスタート (SPACE)
-          </button>
+        <div class="powerup-strip">
+          <button id="useAgentBtn" onclick="usePowerup('agent')" class="powerup-btn" disabled>🤖 道下代行 (<span id="invAgentCount">0</span>)</button>
+          <button id="useBlindBtn" onclick="usePowerup('blind')" class="powerup-btn" disabled>🙈 目隠し (<span id="invBlindCount">0</span>)</button>
         </div>
 
-        <!-- ★ クソうざい道下回転アニメーション (アリーナ最前面下部で左右45度傾く) ★ -->
-        <div id="annoyingMichishitaWrapper" class="absolute bottom-[-15px] left-1/2 -translate-x-1/2 pointer-events-none z-10 transition-opacity duration-300 opacity-90">
-          <div id="annoyingMichishita" class="annoying-michishita flex flex-col items-center">
-            <!-- 吹き出し -->
-            <div id="michishitaQuote" class="bg-white/95 text-slate-900 text-[11px] sm:text-xs font-black px-3 py-1 rounded-full shadow-lg border border-slate-300 whitespace-nowrap mb-1">
-              集中できる？笑
-            </div>
-
-            <!-- 道下アバターSVG -->
-            <div class="w-24 sm:w-32 h-24 sm:h-32 bg-amber-400 rounded-3xl border-4 border-slate-900 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
-              <div class="absolute -top-1 w-20 h-8 bg-slate-800 rounded-b-2xl"></div>
-              <!-- 眉毛 & 目 -->
-              <div class="flex gap-4 mt-4">
-                <div class="w-3 h-3 bg-slate-900 rounded-full relative"><div class="w-1 h-1 bg-white rounded-full top-0.5 right-0.5 absolute"></div></div>
-                <div class="w-3 h-3 bg-slate-900 rounded-full relative"><div class="w-1 h-1 bg-white rounded-full top-0.5 right-0.5 absolute"></div></div>
-              </div>
-              <!-- ニヤケ口 -->
-              <div class="w-7 h-3 border-b-4 border-slate-900 rounded-full mt-1.5"></div>
-              <!-- 名札バッジ -->
-              <div class="absolute bottom-1 bg-slate-900 text-white text-[9px] font-bold px-2 py-0.5 rounded-md">
-                道下遥人
-              </div>
-            </div>
+        <!-- クソうざい道下回転アニメーション -->
+        <div class="obstacle-zone" id="annoyingMichishitaWrapper">
+          <div class="taunt-bubble" id="michishitaQuote">集中できる？笑</div>
+          <div class="wobble-michishita" id="annoyingMichishita">
+            <img src="0eb03a7d-efce-4148-9a32-9ff973f3fdbb.jpg" alt="道下">
           </div>
-        </div>
-
-      </div>
-
-      <!-- 操作ボタン & パワーアップアイテム枠 -->
-      <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-1.5 text-xs text-slate-400">
-          <span>🎮 入力中: <span id="inputStatusText" class="text-sky-400 font-bold">待機中</span></span>
-          <span class="hidden sm:inline">| Escキーで中断</span>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <!-- 代行チケットアイテム使用ボタン -->
-          <button id="useAgentBtn" onclick="usePowerup('agent')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold rounded-xl border border-slate-700 flex items-center gap-1 transition disabled:opacity-40" disabled>
-            <span>🤖 道下代行 (<span id="invAgentCount">0</span>)</span>
-          </button>
-          <!-- 目隠しアイテム使用ボタン -->
-          <button id="useBlindBtn" onclick="usePowerup('blind')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs font-bold rounded-xl border border-slate-700 flex items-center gap-1 transition disabled:opacity-40" disabled>
-            <span>🙈 目隠し (<span id="invBlindCount">0</span>)</span>
-          </button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- VIEW 2: 道下奪還バトル (対戦コード生成 & 貼り付け挑戦) -->
-    <section id="viewBattle" class="hidden flex-grow flex flex-col justify-start gap-4">
-      <div class="bg-slate-950/80 border border-slate-800 p-4 sm:p-6 rounded-2xl">
-        <h3 class="text-lg font-black text-amber-300 flex items-center gap-2 mb-2">
-          <span>⚔️</span> 道下奪還バトル（非同期ゴースト対戦）
-        </h3>
-        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">
-          サーバー不要！自分のタイピングスコアを「対戦コード」にして友達に渡すか、友達のコードを入力して勝負！
-          文字を早く打つと、中央の道下があなたに媚びを売って寝返ります。
-        </p>
-
-        <!-- 挑戦状の入力 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 mb-4">
-          <label class="block text-xs font-bold text-slate-300 mb-1.5">友達からもらった対戦コードを入力:</label>
-          <div class="flex gap-2">
-            <input type="text" id="battleCodeInput" placeholder="MICH-xxxx-xxxx..." class="flex-grow bg-slate-950 border border-slate-700 px-3 py-2 rounded-xl text-xs sm:text-sm text-white font-mono-code outline-none focus:border-sky-400">
-            <button onclick="startBattleFromCode()" class="px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-extrabold text-xs sm:text-sm rounded-xl hover:opacity-90 active:scale-95 transition">
-              道下を奪還する！
-            </button>
-          </div>
-        </div>
-
-        <!-- 自分の最新対戦コード -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div>
-            <span class="text-xs font-bold text-slate-400 block">あなたの最新挑戦状コード:</span>
-            <span id="myLatestCodeDisplay" class="font-mono-code text-xs text-sky-400 font-bold break-all">まだプレイ記録がありません</span>
-          </div>
-          <button onclick="copyChallengeCode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 transition shrink-0">
-            📋 コードをコピー
-          </button>
+    <!-- VIEW 2: 道下奪還バトル -->
+    <div class="tab-content" id="viewBattle">
+      <div class="card-panel">
+        <div class="panel-title">友達の対戦コードで道下を奪還</div>
+        <p class="panel-desc">サーバー不要！友達のタイピング記録（ゴースト）と道下の寝返りバトルができます。打鍵ペースが上回ると道下がこちらにすり寄り、ミスで遅れると相手に寝返ります。</p>
+        <div class="input-row">
+          <input type="text" id="battleCodeInput" class="code-input-clean" placeholder="MICH-XXXXX">
+          <button class="btn-half-clean" onclick="startBattleFromCode()">対戦開始</button>
         </div>
       </div>
 
-      <!-- 対戦戦績サマリー -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
-          <span class="text-slate-400 text-xs block">通算対戦数</span>
-          <span id="battleTotalMatches" class="text-lg font-black text-white font-arcade">0</span>
-        </div>
-        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
-          <span class="text-slate-400 text-xs block">勝利 (奪還成功)</span>
-          <span id="battleWins" class="text-lg font-black text-sky-400 font-arcade">0</span>
-        </div>
-        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
-          <span class="text-slate-400 text-xs block">敗北 (寝返られ)</span>
-          <span id="battleLosses" class="text-lg font-black text-rose-400 font-arcade">0</span>
-        </div>
-        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl">
-          <span class="text-slate-400 text-xs block">寝返り発生回数</span>
-          <span id="battleBetrayals" class="text-lg font-black text-amber-400 font-arcade">0</span>
-        </div>
+      <div class="card-panel">
+        <div class="panel-title">あなたの挑戦状コード</div>
+        <p class="panel-desc">プレイ終了後に自動発行されます。友達に送って道下を奪わせないように迎え撃ちましょう。</p>
+        <div class="code-box-display" id="myLatestCodeDisplay">（プレイ後に発行されます）</div>
+        <button class="btn-clean" style="margin-top: 10px; height: 38px; font-size: 13px;" onclick="copyChallengeCode()">📋 コードをコピー</button>
       </div>
-    </section>
+
+      <div class="card-panel">
+        <div class="panel-title">通算対戦戦績</div>
+        <p class="panel-desc" id="battleStatsSummary" style="font-weight: 700; color: #0284c7;">0試合 0勝 0敗 (寝返り発生: 0回)</p>
+      </div>
+    </div>
 
     <!-- VIEW 3: 道下ショップ -->
-    <section id="viewShop" class="hidden flex-grow flex flex-col justify-start gap-3">
-      <div class="flex items-center justify-between bg-slate-950/80 border border-slate-800 p-3 rounded-2xl mb-1">
-        <span class="text-xs sm:text-sm font-bold text-slate-300">所持道下コイン:</span>
-        <span class="text-base sm:text-lg font-black text-amber-400 font-arcade flex items-center gap-1">
-          🪙 <span id="shopCoinsVal">0</span>
-        </span>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <!-- アイテム1: タイピング代行 -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
-          <div>
-            <div class="text-3xl mb-2">🤖</div>
-            <h4 class="font-extrabold text-sm text-white mb-1">道下のタイピング代行</h4>
-            <p class="text-xs text-slate-400 mb-3">使用すると道下が自動で5秒間爆速タイピングを代行してくれます。</p>
-          </div>
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-            <span class="text-xs font-bold text-amber-400 font-arcade">🪙 150</span>
-            <button onclick="buyShopItem('agent', 150)" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition">購入</button>
+    <div class="tab-content" id="viewShop">
+      <div class="shop-grid-clean">
+        <div class="shop-card-clean">
+          <div class="shop-card-icon">🤖</div>
+          <div class="shop-card-title">道下のタイピング代行</div>
+          <div class="shop-card-desc">使用すると道下が自動で5秒間超速タイピングを代行してくれます。</div>
+          <div class="shop-card-bottom">
+            <span class="shop-card-price">150枚</span>
+            <button class="btn-buy-chip" onclick="buyShopItem('agent', 150)">購入</button>
           </div>
         </div>
 
-        <!-- アイテム2: 集中力UP (時間+10秒) -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
-          <div>
-            <div class="text-3xl mb-2">⏳</div>
-            <h4 class="font-extrabold text-sm text-white mb-1">道下の集中力 (時間+10秒)</h4>
-            <p class="text-xs text-slate-400 mb-3">次回プレイ時の制限時間が10秒延長されます（自動適用）。</p>
-          </div>
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-            <span class="text-xs font-bold text-amber-400 font-arcade">🪙 100</span>
-            <button onclick="buyShopItem('time', 100)" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition">購入</button>
+        <div class="shop-card-clean">
+          <div class="shop-card-icon">⏳</div>
+          <div class="shop-card-title">道下の集中力 (+10秒)</div>
+          <div class="shop-card-desc">次回プレイ時の制限時間が+10秒延長されます（自動適用）。</div>
+          <div class="shop-card-bottom">
+            <span class="shop-card-price">100枚</span>
+            <button class="btn-buy-chip" onclick="buyShopItem('time', 100)">購入</button>
           </div>
         </div>
 
-        <!-- アイテム3: 目隠し -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
-          <div>
-            <div class="text-3xl mb-2">🙈</div>
-            <h4 class="font-extrabold text-sm text-white mb-1">道下の目隠し</h4>
-            <p class="text-xs text-slate-400 mb-3">使用すると、下の回転する道下が7秒間画面外へ退散します。</p>
-          </div>
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-            <span class="text-xs font-bold text-amber-400 font-arcade">🪙 80</span>
-            <button onclick="buyShopItem('blind', 80)" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition">購入</button>
+        <div class="shop-card-clean">
+          <div class="shop-card-icon">🙈</div>
+          <div class="shop-card-title">道下の目隠し</div>
+          <div class="shop-card-desc">使用すると、下の回転する道下が7秒間画面外へ退散します。</div>
+          <div class="shop-card-bottom">
+            <span class="shop-card-price">80枚</span>
+            <button class="btn-buy-chip" onclick="buyShopItem('blind', 80)">購入</button>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- VIEW 4: プロフィール・称号・10段階進捗 -->
-    <section id="viewProfile" class="hidden flex-grow flex flex-col justify-start gap-4 overflow-y-auto max-h-[480px] pr-1">
-      <!-- ユーザー名変更 -->
-      <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-xl font-black text-white font-arcade shadow-lg">
-            MI
-          </div>
-          <div>
-            <span class="text-[11px] text-slate-400 block font-bold">プレイヤー名 (自動保存):</span>
-            <input type="text" id="profileNameInput" onchange="updatePlayerName(this.value)" class="bg-slate-900 border border-slate-700 px-3 py-1 rounded-lg text-sm font-bold text-white outline-none focus:border-sky-400 max-w-[160px]" maxlength="12">
-          </div>
-        </div>
-
-        <div class="text-center sm:text-right w-full sm:w-auto">
-          <span class="text-[11px] text-slate-400 block font-bold">現在の階級:</span>
-          <span id="profileCurrentRankTitle" class="text-base font-black text-amber-300">道下以下</span>
-        </div>
-      </div>
-
-      <!-- 10段階 うでまえ称号ロードマップ (1週間で到達目標) -->
-      <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl">
-        <h4 class="text-xs font-extrabold text-slate-300 mb-3 flex items-center gap-1.5">
-          <span>🏆</span> うでまえ進捗（全10段階）
-        </h4>
-        <div class="space-y-2" id="rankTierList">
-          <!-- JSで動的生成 -->
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- フッター -->
-  <footer class="w-full max-w-4xl text-center text-[11px] text-slate-500 py-2">
-    道下ファンクラブ公認 タイピングエンジン「道下打」 / ローカル完全セーブ対応
-  </footer>
-
-  <!-- リザルトモーダル -->
-  <div id="resultModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl relative">
-      <div id="resultBadgeIcon" class="text-5xl mb-2">🎉</div>
-      <h3 id="resultTitle" class="text-2xl font-black text-white font-arcade mb-1">RUN COMPLETE</h3>
-      <p id="resultSub" class="text-xs text-slate-400 mb-6">タイピング結果とお知らせ</p>
-
-      <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 space-y-2 mb-6 text-sm">
-        <div class="flex justify-between items-center text-slate-300">
-          <span>最終スコア:</span>
-          <span id="modalScore" class="font-extrabold text-amber-400 font-arcade text-lg">0</span>
-        </div>
-        <div class="flex justify-between items-center text-slate-300">
-          <span>打鍵数 / ミス:</span>
-          <span id="modalStrokes" class="font-bold text-white font-arcade">0 / 0</span>
-        </div>
-        <div class="flex justify-between items-center text-slate-300">
-          <span>獲得道下コイン:</span>
-          <span id="modalCoinsEarned" class="font-extrabold text-amber-300 font-arcade">+0</span>
-        </div>
-        <div class="flex justify-between items-center text-slate-300 pt-2 border-t border-slate-800">
-          <span>うでまえ判定:</span>
-          <span id="modalRankEarned" class="font-black text-sky-400">道下以下</span>
-        </div>
-      </div>
-
-      <div class="flex gap-2">
-        <button onclick="closeResultModal(); startGame(false);" class="flex-1 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-extrabold text-sm transition">
-          もう一度 (SPACE)
-        </button>
-        <button onclick="closeResultModal();" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition">
-          閉じる
-        </button>
+    <!-- VIEW 4: 道下称号 -->
+    <div class="tab-content" id="viewProfile">
+      <div class="card-panel" style="margin-bottom: 14px;">
+        <div class="panel-title">うでまえ進捗（全10段階）</div>
+        <p class="panel-desc">1週間やり込んで最高到達点「革命道下」を目指せ！</p>
+        <div class="rank-tier-list" id="rankTierList"></div>
       </div>
     </div>
   </div>
 
+  <!-- リザルトモーダル -->
+  <div id="reveal-modal">
+    <div class="reveal-content">
+      <div class="reveal-title" id="resultTitle">🎉 判定結果</div>
+      <div class="reveal-desc" id="resultDesc"></div>
+      <button class="btn-modal-close" onclick="closeResultModal()">閉じる</button>
+    </div>
+  </div>
+
   <script>
-    /* =====================================================================
-       1. データ保存 & プロフィール管理 (localStorage - 完全ローカル)
-       ===================================================================== */
+    /* 1. データ保存 & プロフィール管理 (完全ローカル) */
     const STORAGE_KEY = 'MICHISHITA_TYPING_DATA_V2';
 
     const RANKS = [
       { id: 0, title: "道下以下", minScore: 0, desc: "初期状態。まずはここを脱出したい屈辱の階級。" },
       { id: 1, title: "ルーキー道下", minScore: 120, desc: "キーボードの配置を思い出し始めた道下。" },
       { id: 2, title: "ビギナー級道下", minScore: 280, desc: "ゆっくりだが確実に打ち込める道下。" },
-      { id: 3, title: "レギュラー道下", minScore: 480, desc: "寿司打の練習を毎日欠かさない道下。" },
+      { id: 3, title: "レギュラー道下", minScore: 480, desc: "日々の練習を欠かさない道下。" },
       { id: 4, title: "ベテラン道下", minScore: 720, desc: "休み時間のタイピング対決で一目置かれる存在。" },
       { id: 5, title: "エキスパート道下", minScore: 1000, desc: "道下の思考速度と同等以上のスピードを誇る。" },
       { id: 6, title: "エリート級道下", minScore: 1350, desc: "視界妨害を物ともせず打ち続ける鋼の精神。" },
@@ -484,13 +953,13 @@
     ];
 
     let playerData = {
-      name: "名無し道下",
+      name: "道下ファン",
       coins: 100,
       highScore: 0,
       rankId: 0,
       inventory: {
-        agent: 1, // 代行アイテム数
-        blind: 1  // 目隠しアイテム数
+        agent: 1,
+        blind: 1
       },
       bonusTimeNext: 0,
       stats: {
@@ -508,35 +977,29 @@
         if (saved) {
           playerData = Object.assign(playerData, JSON.parse(saved));
         }
-      } catch (e) {
-        console.error("ローカルストレージの読み込み失敗", e);
-      }
+      } catch (e) {}
       updateUI();
     }
 
     function saveData() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(playerData));
-      } catch (e) {
-        console.error("保存失敗", e);
-      }
+      } catch (e) {}
       updateUI();
     }
 
     function updatePlayerName(newName) {
       if (newName && newName.trim()) {
-        playerData.name = newName.trim().substring(0, 12);
+        playerData.name = newName.trim().substring(0, 10);
         saveData();
       }
     }
 
     function updateUI() {
-      document.getElementById('headerCoins').innerText = playerData.coins.toLocaleString();
-      document.getElementById('shopCoinsVal').innerText = playerData.coins.toLocaleString();
+      document.getElementById('playerNameInput').value = playerData.name;
+      document.getElementById('playerCoinsText').innerText = playerData.coins.toLocaleString() + "枚";
       const currentRank = RANKS[playerData.rankId] || RANKS[0];
-      document.getElementById('headerRankTitle').innerText = currentRank.title;
-      document.getElementById('profileCurrentRankTitle').innerText = currentRank.title;
-      document.getElementById('profileNameInput').value = playerData.name;
+      document.getElementById('playerRankBadge').innerText = currentRank.title;
       document.getElementById('tugPlayerName').innerText = playerData.name;
 
       document.getElementById('invAgentCount').innerText = playerData.inventory.agent;
@@ -545,22 +1008,15 @@
       document.getElementById('useAgentBtn').disabled = playerData.inventory.agent <= 0 || !gameState.isRunning;
       document.getElementById('useBlindBtn').disabled = playerData.inventory.blind <= 0 || !gameState.isRunning;
 
-      // 戦績
-      document.getElementById('battleTotalMatches').innerText = playerData.stats.matches;
-      document.getElementById('battleWins').innerText = playerData.stats.wins;
-      document.getElementById('battleLosses').innerText = playerData.stats.losses;
-      document.getElementById('battleBetrayals').innerText = playerData.stats.betrayals;
+      document.getElementById('battleStatsSummary').innerText = `${playerData.stats.matches}試合 ${playerData.stats.wins}勝 ${playerData.stats.losses}敗 (寝返り発生: ${playerData.stats.betrayals}回)`;
 
       if (playerData.latestChallengeCode) {
         document.getElementById('myLatestCodeDisplay').innerText = playerData.latestChallengeCode;
       }
 
-      // 地獄難易度ロック判定 (エリート級道下以上で解放)
       const hellBtn = document.getElementById('diffHellBtn');
       if (playerData.rankId >= 6) {
-        hellBtn.innerText = "🔥 地獄";
-        hellBtn.classList.remove('text-slate-500');
-        hellBtn.classList.add('text-rose-400');
+        hellBtn.innerText = "地獄";
       } else {
         hellBtn.innerText = "🔒 地獄";
       }
@@ -573,32 +1029,23 @@
       container.innerHTML = '';
       RANKS.forEach((r, idx) => {
         const isCurrent = playerData.rankId === idx;
-        const isUnlocked = playerData.rankId >= idx;
         const div = document.createElement('div');
-        div.className = `p-2.5 rounded-xl border flex items-center justify-between text-xs transition ${
-          isCurrent 
-            ? 'bg-sky-950/80 border-sky-400 neon-border font-bold' 
-            : isUnlocked 
-              ? 'bg-slate-900 border-slate-700 text-slate-300' 
-              : 'bg-slate-950 border-slate-800 text-slate-600'
-        }`;
+        div.className = `tier-item ${isCurrent ? 'is-current' : ''}`;
         div.innerHTML = `
-          <div class="flex items-center gap-2">
-            <span class="w-5 text-center font-arcade font-bold">${idx + 1}</span>
+          <div class="tier-left">
+            <span class="tier-num">${idx + 1}</span>
             <div>
-              <span class="${isCurrent ? 'text-amber-300 font-extrabold' : ''}">${r.title}</span>
-              <span class="block text-[10px] text-slate-400">${r.desc}</span>
+              <div style="font-weight: 800; color: #1e293b;">${r.title} ${isCurrent ? '★現在地' : ''}</div>
+              <div style="font-size: 11px; color: #64748b;">${r.desc}</div>
             </div>
           </div>
-          <span class="font-arcade text-[11px] shrink-0 font-bold">${r.minScore}pt〜</span>
+          <span class="tier-pts">${r.minScore}pt〜</span>
         `;
         container.appendChild(div);
       });
     }
 
-    /* =====================================================================
-       2. Web Audio API 音声シンセサイザー (外部URL不要)
-       ===================================================================== */
+    /* 2. Web Audio API 音声シンセサイザー (外部URL不要) */
     let audioCtx = null;
     let isSoundOn = true;
 
@@ -640,33 +1087,26 @@
 
     function toggleSound() {
       isSoundOn = !isSoundOn;
-      document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊' : '🔇';
+      document.getElementById('soundToggleBtn').innerText = isSoundOn ? '🔊 音声' : '🔇 ミュート';
     }
 
-    /* =====================================================================
-       3. お題データ & 難易度テーブル
-       ===================================================================== */
+    /* 3. お題データ */
     const WORD_DB = {
-      // 0: クソ簡単 (2-4文字)
       0: [
         { k: "道下", r: "mitisita" },
         { k: "僕", r: "boku" },
         { k: "犬", r: "inu" },
         { k: "サボり", r: "sabori" },
-        { k: "神", r: "kami" },
         { k: "黒板", r: "kokuban" },
         { k: "消しゴム", r: "kesigomu" }
       ],
-      // 1: 簡単 (5-8文字)
       1: [
         { k: "道下遥人", r: "mitisitaharuto" },
         { k: "あの時の僕", r: "anotokinoboku" },
         { k: "文化祭開幕", r: "bunkasaikaimaku" },
-        { k: "寿司打で勝負", r: "susiudatesyoubu" },
         { k: "ちぎり消しゴム", r: "tigirikesigomu" },
         { k: "昼休みダッシュ", r: "hiruyasumidassyu" }
       ],
-      // 2: ふつう (寿司打標準)
       2: [
         { k: "文化祭が楽しい道下", r: "bunkasaigatanosiimitisita" },
         { k: "文化祭をサボる道下", r: "bunkasaiwosaborumitisita" },
@@ -675,34 +1115,27 @@
         { k: "黒板アートの完成を喜ぶ", r: "kokuban-atonokanseiwoyorokobu" },
         { k: "未来ある道下の一歩に", r: "miraiarumitisitanoipponi" }
       ],
-      // 3: 難しい
       3: [
         { k: "お前の方が借り多いけどありがとう", r: "omaenohougakarioikedoarigatou" },
-        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredmodekiru" },
-        { k: "インフルエンザ大流行による学級閉鎖", r: "infuruenzadairyuukouniyorugakkyuuheisa" },
+        { k: "道下に出来ることなら誰でも出来る", r: "mitisitanidekirukotonaradaredemodekiru" },
         { k: "全国送料無料で手渡し配達対応", r: "zenkokusouryoumuryoudetewatasihaitatutaiou" }
       ],
-      // 4: 激ムズ
       4: [
         { k: "道下遥人特設ファンクラブ公式サイト開設記念セール", r: "mitisitaharutotokusatufankurabukousikisaitokaisRoundkinen" },
         { k: "全体的に状態が悪い文化祭着用サイン入りシャツ", r: "zentai-tekinizyoutaigawaruibunkasaityakuyousain-irisyatu" },
-        { k: "寿司打リスペクト道下打タイピング選手権開幕", r: "susiutarisupekutomitisitautitaipinkusensyukenkaimaku" }
+        { k: "道下タイピング選手権開幕", r: "mitisitataipinkusensyukenkaimaku" }
       ],
-      // 5: 悪夢
       5: [
         { k: "道下の集中力は完全に散漫になっており救いようがない", r: "mitisitanosyuutyuuryokuhakanzennisanman-ninatteorisukuiyouganai" },
         { k: "一週間ぶっ通しで練習して革命道下の座を奪い取れ", r: "issyukanbuttousiderensyuusitekakumeimitisitanozawoubaitore" }
       ],
-      // 6: 地獄
       6: [
-        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredmodekirutoomounayokakumeihakokokarahazimaronoda" },
+        { k: "道下に出来ることなら誰でも出来ると思うなよ革命はここから始まるのだ", r: "mitisitanidekirukotonaradaredemodekirutoomounayokakumeihakokokarahazimaronoda" },
         { k: "あの時の僕が残した伝説の消しゴムは時空を超えて道下の魂を揺さぶる", r: "anotokinobokuganokosidadensetunokesigomuhazikuuwo-koetemitisitanotamasiiwoyusaburu" }
       ]
     };
 
-    /* =====================================================================
-       4. ゲーム進行エンジン & ロジック
-       ===================================================================== */
+    /* 4. ゲーム進行エンジン */
     let currentDifficulty = 0;
 
     let gameState = {
@@ -717,10 +1150,9 @@
       typedIndex: 0,
       blindActive: false,
       agentActive: false,
-      // 対戦用
-      rivalCheckpoints: [], // [ {time, score} ]
+      rivalCheckpoints: [],
       rivalName: "ライバル",
-      tugBalance: 0 // -50 (ライバル) 〜 +50 (プレイヤー)
+      tugBalance: 0
     };
 
     function selectDifficulty(diff) {
@@ -730,15 +1162,15 @@
         return;
       }
       currentDifficulty = diff;
-      document.querySelectorAll('.diff-btn').forEach((b, idx) => {
-        if (idx === diff) {
-          b.className = "diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-sky-500/20 border-sky-400 text-sky-300";
+      for (let i = 0; i <= 6; i++) {
+        const btn = document.getElementById(i === 6 ? 'diffHellBtn' : `diffBtn${i}`);
+        if (i === diff) {
+          btn.classList.add('active');
         } else {
-          b.className = "diff-btn px-2 py-2 rounded-xl text-xs font-bold border transition bg-slate-800 border-slate-700 text-slate-400";
+          btn.classList.remove('active');
         }
-      });
+      }
 
-      // 道下の回転速度を難易度で変化
       const michi = document.getElementById('annoyingMichishita');
       michi.classList.remove('fast', 'insane');
       if (diff >= 4) michi.classList.add('fast');
@@ -758,26 +1190,26 @@
       gameState.agentActive = false;
       gameState.tugBalance = 0;
 
-      // 時間設定 (ボーナスアイテム適用)
       let initialTime = 60 + playerData.bonusTimeNext;
-      playerData.bonusTimeNext = 0; // 消費
+      playerData.bonusTimeNext = 0;
       gameState.timeLeft = initialTime;
 
-      document.getElementById('startOverlay').classList.add('hidden');
-      document.getElementById('activeBuffBadge').classList.add('hidden');
-      document.getElementById('inputStatusText').innerText = "タイピング中！";
+      document.getElementById('mainStartBtn').style.display = 'none';
 
-      // 対戦メーター表示切り替え
       const tugBar = document.getElementById('battleTugBar');
       if (isBattle && rivalData) {
-        tugBar.classList.remove('hidden');
+        tugBar.style.display = 'block';
         gameState.rivalName = rivalData.name || "ライバル";
         gameState.rivalCheckpoints = rivalData.checkpoints || [];
         document.getElementById('tugRivalName').innerText = gameState.rivalName;
         updateTugMeter(0);
       } else {
-        tugBar.classList.add('hidden');
+        tugBar.style.display = 'none';
       }
+
+      const michi = document.getElementById('annoyingMichishita');
+      michi.classList.add('active');
+      document.getElementById('michishitaQuote').style.display = 'block';
 
       const input = document.getElementById('hiddenTypeInput');
       input.disabled = false;
@@ -796,7 +1228,6 @@
       gameState.timeLeft--;
       document.getElementById('gameTimer').innerText = gameState.timeLeft;
 
-      // 対戦時の寝返り判定
       if (gameState.isBattle) {
         checkTugOfWar();
       }
@@ -830,25 +1261,22 @@
       document.getElementById('gameScore').innerText = gameState.score;
     }
 
-    // タイピング入力判定 (ローマ字順次解析)
     const hiddenInput = document.getElementById('hiddenTypeInput');
     hiddenInput.addEventListener('input', (e) => {
       if (!gameState.isRunning || !gameState.currentWord) return;
 
       const inputChar = e.data ? e.data.toLowerCase() : hiddenInput.value.slice(-1).toLowerCase();
-      hiddenInput.value = ''; // 常に空にリセット
+      hiddenInput.value = '';
 
       const expectedChar = gameState.currentWord.r[gameState.typedIndex];
 
       if (inputChar === expectedChar) {
-        // 正解
         soundType();
         gameState.typedIndex++;
         gameState.totalStrokes++;
         gameState.score += 10;
 
         if (gameState.typedIndex >= gameState.currentWord.r.length) {
-          // 単語クリアボーナス
           soundCorrect();
           const wordBonus = gameState.currentWord.r.length * 5;
           gameState.score += wordBonus;
@@ -857,7 +1285,6 @@
           updatePromptDisplay();
         }
       } else {
-        // ミス
         soundMiss();
         gameState.missCount++;
         gameState.score = Math.max(0, gameState.score - 5);
@@ -866,11 +1293,10 @@
       updateGameStatsUI();
     });
 
-    // キーボードショートカット (Space: 開始, Esc: 中断)
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !gameState.isRunning) {
-        const modal = document.getElementById('resultModal');
-        if (modal.classList.contains('hidden')) {
+        const modal = document.getElementById('reveal-modal');
+        if (modal.style.display !== 'flex') {
           e.preventDefault();
           startGame(false);
         }
@@ -879,31 +1305,25 @@
       }
     });
 
-    /* =====================================================================
-       5. 道下の寝返りギミック (Tug-of-War)
-       ===================================================================== */
+    /* 5. 道下の寝返りギミック */
     function checkTugOfWar() {
-      // 経過時間 (60秒から減算)
       const elapsed = 60 - gameState.timeLeft;
-      // ライバルのこの時点での想定スコアを線形補間
       let targetRivalScore = 0;
       if (gameState.rivalCheckpoints.length > 0) {
         const factor = Math.min(1, elapsed / 60);
         const finalRival = gameState.rivalCheckpoints[gameState.rivalCheckpoints.length - 1];
         targetRivalScore = Math.round(finalRival * factor);
       } else {
-        targetRivalScore = elapsed * 15; // デフォルトゴーストペース
+        targetRivalScore = elapsed * 15;
       }
 
       const diff = gameState.score - targetRivalScore;
-      // -100 〜 +100 を -50% 〜 +50% にマッピング
       let balance = Math.max(-50, Math.min(50, diff / 4));
       const oldBalance = gameState.tugBalance;
       gameState.tugBalance = balance;
 
       updateTugMeter(balance);
 
-      // 裏切り発生 (プレイヤー劣勢へ転落した瞬間)
       if (oldBalance >= 0 && balance < -10) {
         triggerTraitorDefection(false);
       } else if (oldBalance <= 0 && balance > 10) {
@@ -912,10 +1332,9 @@
     }
 
     function updateTugMeter(balance) {
-      // balance: -50 (ライバル完全有利) 〜 +50 (プレイヤー完全有利)
       const percent = 50 + balance;
       document.getElementById('tugBarProgress').style.width = `${percent}%`;
-      document.getElementById('tugMichishitaMarker').style.left = `calc(${percent}% - 16px)`;
+      document.getElementById('tugMichishitaMarker').style.left = `${percent}%`;
     }
 
     function triggerTraitorDefection(toPlayer) {
@@ -927,32 +1346,24 @@
       if (toPlayer) {
         quote.innerText = "さすが！信じてたぞ！";
         traitorText.innerText = "道下が味方に寝返り！";
-        traitorText.className = "text-xs px-2 py-0.5 rounded-full bg-sky-900 text-sky-300 font-bold traitor-alert";
+        traitorText.style.color = "#0284c7";
       } else {
         quote.innerText = "やっぱあっちの方が早いわｗ";
-        traitorText.innerText = "裏切り発生！道下が逃亡！";
-        traitorText.className = "text-xs px-2 py-0.5 rounded-full bg-rose-900 text-rose-300 font-bold traitor-alert";
+        traitorText.innerText = "裏切り発生！逃亡中！";
+        traitorText.style.color = "#ef4444";
       }
-
-      setTimeout(() => {
-        traitorText.classList.remove('traitor-alert');
-      }, 1500);
     }
 
-    /* =====================================================================
-       6. パワーアップアイテム発動 (ショップ購入品)
-       ===================================================================== */
+    /* 6. パワーアップアイテム */
     function usePowerup(type) {
       if (!gameState.isRunning) return;
 
       if (type === 'agent' && playerData.inventory.agent > 0 && !gameState.agentActive) {
         playerData.inventory.agent--;
         gameState.agentActive = true;
-        document.getElementById('activeBuffBadge').classList.remove('hidden');
         document.getElementById('michishitaQuote').innerText = "俺が打ってやるよ！";
         soundFanfare();
 
-        // 5秒間自動超速タイピング
         let agentTimer = setInterval(() => {
           if (!gameState.isRunning || !gameState.agentActive) {
             clearInterval(agentTimer);
@@ -974,7 +1385,6 @@
         setTimeout(() => {
           clearInterval(agentTimer);
           gameState.agentActive = false;
-          document.getElementById('activeBuffBadge').classList.add('hidden');
         }, 5000);
 
       } else if (type === 'blind' && playerData.inventory.blind > 0 && !gameState.blindActive) {
@@ -982,10 +1392,9 @@
         gameState.blindActive = true;
         const wrapper = document.getElementById('annoyingMichishitaWrapper');
         wrapper.style.opacity = '0';
-        wrapper.style.pointerEvents = 'none';
 
         setTimeout(() => {
-          wrapper.style.opacity = '0.9';
+          wrapper.style.opacity = '1';
           gameState.blindActive = false;
         }, 7000);
       }
@@ -995,7 +1404,7 @@
 
     function buyShopItem(item, price) {
       if (playerData.coins < price) {
-        alert("道下コインが足りません！タイピングをこなして集めましょう。");
+        alert("道下コインが足りません！");
         return;
       }
       playerData.coins -= price;
@@ -1013,26 +1422,24 @@
       saveData();
     }
 
-    /* =====================================================================
-       7. ゲーム終了・報酬・うでまえ判定
-       ===================================================================== */
+    /* 7. ゲーム終了 & リザルト */
     function endGame() {
       clearInterval(gameState.timerId);
       gameState.timerId = null;
       gameState.isRunning = false;
       document.getElementById('hiddenTypeInput').disabled = true;
-      document.getElementById('inputStatusText').innerText = "終了";
+      document.getElementById('mainStartBtn').style.display = 'block';
+      document.getElementById('mainStartBtn').innerText = 'もう一度あそぶ (SPACE)';
+      document.getElementById('annoyingMichishita').classList.remove('active');
+      document.getElementById('michishitaQuote').style.display = 'none';
 
-      // コイン計算 (スコア / 15 + ストロークボーナス)
       const earnedCoins = Math.max(5, Math.floor(gameState.score / 15) + Math.floor(gameState.totalStrokes / 10));
       playerData.coins += earnedCoins;
 
-      // 最高スコア更新
       if (gameState.score > playerData.highScore) {
         playerData.highScore = gameState.score;
       }
 
-      // 10段階うでまえ判定
       let earnedRank = RANKS[0];
       for (let i = RANKS.length - 1; i >= 0; i--) {
         if (gameState.score >= RANKS[i].minScore) {
@@ -1041,14 +1448,12 @@
         }
       }
 
-      // 昇格チェック
       let rankUp = false;
       if (earnedRank.id > playerData.rankId) {
         playerData.rankId = earnedRank.id;
         rankUp = true;
       }
 
-      // 対戦モード結果
       let battleVictory = false;
       if (gameState.isBattle) {
         playerData.stats.matches++;
@@ -1060,49 +1465,36 @@
         }
       }
 
-      // 挑戦状コード生成 (Base64化)
       generateChallengeCode(gameState.score);
-
       saveData();
-      showResultModal(earnedCoins, earnedRank, rankUp, battleVictory);
-    }
 
-    function showResultModal(earnedCoins, earnedRank, rankUp, battleVictory) {
-      document.getElementById('modalScore').innerText = gameState.score.toLocaleString();
-      document.getElementById('modalStrokes').innerText = `${gameState.totalStrokes} / ${gameState.missCount}`;
-      document.getElementById('modalCoinsEarned').innerText = `+${earnedCoins} 枚`;
-      document.getElementById('modalRankEarned').innerText = earnedRank.title;
-
-      const titleEl = document.getElementById('resultTitle');
-      const subEl = document.getElementById('resultSub');
-      const iconEl = document.getElementById('resultBadgeIcon');
+      let msg = `最終スコア: <b>${gameState.score} 点</b><br>打鍵数 / ミス: <b>${gameState.totalStrokes} / ${gameState.missCount}</b><br>獲得コイン: <b>+${earnedCoins} 枚</b><br>到達うでまえ: <b>${earnedRank.title}</b>`;
 
       if (gameState.isBattle) {
         if (battleVictory) {
-          iconEl.innerText = "🏆";
-          titleEl.innerText = "道下奪還成功！";
-          subEl.innerText = `${gameState.rivalName} から道下を取り戻しました！`;
+          msg = `⚔️ <b>道下奪還成功！（あなたの勝利）</b><br>${gameState.rivalName} から道下を取り戻しました！<br><br>` + msg;
         } else {
-          iconEl.innerText = "💀";
-          titleEl.innerText = "奪還失敗…";
-          subEl.innerText = `道下は ${gameState.rivalName} の側へ完全に寝返りました。`;
+          msg = `💔 <b>道下は寝返りました…（敗北）</b><br>道下は ${gameState.rivalName} の側へつきました。<br><br>` + msg;
         }
       } else {
         if (rankUp) {
-          iconEl.innerText = "🌟";
-          titleEl.innerText = "うでまえ昇格！";
-          subEl.innerText = `おめでとう！新階級【${earnedRank.title}】に到達！`;
-        } else {
-          iconEl.innerText = "🎉";
-          titleEl.innerText = "タイムアップ！";
-          subEl.innerText = "道下打のプレイお疲れ様でした！";
+          msg = `🌟 <b>うでまえ昇格！新階級【${earnedRank.title}】！</b><br><br>` + msg;
         }
       }
 
-      document.getElementById('resultModal').classList.remove('hidden');
+      showResultModal(msg);
+    }
 
-      // 紙吹雪演出
-      confetti({
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const myConfetti = confetti.create(confettiCanvas, {
+      resize: true,
+      useWorker: true
+    });
+
+    function showResultModal(htmlText) {
+      document.getElementById('resultDesc').innerHTML = htmlText;
+      document.getElementById('reveal-modal').style.display = 'flex';
+      myConfetti({
         particleCount: 150,
         spread: 80,
         origin: { y: 0.6 }
@@ -1111,15 +1503,11 @@
     }
 
     function closeResultModal() {
-      document.getElementById('resultModal').classList.add('hidden');
-      document.getElementById('startOverlay').classList.remove('hidden');
+      document.getElementById('reveal-modal').style.display = 'none';
     }
 
-    /* =====================================================================
-       8. 非同期対戦コード (Base64 暗号化 & 復号)
-       ===================================================================== */
+    /* 8. 非同期対戦コード */
     function generateChallengeCode(finalScore) {
-      // 簡易ゴースト checkpoints (15秒ごとのスコア)
       const cp1 = Math.round(finalScore * 0.25);
       const cp2 = Math.round(finalScore * 0.55);
       const cp3 = Math.round(finalScore * 0.85);
@@ -1138,9 +1526,7 @@
         const encoded = btoa(unescape(encodeURIComponent(json)));
         playerData.latestChallengeCode = `MICH-${encoded}`;
         document.getElementById('myLatestCodeDisplay').innerText = playerData.latestChallengeCode;
-      } catch (e) {
-        console.error("コード生成失敗", e);
-      }
+      } catch (e) {}
     }
 
     function copyChallengeCode() {
@@ -1148,20 +1534,19 @@
         alert("まずは1回プレイして対戦コードを発行してください！");
         return;
       }
-      // execCommand fallback
       const temp = document.createElement('textarea');
       temp.value = playerData.latestChallengeCode;
       document.body.appendChild(temp);
       temp.select();
       document.execCommand('copy');
       document.body.removeChild(temp);
-      alert("挑戦状コードをクリップボードにコピーしました！友達に渡して対戦しましょう。");
+      alert("挑戦状コードをコピーしました！友達に渡して対戦しましょう。");
     }
 
     function startBattleFromCode() {
       const input = document.getElementById('battleCodeInput').value.trim();
       if (!input.startsWith('MICH-')) {
-        alert("有効な道下対戦コードではありません。(MICH-から始まるコードを入力してください)");
+        alert("有効な対戦コードではありません。");
         return;
       }
 
@@ -1171,7 +1556,7 @@
         const rival = JSON.parse(json);
 
         if (!rival.score || !rival.cps) {
-          throw new Error("無効なデータ");
+          throw new Error("無効");
         }
 
         switchView('play');
@@ -1182,30 +1567,27 @@
         });
 
       } catch (e) {
-        alert("コードの読み込みに失敗しました。壊れているか不正なコードです。");
+        alert("対戦コードの読み込みに失敗しました。");
       }
     }
 
-    /* =====================================================================
-       9. タブビュー切り替え
-       ===================================================================== */
+    /* 9. タブ切り替え */
     function switchView(view) {
       const views = ['play', 'battle', 'shop', 'profile'];
       views.forEach(v => {
         const section = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
         const tabBtn = document.getElementById(`tab${v.charAt(0).toUpperCase() + v.slice(1)}Btn`);
         if (v === view) {
-          section.classList.remove('hidden');
-          tabBtn.className = "tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition bg-sky-500 text-white shadow-lg shadow-sky-500/25";
+          section.classList.add('active');
+          tabBtn.classList.add('active');
         } else {
-          section.classList.add('hidden');
-          tabBtn.className = "tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition text-slate-400 hover:text-white hover:bg-slate-800";
+          section.classList.remove('active');
+          tabBtn.classList.remove('active');
         }
       });
       updateUI();
     }
 
-    // 初期化ロード
     window.onload = function() {
       loadData();
     };
