@@ -130,13 +130,13 @@
             });
 
             peer.on('error', (err) => {
-                alert('Error: Room may already exist or ID is taken.');
+                alert('Error: Room may already exist or ID is taken. Try another code.');
             });
 
             peer.on('connection', (connection) => {
                 conn = connection;
                 setupConnection();
-                statusDiv.textContent = 'Connected! Your turn (Black)';
+                statusDiv.classList.remove('hidden');
                 boardDiv.classList.remove('hidden');
                 scoreDiv.classList.remove('hidden');
                 initGame();
@@ -164,20 +164,22 @@
 
         function setupConnection() {
             conn.on('open', () => {
-                if (myRole === 'W') {
-                    setupDiv.classList.add('hidden');
-                    statusDiv.classList.remove('hidden');
-                    statusDiv.textContent = 'Connected! Waiting for Black (White)';
-                    boardDiv.classList.remove('hidden');
-                    scoreDiv.classList.remove('hidden');
-                    initGame();
-                }
+                setupDiv.classList.add('hidden');
+                statusDiv.classList.remove('hidden');
+                boardDiv.classList.remove('hidden');
+                scoreDiv.classList.remove('hidden');
+                initGame();
             });
 
             conn.on('data', (data) => {
                 if (data.type === 'move') {
                     applyMove(data.row, data.col, data.player);
                 }
+            });
+
+            conn.on('close', () => {
+                alert('Connection closed by opponent.');
+                location.reload();
             });
         }
 
@@ -236,12 +238,16 @@
 
             applyMove(row, col, currentPlayer);
             
-            conn.send({
-                type: 'move',
-                row: row,
-                col: col,
-                player: myRole
-            });
+            if (conn && conn.open) {
+                conn.send({
+                    type: 'move',
+                    row: row,
+                    col: col,
+                    player: myRole
+                });
+            } else {
+                alert('Connection is not active.');
+            }
         }
 
         function applyMove(row, col, player) {
