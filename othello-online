@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Othello Online</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        h1 { margin-bottom: 5px; }
+        #setup {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #status {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 2px;
+            background-color: #2e7d32;
+            padding: 4px;
+            border: 4px solid #1b5e20;
+            border-radius: 4px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: #388e3c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .disc {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .black { background-color: #000; }
+        .white { background-color: #fff; border: 1px solid #ccc; }
+        .valid::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+        }
+        #score {
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        input {
+            padding: 6px;
+            font-size: 14px;
+            width: 80px;
+            text-align: center;
+        }
+        button {
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <h1>Othello Online</h1>
+    
+    <div id="setup">
+        <input type="text" id="roomCode" maxlength="4" placeholder="4digit">
+        <button id="createBtn">Create Room</button>
+        <button id="joinBtn">Join Room</button>
+    </div>
+
+    <div id="status" class="hidden">Waiting for connection...</div>
+    <div id="board" class="hidden"></div>
+    <div id="score" class="hidden">Black: 2 | White: 2</div>
+
+    <script>
+        const BOARD_SIZE = 8;
+        let board = [];
+        let currentPlayer = 'B';
+        let myRole = null;
+        let peer = null;
+        let conn = null;
+
+        const directions = [
+            [-1, -1], [-1, 0], [-1, 1],
+            [0, -1],           [0, 1],
+            [1, -1],  [1, 0],  [1, 1]
+        ];
+
+        const roomCodeInput = document.getElementById('roomCode');
+        const createBtn = document.getElementById('createBtn');
+        const joinBtn = document.getElementById('joinBtn');
+        const setupDiv = document.getElementById('setup');
+        const statusDiv = document.getElementById('status');
+        const boardDiv = document.getElementById('board');
+        const scoreDiv = document.getElementById('score');
+
+        createBtn.addEventListener('click', () => {
+            let code = roomCodeInput.value.trim();
+            if (code.length !== 4) {
+                alert('Please enter a 4-digit code.');
+                return;
+            }
+            myRole = 'B';
+            peer = new Peer('othello-' + code);
+            
+            peer.on('open', (id) => {
+                setupDiv.classList.add('hidden');
+                statusDiv.classList.remove('hidden');
+                statusDiv.textContent = 'Room created (' + code + '). Waiting for opponent...';
+            });
+
+            peer.on('error', (err) => {
+                alert('Error: Room may already exist or ID is taken.');
+            });
+
+            peer.on('connection', (connection) => {
+                conn = connection;
+                setupConnection();
+                statusDiv.textContent = 'Connected! Your turn (Black)';
+                boardDiv.classList.remove('hidden');
+                scoreDiv.classList.remove('hidden');
+                initGame();
+            });
+        });
+
+        joinBtn.addEventListener('click', () => {
+            let code = roomCodeInput.value.trim();
+            if (code.length !== 4) {
+                alert('Please enter a 4-digit code.');
+                return;
+            }
+            myRole = 'W';
+            peer = new Peer();
+
+            peer.on('open', (id) => {
+                conn = peer.connect('othello-' + code);
+                setupConnection();
+            });
+
+            peer.on('error', (err) => {
+                alert('Could not connect. Check the 4-digit code.');
+            });
+        });
+
+        function setupConnection() {
+            conn.on('open', () => {
+                if (myRole === 'W') {
+                    setupDiv.classList.add('hidden');
+                    statusDiv.classList.remove('hidden');
+                    statusDiv.textContent = 'Connected! Waiting for Black (White)';
+                    boardDiv.classList.remove('hidden');
+                    scoreDiv.classList.remove('hidden');
+                    initGame();
+                }
+            });
+
+            conn.on('data', (data) => {
+                if (data.type === 'move') {
+                    applyMove(data.row, data.col, data.player);
+                }
+            });
+        }
+
+        function initGame() {
+            initGameData();
+            render();
+        }
+
+        function initGameData() {
+            board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+            board[3][3] = 'W';
+            board[3][4] = 'B';
+            board[4][3] = 'B';
+            board[4][4] = 'W';
+            currentPlayer = 'B';
+        }
+
+        function getValidMoves(player) {
+            let validMoves = [];
+            for (let r = 0; r < BOARD_SIZE; r++) {
+                for (let c = 0; c < BOARD_SIZE; c++) {
+                    if (board[r][c] === null && getFlips(r, c, player).length > 0) {
+                        validMoves.push({r, c});
+                    }
+                }
+            }
+            return validMoves;
+        }
+
+        function getFlips(row, col, player) {
+            let opponent = player === 'B' ? 'W' : 'B';
+            let allFlips = [];
+
+            for (let [dr, dc] of directions) {
+                let r = row + dr;
+                let c = col + dc;
+                let tempFlips = [];
+
+                while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c] === opponent) {
+                    tempFlips.push({r, c});
+                    r += dr;
+                    c += dc;
+                }
+
+                if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && board[r][c] === player) {
+                    allFlips = allFlips.concat(tempFlips);
+                }
+            }
+            return allFlips;
+        }
+
+        function makeMove(row, col) {
+            if (currentPlayer !== myRole) return;
+            let flips = getFlips(row, col, currentPlayer);
+            if (flips.length === 0) return;
+
+            applyMove(row, col, currentPlayer);
+            
+            conn.send({
+                type: 'move',
+                row: row,
+                col: col,
+                player: myRole
+            });
+        }
+
+        function applyMove(row, col, player) {
+            let flips = getFlips(row, col, player);
+            board[row][col] = player;
+            flips.forEach(f => {
+                board[f.r][f.c] = player;
+            });
+
+            currentPlayer = currentPlayer === 'B' ? 'W' : 'B';
+
+            let validMoves = getValidMoves(currentPlayer);
+            if (validMoves.length === 0) {
+                currentPlayer = currentPlayer === 'B' ? 'W' : 'B';
+                if (getValidMoves(currentPlayer).length === 0) {
+                    render();
+                    checkGameOver();
+                    return;
+                }
+            }
+            render();
+        }
+
+        function checkGameOver() {
+            let bCount = 0, wCount = 0;
+            for (let r = 0; r < BOARD_SIZE; r++) {
+                for (let c = 0; c < BOARD_SIZE; c++) {
+                    if (board[r][c] === 'B') bCount++;
+                    if (board[r][c] === 'W') wCount++;
+                }
+            }
+            let status = document.getElementById('status');
+            if (bCount > wCount) {
+                status.textContent = "Game Over! Black Wins!";
+            } else if (wCount > bCount) {
+                status.textContent = "Game Over! White Wins!";
+            } else {
+                status.textContent = "Game Over! Draw!";
+            }
+        }
+
+        function render() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+
+            let validMoves = getValidMoves(currentPlayer);
+
+            for (let r = 0; r < BOARD_SIZE; r++) {
+                for (let c = 0; c < BOARD_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+
+                    let isValid = validMoves.some(m => m.r === r && m.c === c);
+                    if (isValid && board[r][c] === null && currentPlayer === myRole) {
+                        cell.classList.add('valid');
+                        cell.addEventListener('click', () => makeMove(r, c));
+                    }
+
+                    if (board[r][c] !== null) {
+                        const disc = document.createElement('div');
+                        disc.className = `disc ${board[r][c] === 'B' ? 'black' : 'white'}`;
+                        cell.appendChild(disc);
+                    }
+
+                    boardElement.appendChild(cell);
+                }
+            }
+
+            let bCount = 0, wCount = 0;
+            for (let r = 0; r < BOARD_SIZE; r++) {
+                for (let c = 0; c < BOARD_SIZE; c++) {
+                    if (board[r][c] === 'B') bCount++;
+                    if (board[r][c] === 'W') wCount++;
+                }
+            }
+
+            document.getElementById('score').textContent = `Black: ${bCount} | White: ${wCount}`;
+            if (!document.getElementById('status').textContent.includes('Game Over')) {
+                let turnName = currentPlayer === 'B' ? 'Black' : 'White';
+                let isMyTurn = currentPlayer === myRole;
+                document.getElementById('status').textContent = `Current Turn: ${turnName} ${isMyTurn ? '(Your Turn)' : '(Opponent Turn)'}`;
+            }
+        }
+    </script>
+</body>
+</html>
