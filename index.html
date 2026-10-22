@@ -291,8 +291,9 @@
       transform: scale(0.98);
     }
 
+    /* ゲーム誘導特設バナー */
     .typing-promo-card {
-      margin: 0 20px 14px;
+      margin: 0 20px 22px;
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       border-radius: 14px;
       padding: 14px 16px;
@@ -344,6 +345,7 @@
       white-space: nowrap;
     }
 
+    /* 3連タブ切り替えバー */
     .tab-bar {
       display: flex;
       border-bottom: 2px solid #e2e8f0;
@@ -420,6 +422,7 @@
       color: #334155;
     }
 
+    /* ショップカード */
     .shop-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -490,6 +493,7 @@
       font-size: 10.5px;
       font-weight: 800;
     }
+    /* 在庫なしの文字色（赤色） */
     .status-nostock {
       color: #ef4444;
       font-size: 10.5px;
@@ -529,6 +533,7 @@
       cursor: not-allowed;
     }
 
+    /* 道下 SNS セクション */
     .sns-container {
       display: flex;
       flex-direction: column;
@@ -611,6 +616,7 @@
       flex-shrink: 0;
     }
 
+    /* カート追加通知トースト */
     #cart-toast {
       position: fixed;
       top: -100px;
@@ -670,6 +676,7 @@
       text-overflow: ellipsis;
     }
 
+    /* カートモーダル */
     #cart-modal {
       display: none;
       position: fixed;
@@ -1001,7 +1008,6 @@
       </div>
     </div>
 
-    <!-- 道下タイピングへのリンクバナー -->
     <a href="typing.html" class="typing-promo-card">
       <div class="promo-left">
         <div class="promo-icon">⌨️</div>
@@ -1011,18 +1017,6 @@
         </div>
       </div>
       <span class="promo-btn-arrow">プレイ ↗</span>
-    </a>
-
-    <!-- 4桁合言葉オセロへのリンクバナーを追加 -->
-    <a href="othello.html" class="typing-promo-card" style="background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); box-shadow: 0 4px 14px rgba(46, 125, 50, 0.28);">
-      <div class="promo-left">
-        <div class="promo-icon">⚪⚫</div>
-        <div class="promo-text">
-          <h3>公式ゲーム「4桁合言葉オセロ」公開中！</h3>
-          <p>離れた友達と合言葉でリアルタイム対戦！</p>
-        </div>
-      </div>
-      <span class="promo-btn-arrow" style="color: #2e7d32;">プレイ ↗</span>
     </a>
 
     <div class="tab-bar">
@@ -1067,6 +1061,7 @@
     <!-- タブ2: 道下 Shop -->
     <div class="tab-content" id="tabShop">
       <div class="shop-grid">
+        <!-- 商品1: アクスタ -->
         <div class="shop-card">
           <div class="shop-thumb">
             <img src="4f301a60-9027-4a08-94c1-7eca5b485e00.png" alt="道下アクスタ">
@@ -1082,6 +1077,7 @@
           </div>
         </div>
 
+        <!-- 商品2: 消しゴム -->
         <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
@@ -1098,6 +1094,7 @@
           </div>
         </div>
 
+        <!-- 商品3: フィギュア -->
         <div class="shop-card">
           <div class="shop-thumb">
             <img src="f5c2e267-a515-4ce0-9a70-f294b7990cf4.png" alt="あの時の僕 フィギュア">
@@ -1113,6 +1110,7 @@
           </div>
         </div>
 
+        <!-- 商品4: 着用Tシャツ -->
         <div class="shop-card">
           <div class="shop-thumb">
             <span class="badge-sold">SOLD OUT</span>
@@ -1136,6 +1134,7 @@
       <div class="sns-container">
         <p class="sns-lead">道下の公式SNSアカウントをチェック！</p>
 
+        <!-- Instagram -->
         <a href="https://www.instagram.com/haruto13606?psln=MXFzeHF3NGNseHV1Nw==" target="_blank" rel="noopener noreferrer" class="sns-card sns-card-instagram">
           <div class="sns-left">
             <div class="sns-icon">
@@ -1152,6 +1151,7 @@
           </div>
         </a>
 
+        <!-- BeReal -->
         <a href="https://bere.al/rennsei0223" target="_blank" rel="noopener noreferrer" class="sns-card sns-card-bereal">
           <div class="sns-left">
             <div class="sns-icon">
@@ -1171,6 +1171,7 @@
     </div>
   </div>
 
+  <!-- カートモーダル -->
   <div id="cart-modal">
     <div class="cart-content">
       <div class="cart-header">
@@ -1203,12 +1204,14 @@
     </div>
   </div>
 
+  <!-- 画像拡大モーダル -->
   <div id="image-modal" onclick="closeImage()">
     <button class="btn-img-close" onclick="closeImage()">✕</button>
     <img id="modal-img" src="" alt="拡大画像">
     <div id="modal-caption"></div>
   </div>
 
+  <!-- ドッキリモーダル -->
   <div id="reveal-modal">
     <div class="reveal-content">
       <div class="reveal-title" id="revealTitle">🎉 ドッキリ大成功！</div>
@@ -1250,6 +1253,7 @@
       }
     }
 
+    /* スライダー制御 */
     const track = document.getElementById('videoTrack');
     const dots = document.querySelectorAll('.slider-dots .dot');
     let currentIndex = 0;
@@ -1322,6 +1326,7 @@
 
     startAutoSlide();
 
+    /* カート機能 */
     const cart = [];
     let toastTimer = null;
 
@@ -1426,6 +1431,7 @@
       updateCartBadge();
     }
 
+    /* 画像拡大モーダル */
     function openImage(src, caption) {
       document.getElementById('modal-img').src = src;
       document.getElementById('modal-caption').innerText = caption;
@@ -1436,6 +1442,7 @@
       document.getElementById('image-modal').style.display = 'none';
     }
 
+    /* 紙吹雪＆ドッキリモーダル */
     const confettiCanvas = document.getElementById('confetti-canvas');
     const myConfetti = confetti.create(confettiCanvas, {
       resize: true,
